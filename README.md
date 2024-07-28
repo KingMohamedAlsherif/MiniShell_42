@@ -1,5 +1,4 @@
 # MiniShell
-# MiniShell
 
 ## Table of Contents
 - [Introduction](#introduction)
