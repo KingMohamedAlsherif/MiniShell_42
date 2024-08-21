@@ -6,28 +6,29 @@
 #    By: chon <chon@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/10 11:20:21 by chon              #+#    #+#              #
-#    Updated: 2024/08/20 12:07:00 by chon             ###   ########.fr        #
+#    Updated: 2024/08/21 13:42:29 by chon             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 CFLAGS = -Wall -Werror -Wextra -g3
 LIBFT_DIR = ./libft
-LIBFT = ./libft/libft.a
+LIBS = ./libft/libft.a -lreadline
 OBJS = $(SRCS:.c=.o)
-SRCS = ./execute/main.c ./execute/pipex.c ./execute/utils.c ./execute/free.c
+SRCS = main.c \
+# ./execute/exec_main.c ./execute/pipex.c ./execute/utils.c ./execute/free.c
 # OBJS_B = $(SRCS_B:.c=.o)
 # SRCS_B = 
 
 $(NAME): $(OBJS)
 	make -C $(LIBFT_DIR)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
 
 all: $(NAME)
 
 # bonus: $(OBJS_B)
 # 	make -C $(LIBFT_DIR)
-# 	$(CC) $(CFLAGS) $(OBJS_B) $(LIBFT) -o $(NAME)
+# 	$(CC) $(CFLAGS) $(OBJS_B) $(LIBS) -o $(NAME)
 
 clean:
 	make clean -C $(LIBFT_DIR)

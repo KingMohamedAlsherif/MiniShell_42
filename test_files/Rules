@@ -1,0 +1,13 @@
+Invalid Commands
+	1) No pipes
+		1) At least one at start & no pipes
+			- bash: [cmd]: command not found
+		2) At least one at end
+			- bash: [cmd]: 
+	
+	2) Pipes
+		2) At least one at start & pipes prior to valid cmd
+			- start at valid cmd
+		3) At least one at start & one at end && no pipes
+			- 
+		4) At least one at start & one at end && pipes prior to valid cmd
