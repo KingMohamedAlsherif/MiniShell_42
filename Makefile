@@ -15,8 +15,7 @@ CFLAGS = -Wall -Werror -Wextra -g3
 LIBFT_DIR = ./libft
 LIBFT = ./libft/libft.a
 OBJS = $(SRCS:.c=.o)
-SRCS = ./execute/main.c ./execute/pipex.c ./execute/utils_1.c \
-./execute/free.c
+SRCS = ./execute/main.c ./execute/pipex.c ./execute/utils.c ./execute/free.c
 # OBJS_B = $(SRCS_B:.c=.o)
 # SRCS_B = 
 
