@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "execute.h"
+#include "minishell.h"
 
 void	execute(t_var *p, int cmd_idx, int fd_in, int fd_out)
 {

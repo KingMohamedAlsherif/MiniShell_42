@@ -6,11 +6,11 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:18:37 by chon              #+#    #+#             */
-/*   Updated: 2024/08/20 12:04:01 by chon             ###   ########.fr       */
+/*   Updated: 2024/08/22 13:21:01 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "execute.h"
+#include "minishell.h"
 
 void	free_int_array(int **twoD, int pipe_ct)
 {

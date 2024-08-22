@@ -6,12 +6,12 @@
 #    By: chon <chon@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/10 11:20:21 by chon              #+#    #+#              #
-#    Updated: 2024/08/21 13:42:29 by chon             ###   ########.fr        #
+#    Updated: 2024/08/22 11:28:30 by chon             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
-CFLAGS = -Wall -Werror -Wextra -g3
+CFLAGS = -Wall -Werror -Wextra -g3 
 LIBFT_DIR = ./libft
 LIBS = ./libft/libft.a -lreadline
 OBJS = $(SRCS:.c=.o)

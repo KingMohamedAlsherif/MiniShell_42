@@ -12,12 +12,19 @@
 
 #include "minishell.h"
 
-volatile sig_atomic_t g_sig;
+volatile	sig_atomic_t signal_received;
 
-void	handle_signal(int g_sig)
+void	signal_handler(int g_sig, siginfo_t *info, void *context)
 {
-	if (g_sig == -1)
-		exit(0);
+	(void)info;
+	(void)context;
+	if (g_sig == SIGINT)
+	{
+		// write(STDOUT_FILENO, "\n", 1);
+		// write(STDOUT_FILENO, "\nMinishell $ ", 13);
+		// printf("\n");
+		signal_received = 1;
+	}
 }
 
 int	main(void)
@@ -25,22 +32,29 @@ int	main(void)
 	char	*input;
 	struct sigaction sa;
 
-    sa.sa_handler = handle_signal;
-	sa.sa_flags = 0;
+	sa.sa_sigaction = signal_handler;
+	sa.sa_flags = SA_SIGINFO;
     sigemptyset(&sa.sa_mask);
+	if (sigaction(SIGINT, &sa, NULL) < 0)
+	{
+		perror("sigaction");
+		return (1);
+	}
 	while (1)
 	{
 		input = readline("Minishell $ ");
 		if (!input)
-			break ;
-		// if (!ft_strncmp(input, "clear", 6))
-		// 	rl_clear_history();
-		else
 		{
-			if (sigaction(SIGINT, &sa, NULL) < 0)
-				perror("sigaction");
-			add_history(input);
+			if (signal_received)
+			{
+				signal_received = 0;
+				printf("\n");
+				continue ;
+			}
+			printf("\b\bexit\n");
+			break ;
 		}
+		add_history(input);
 		free(input);
 	}
 	return (0);
