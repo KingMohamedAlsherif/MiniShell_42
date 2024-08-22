@@ -14,17 +14,10 @@
 
 volatile	sig_atomic_t signal_received;
 
-void	signal_handler(int g_sig, siginfo_t *info, void *context)
+void	signal_handler(int signum)
 {
-	(void)info;
-	(void)context;
-	if (g_sig == SIGINT)
-	{
-		// write(STDOUT_FILENO, "\n", 1);
-		// write(STDOUT_FILENO, "\nMinishell $ ", 13);
-		// printf("\n");
+	if (signum == SIGINT)
 		signal_received = 1;
-	}
 }
 
 int	main(void)
@@ -32,8 +25,8 @@ int	main(void)
 	char	*input;
 	struct sigaction sa;
 
-	sa.sa_sigaction = signal_handler;
-	sa.sa_flags = SA_SIGINFO;
+	sa.sa_handler = signal_handler;
+	sa.sa_flags = 0;
     sigemptyset(&sa.sa_mask);
 	if (sigaction(SIGINT, &sa, NULL) < 0)
 	{
