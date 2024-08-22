@@ -1,13 +1,8 @@
-Invalid Commands
-	1) No pipes
-		1) At least one at start & no pipes
-			- bash: [cmd]: command not found
-		2) At least one at end
-			- bash: [cmd]: 
-	
-	2) Pipes
-		2) At least one at start & pipes prior to valid cmd
-			- start at valid cmd
-		3) At least one at start & one at end && no pipes
-			- 
-		4) At least one at start & one at end && pipes prior to valid cmd
+Grammar
+	1) All non-punctuation is tested as a cmd and the following strings are either args or files (grep?)
+	2) (): requires either && or ||
+	3) &&: Ignore everything after && if error occurs prior
+	4) ||: Runs following cmd if first cmd produces an error
+	5) <, >, >>: requires a string after
+		last < file is used; if last < file is invalid, only error is printed
+		multiple > and >> creates multiple files, but only last one is used
