@@ -48,7 +48,9 @@ int	main(void)
 			if (signal_received)
 			{
 				signal_received = 0;
-				printf("\n");
+				write(STDOUT_FILENO, input, ft_strlen(input));
+				free(input);
+				printf("\b\b  \n");
 				continue ;
 			}
 			printf("\b\bexit\n");
