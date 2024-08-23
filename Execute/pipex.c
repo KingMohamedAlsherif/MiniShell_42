@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-void	execute(t_var *p, int cmd_idx, int fd_in, int fd_out)
+void execute(t_exec *p, int cmd_idx, int fd_in, int fd_out)
 {
 	if (dup2(fd_in, STDIN_FILENO) < 0)
 		ft_error(errno, ft_strdup("dup"), p, 1);
@@ -23,7 +23,7 @@ void	execute(t_var *p, int cmd_idx, int fd_in, int fd_out)
 		ft_error(errno, ft_strdup("execve"), p, 1);
 }
 
-void	multiple_cmds(t_var *p, int valid_cmds_start)
+void multiple_cmds(t_exec *p, int valid_cmds_start)
 {
 	p->i = -1;
 	p->j = valid_cmds_start;
@@ -52,14 +52,13 @@ void	multiple_cmds(t_var *p, int valid_cmds_start)
 	close_fds(p);
 }
 
-void	pipex(t_var *p, char *infile)
+void pipex(t_exec *p, char *infile)
 {
-	int	valid_cmds_start;
+	int valid_cmds_start;
 
 	valid_cmds_start = p->cmd_ct;
 	p->i = 0;
-	while (valid_cmds_start > 0
-		&& ft_strncmp(p->exec_cmd_path[valid_cmds_start - 1], "invalid", 7))
+	while (valid_cmds_start > 0 && ft_strncmp(p->exec_cmd_path[valid_cmds_start - 1], "invalid", 7))
 		valid_cmds_start--;
 	if (!valid_cmds_start && !p->hd_shift && access(infile, R_OK) < 0)
 		valid_cmds_start++;

@@ -6,15 +6,15 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:18:37 by chon              #+#    #+#             */
-/*   Updated: 2024/08/22 13:21:01 by chon             ###   ########.fr       */
+/*   Updated: 2024/08/23 17:42:35 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-void	free_int_array(int **twoD, int pipe_ct)
+void free_int_array(int **twoD, int pipe_ct)
 {
-	int	i;
+	int i;
 
 	i = -1;
 	if (twoD)
@@ -25,10 +25,10 @@ void	free_int_array(int **twoD, int pipe_ct)
 	}
 }
 
-void	free_char_arr(char **twoD, char ***threeD)
+void free_char_arr(char **twoD, char ***threeD)
 {
-	int	i;
-	int	j;
+	int i;
+	int j;
 
 	i = -1;
 	j = -1;
@@ -46,11 +46,15 @@ void	free_char_arr(char **twoD, char ***threeD)
 	}
 }
 
-void	free_all(t_var *p)
+void free_all(t_tree_node *n)
 {
-	free(p->filepaths);
-	free(p->pid);
-	free_int_array(p->fd, p->pipe_ct);
-	free_char_arr(p->cmd_filepaths, p->cmd_args);
-	free_char_arr(p->exec_cmd_path, NULL);
+	free(n->infile);
+	free(n->outfile);
+	free(n->delimiter);
+	free_char_arr(n->cmd_args, NULL);
+	// free(p->filepaths);
+	// free(p->pid);
+	// free_int_array(p->fd, p->pipe_ct);
+	// free_char_arr(p->cmd_filepaths, p->cmd_args);
+	// free_char_arr(p->exec_cmd_path, NULL);
 }

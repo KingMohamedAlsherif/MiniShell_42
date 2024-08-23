@@ -6,16 +6,23 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 16:09:22 by chon              #+#    #+#             */
-/*   Updated: 2024/08/22 13:21:05 by chon             ###   ########.fr       */
+/*   Updated: 2024/08/23 20:26:14 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-int	is_empty(char *av)
+t_tree_node	*start_node(t_tree_node *n)
 {
-	int		i;
-	size_t	sp_ct;
+	while (n->left)
+		n = n->left;
+	return (n);
+}
+
+int is_empty(char *av)
+{
+	int i;
+	size_t sp_ct;
 
 	i = -1;
 	sp_ct = 0;
@@ -29,27 +36,27 @@ int	is_empty(char *av)
 	return (1);
 }
 
-void	check_filepaths(t_var *p, char **av)
+void check_filepaths(t_tree_node *n)
 {
+	int		i;
 	int		exit_switch;
 	char	*err_msg;
 
-	p->i = -1;
+	i = -1;
 	exit_switch = 0;
-	while (p->exec_cmd_path[++p->i])
+	while (p->exec_cmd_path[++i])
 	{
-		if (!p->i && !p->hd_shift && access(av[1], R_OK) < 0)
-			p->i++;
-		if (p->i == p->cmd_ct - 1)
+		if (!i && !p->hd_shift && access(av[1], R_OK) < 0)
+			i++;
+		if (i == p->cmd_ct - 1)
 			exit_switch = 1;
-		if (!ft_strncmp(p->exec_cmd_path[p->i], "invalid", 7)
-			&& ft_strlen(av[p->i + 2 + p->hd_shift]))
+		if (!ft_strncmp(p->exec_cmd_path[i], "invalid", 7)
+			&& ft_strlen(av[i + 2 + p->hd_shift]))
 		{
-			err_msg = ft_strjoin("Command not found: ",
-					p->cmd_args[p->i][0]);
+			err_msg = ft_strjoin("Command not found: ", p->cmd_args[i][0]);
 			ft_error(errno, err_msg, p, exit_switch);
 		}
-		else if (!ft_strlen(av[p->i + 2 + p->hd_shift]))
+		else if (!ft_strlen(av[i + 2 + p->hd_shift]))
 		{
 			close_fds(p);
 			ft_error(errno, ft_strdup("Permission denied:"), p, exit_switch);
@@ -57,9 +64,9 @@ void	check_filepaths(t_var *p, char **av)
 	}
 }
 
-void	setup_p_cp_arr(t_var *p)
+void setup_p_cp_arr(t_exec *p)
 {
-	int	i;
+	int i;
 
 	i = -1;
 	p->fd = ft_calloc(p->pipe_ct, sizeof(int *));
@@ -76,7 +83,7 @@ void	setup_p_cp_arr(t_var *p)
 		ft_error(errno, ft_strdup("pid calloc"), p, 1);
 }
 
-void	close_fds(t_var *p)
+void close_fds(t_exec *p)
 {
 	p->j = -1;
 	p->k = -1;
@@ -100,11 +107,11 @@ void	close_fds(t_var *p)
 		if (p->infile > -1)
 			close(p->infile);
 	}
-	unlink("here_doc.txt");
+	unlink("tmp.txt");
 	unlink("empty.txt");
 }
 
-void	ft_error(int error, char *str, t_var *p, int exit_switch)
+void ft_error(int error, char *str, t_tree_node *n, int exit_switch)
 {
 	if (!error)
 		ft_printf("%s\n", str);
@@ -113,7 +120,7 @@ void	ft_error(int error, char *str, t_var *p, int exit_switch)
 	free(str);
 	if (exit_switch)
 	{
-		free_all(p);
+		free_all(n);
 		exit(EXIT_FAILURE);
 	}
 }

@@ -20,9 +20,8 @@ void	signal_handler(int signum)
 		signal_received = 1;
 }
 
-int	main(void)
+void	init_signals()
 {
-	char	*input;
 	struct sigaction sa;
 
 	sa.sa_handler = signal_handler;
@@ -33,6 +32,13 @@ int	main(void)
 		perror("sigaction");
 		return (1);
 	}
+}
+
+int	main(void)
+{
+	char	*input;
+
+	init_signals();
 	while (1)
 	{
 		input = readline("Minishell $ ");
@@ -49,6 +55,8 @@ int	main(void)
 			printf("\b\bexit\n");
 			break ;
 		}
+		// if (!ft_strncmp(input, "clear", 6))
+		// 	rl_clear_history();
 		add_history(input);
 		free(input);
 	}

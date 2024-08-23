@@ -6,14 +6,13 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/08/22 13:20:44 by chon             ###   ########.fr       */
+/*   Updated: 2024/08/23 20:29:31 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-// INCLUDE
 # include "./libft/libft.h"
 # include <stdio.h>
 # include <unistd.h>
@@ -26,53 +25,74 @@
 # include <signal.h>
 # include <sys/wait.h>
 
-// STRUCT
-typedef enum {
-    WORD,
-    PIPE,
-    REDIRECT_IN,
-    REDIRECT_OUT,
-    HEREDOC,
-}   token_type;
+// note: tokenize cmd and args as one token; 
+	// create program breakers for syntax errors such as 
+	// i)	redirection immediately followed by |
+	// ii)	unclosed quotes
+	// iii)	() without && or ||
 
-typedef struct s_token 
+typedef enum
 {
-    token_type  type;
-    char    *str;
-    struct s_token  *next;
-}   t_token;
+	CMD,
+	PIPE,
+	REDIRECT_IN,
+	REDIRECT_OUT,
+	HEREDOC,
+} token_type;
 
-typedef struct s_var
+typedef struct s_token
 {
-	char	*filepaths;
-	char	*filepath_0;
-	char	*filepath;
-	char	**cmd_filepaths;
-	char	***cmd_args;
-	char	**exec_cmd_path;
-	int		**fd;
-	int		*pid;
-	int		cmd_ct;
-	int		infile;
-	int		outfile;
-	int		i;
-	int		j;
-	int		k;
-	int		empty_fd;
-	int		hd_shift;
-	int		orig_v_c_s;
-	int		pipe_ct;
-	char	**env;
-}	t_var;
+	token_type	type;
+	char 		*str;
+	char 		*exec_cmd_path;
+	char		**cmd_args;
+	struct s_token *next;
+} t_token;
 
-void	pipex(t_var *p, char *infile);
-void	ft_error(int error, char *str, t_var *p, int exit_switch);
-void	free_char_arr(char **twoD, char ***threeD);
-void	free_int_array(int **twoD, int cmd_ct);
-void	free_all(t_var *p);
-void	setup_p_cp_arr(t_var *p);
-void	close_fds(t_var *p);
-void	check_filepaths(t_var *p, char **av);
-int		is_empty(char *av);
+typedef struct s_paths
+{
+	char 		*all_filepaths;
+	char 		**split_filepaths;
+	char 		*filepath_0;
+	char 		*filepath;
+} t_paths;
+
+typedef struct s_tree_node
+{
+	t_token		token;
+	t_paths		*p;
+	int			in_fd;
+	int			out_fd;
+	char		*infile;
+	char		*outfile;
+	int			is_here_doc;
+	char		*delimiter;
+	int 		empty_fd;
+	int			**pipefd;
+	t_tree_node	*parent;
+	t_tree_node	*left;
+	t_tree_node	*right;
+} t_tree_node;
+
+typedef struct s_exec
+{
+	char ***cmd_args;
+	int *pid;
+	int infile;
+	int outfile;
+	int orig_v_c_s;
+	int pipe_ct;
+	char **env;
+} t_exec;
+
+void pipex(t_exec *p, char *infile);
+void ft_error(int error, char *str, t_exec *p, int exit_switch);
+void free_char_arr(char **twoD, char ***threeD);
+void free_int_array(int **twoD, int cmd_ct);
+void free_all(t_exec *p);
+void setup_p_cp_arr(t_exec *p);
+void close_fds(t_exec *p);
+void check_filepaths(t_tree_node *head);
+int is_empty(char *av);
 
 #endif
