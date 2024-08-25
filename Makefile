@@ -6,7 +6,7 @@
 #    By: chon <chon@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/10 11:20:21 by chon              #+#    #+#              #
-#    Updated: 2024/08/23 16:21:36 by chon             ###   ########.fr        #
+#    Updated: 2024/08/25 15:10:11 by chon             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ LIBFT_DIR = ./libft
 LIBS = ./libft/libft.a -lreadline
 OBJS = $(SRCS:.c=.o)
 # SRCS = main.c
-SRCS = ./execute/exec_main.c ./execute/pipex.c ./execute/utils.c ./execute/free.c
+SRCS = ./parsing/parse.c ./execute/exec.c ./execute/utils.c ./execute/free.c
 # OBJS_B = $(SRCS_B:.c=.o)
 # SRCS_B = 
 

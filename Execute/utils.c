@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 16:09:22 by chon              #+#    #+#             */
-/*   Updated: 2024/08/23 20:26:14 by chon             ###   ########.fr       */
+/*   Updated: 2024/08/25 15:04:38 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,18 @@ t_tree_node	*start_node(t_tree_node *n)
 	while (n->left)
 		n = n->left;
 	return (n);
+}
+
+void	traverse_tree(t_tree_node **n)
+{
+	(*n)->is_read = 1;
+	if ((*n)->parent && ((!(*n)->left && !(*n)->right)
+		|| ((*n)->left->is_read && (*n)->right->is_read)))
+		*n = (*n)->parent;
+	if ((*n)->left && !(*n)->left->is_read)
+		*n = (*n)->left;
+	// if ((*n)->left && (*n)->left->is_read && (*n)->right)
+	*n = (*n)->right;
 }
 
 int is_empty(char *av)

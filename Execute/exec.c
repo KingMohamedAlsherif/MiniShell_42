@@ -52,7 +52,7 @@ void multiple_cmds(t_exec *p, int valid_cmds_start)
 	close_fds(p);
 }
 
-void pipex(t_exec *p, char *infile)
+void init_exec(t_exec *p, char *infile)
 {
 	int valid_cmds_start;
 
