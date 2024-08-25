@@ -6,18 +6,55 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 18:16:55 by chon              #+#    #+#             */
-/*   Updated: 2024/08/23 20:24:56 by chon             ###   ########.fr       */
+/*   Updated: 2024/08/25 15:14:49 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
+<<<<<<< HEAD
 void init_outfile(t_tree_node *n)
 {
 	// maybe std_input can replace empty_fd
 	n->empty_fd = open("empty.txt", O_TRUNC | O_CREAT, 0777);
 	if (n->empty_fd < 0)
 		ft_error(errno, ft_strdup("empty.txt"), &p, 1);
+=======
+void	get_exec_cmd_paths(t_paths p, t_token *t)
+{
+	int	i;
+
+	while (t)
+	{
+		i = -1;
+		if (t->type == CMD)
+		{
+			while (p.split_filepaths[++i])
+			{
+				p.filepath_0 = ft_strjoin(p.split_filepaths[i], "/");
+				p.filepath = ft_strjoin(p.filepath_0, t->str);
+				free(p.filepath_0);
+				if (access(p.filepath, X_OK) > -1)
+				{
+					t->exec_cmd_path = ft_strdup(p.filepath);
+					free(p.filepath);
+					break;
+				}
+				free(p.filepath);
+			}
+			if (!p.split_filepaths[i])
+				t->exec_cmd_path = ft_strdup("invalid");
+		}
+		t = t->next;
+	}
+}
+
+void init_outfile(t_tree_node *n)
+{
+	n->empty_fd = open("empty.txt", O_TRUNC | O_CREAT, 0777);
+	if (n->empty_fd < 0)
+		ft_error(errno, ft_strdup("empty.txt"), n, 1);
+>>>>>>> 9a837cc87971b70f5d4eba414c430dd2067fcb42
 	if (!n->is_here_doc)
 		n->out_fd = open(n->outfile, O_WRONLY | O_TRUNC | O_CREAT, 0777);
 	else
@@ -103,34 +140,104 @@ void init_filepaths(t_paths *p, char **env)
 	// p->env = env;
 }
 
+int	count_cmds(t_token *t_head)
+{
+	int	cmd_ct;
+
+	cmd_ct = 0;
+	while (t_head->next)
+	{
+		if (t_head->type == CMD)
+			cmd_ct++;	
+	}
+	return (cmd_ct);
+}
+void	init_tree_node(t_tree_node *n, t_paths p)
+{
+	n->p = p;
+	n->in_fd = 0;
+	n->out_fd = -1;
+	n->infile = NULL;
+	n->outfile = NULL;
+	n->is_here_doc = 0;
+	n->delimiter = NULL;
+	n->parent = NULL;
+	n->left = NULL;
+	n->right = NULL;
+	n->is_last_node = 0;
+	n->is_read = 0;
+}
+
+void	create_tokens_tree(t_tree_node *n_head, t_token *t_head, t_paths p)
+{
+	t_token		*t;
+	t_tree_node	*n;
+	char		*ls_args[] = {NULL};
+
+	t = t_head;
+	t = malloc(sizeof(t_token) * 3);
+	n = n_head;
+	n = malloc(sizeof(t_tree_node) * 3);
+	
+	t->type = PIPE;
+	n->token = *t;
+	init_tree_node(n, p);
+	
+	t = t->next;
+	t->type = CMD;
+	t->str = "ls";
+	t->cmd_args = ls_args;
+	n = n->left;
+	n->token = *t;
+	init_tree_node(n, p);
+	n->parent = n_head;
+	
+	t = t->next;
+	t->type = CMD;
+	t->str = "ls";
+	t->cmd_args = ls_args;
+	n = n_head->right;
+	n->token = *t;
+	init_tree_node(n, p);
+	n->parent = n_head;
+	n->is_last_node = 1;
+}
+
 // t_tree_node	*parse(t_token *t_head, char **env)
-t_tree_node	*parse(int ac, char **av, char **env)
+int	main(int ac, char **av, char **env)
 {
 	t_token 	*t_head;
 	t_tree_node	*n_head;
+	t_tree_node	*n;
 	t_paths 	p;
-	char		*tmp_args[] = { "1", "2", "3" , NULL};
 	int			i;
+	int			cmd_ct;
 
-	n.token.type = 0;
-	n.token.str = "ls";
-	n.cmd_args = tmp_args;
-	n.in_fd = 0;
-	n.out_fd = -1;
-	n.infile = NULL;
-	n.outfile = NULL;
-	n.is_here_doc = 0;
-	n.delimiter = NULL;
-	n.left = NULL;
-	n.right = NULL;
+	create_tokens_tree(n_head, t_head, p);
+	cmd_ct = count_cmds(t_head);
 	if (env)
 	{
 		init_filepaths(&p, env);
 		get_exec_cmd_paths(p, t_head);
+<<<<<<< HEAD
 		init_infile_outfile(&n);
 		check_infile_cmdpaths(start_node(n_head));
 		pipex(&p, av[1]);
 		free_all(&p);
 	}
 	return (n_head);
+=======
+		n = n_head;
+		while (!n->is_last_node)
+		{
+			init_infile_outfile(n);
+			traverse_tree(&n);
+		}
+		// check_filepaths(start_node(n_head));
+		// init_exec(&p, av[1]);
+		// free_all(&p);
+	}
+	// return (n_head);
+	return (0);
+>>>>>>> 9a837cc87971b70f5d4eba414c430dd2067fcb42
 }

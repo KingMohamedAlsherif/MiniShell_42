@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/08/23 20:29:31 by chon             ###   ########.fr       */
+/*   Updated: 2024/08/25 15:15:09 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stdlib.h>
 # include <errno.h>
 # include <ctype.h>
+# include <stdbool.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
@@ -60,7 +61,7 @@ typedef struct s_paths
 typedef struct s_tree_node
 {
 	t_token		token;
-	t_paths		*p;
+	t_paths		p;
 	int			in_fd;
 	int			out_fd;
 	char		*outfile;
@@ -68,10 +69,18 @@ typedef struct s_tree_node
 	char		*delimiter;
 	int 		empty_fd;
 	int			**pipefd;
+<<<<<<< HEAD
 	bool		is_last_node;
 	t_tree_node	*parent;
 	t_tree_node	*left;
 	t_tree_node	*right;
+=======
+	struct s_tree_node	*parent;
+	struct s_tree_node	*left;
+	struct s_tree_node	*right;
+	int			is_last_node;
+	bool		is_read;
+>>>>>>> 9a837cc87971b70f5d4eba414c430dd2067fcb42
 } t_tree_node;
 
 typedef struct s_exec
@@ -85,14 +94,16 @@ typedef struct s_exec
 	char **env;
 } t_exec;
 
-void pipex(t_exec *p, char *infile);
-void ft_error(int error, char *str, t_exec *p, int exit_switch);
-void free_char_arr(char **twoD, char ***threeD);
-void free_int_array(int **twoD, int cmd_ct);
-void free_all(t_exec *p);
-void setup_p_cp_arr(t_exec *p);
-void close_fds(t_exec *p);
-void check_filepaths(t_tree_node *head);
-int is_empty(char *av);
+void		pipex(t_exec *p, char *infile);
+void		ft_error(int error, char *str, t_tree_node *p, int exit_switch);
+void		free_char_arr(char **twoD, char ***threeD);
+void		free_int_array(int **twoD, int cmd_ct);
+void		free_all(t_exec *p);
+void		setup_p_cp_arr(t_exec *p);
+void		close_fds(t_exec *p);
+void		check_filepaths(t_tree_node *head);
+int			is_empty(char *av);
+t_tree_node	*start_node(t_tree_node *n);
+void		traverse_tree(t_tree_node **n);
 
 #endif

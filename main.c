@@ -52,7 +52,8 @@ int	main(void)
 				printf("\b\b  \n");
 				continue ;
 			}
-			printf("\b\bexit\n");
+			// printf("\b\bexit\n");
+			printf("exit\n");
 			break ;
 		}
 		// if (!ft_strncmp(input, "clear", 6))
