@@ -12,37 +12,12 @@
 
 #include "minishell.h"
 
-void	get_exec_cmd_paths(t_paths p, t_token *t, char **env)
-{
-	int	i;
-
-	while (t)
-	{
-		i = -1;
-		if (t->type = CMD)
-		{
-			while (p.split_filepaths[++i])
-			{
-				p.filepath_0 = ft_strjoin(p.split_filepaths[i], "/");
-				p.filepath = ft_strjoin(p.filepath_0, t->str);
-				free(p.filepath_0);
-				if (access(p.filepath, X_OK) > -1)
-				{
-					t->exec_cmd_path = ft_strdup(p.filepath);
-					free(p.filepath);
-					break;
-				}
-				free(p.filepath);
-			}
-			if (!p.split_filepaths[i])
-				t->exec_cmd_path = ft_strdup("invalid");
-		}
-		t = t->next;
-	}
-}
-
 void init_outfile(t_tree_node *n)
 {
+	// maybe std_input can replace empty_fd
+	n->empty_fd = open("empty.txt", O_TRUNC | O_CREAT, 0777);
+	if (n->empty_fd < 0)
+		ft_error(errno, ft_strdup("empty.txt"), &p, 1);
 	if (!n->is_here_doc)
 		n->out_fd = open(n->outfile, O_WRONLY | O_TRUNC | O_CREAT, 0777);
 	else
@@ -78,6 +53,35 @@ void init_infile_outfile(t_tree_node *n)
 			ft_error(errno, n->infile, n, 0);
 	}
 	init_outfile(n);
+}
+
+void	get_exec_cmd_paths(t_paths p, t_token *t)
+{
+	int	i;
+
+	while (t)
+	{
+		i = -1;
+		if (t->type = CMD)
+		{
+			while (p.split_filepaths[++i])
+			{
+				p.filepath_0 = ft_strjoin(p.split_filepaths[i], "/");
+				p.filepath = ft_strjoin(p.filepath_0, t->str);
+				free(p.filepath_0);
+				if (access(p.filepath, X_OK) > -1)
+				{
+					t->exec_cmd_path = ft_strdup(p.filepath);
+					free(p.filepath);
+					break;
+				}
+				free(p.filepath);
+			}
+			if (!p.split_filepaths[i])
+				t->exec_cmd_path = ft_strdup("invalid");
+		}
+		t = t->next;
+	}
 }
 
 void init_filepaths(t_paths *p, char **env)
@@ -122,20 +126,11 @@ t_tree_node	*parse(int ac, char **av, char **env)
 	if (env)
 	{
 		init_filepaths(&p, env);
-		get_exec_cmd_paths(p, t_head, env);
-		init_infile(&n);
-		check_filepaths(start_node(n_head));
-		n.empty_fd = open("empty.txt", O_TRUNC | O_CREAT, 0777);
-		if (n.empty_fd < 0)
-			ft_error(errno, ft_strdup("empty.txt"), &p, 1);
+		get_exec_cmd_paths(p, t_head);
+		init_infile_outfile(&n);
+		check_infile_cmdpaths(start_node(n_head));
 		pipex(&p, av[1]);
 		free_all(&p);
-	}
-	else
-	{
-		ft_printf("Ensure ENV exists and ");
-		ft_printf("input either (i) an infile or (ii) here_doc and LIMITER, ");
-		ft_printf("at least two cmd args, and an outfile\n");
 	}
 	return (n_head);
 }

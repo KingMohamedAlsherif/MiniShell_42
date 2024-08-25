@@ -63,12 +63,12 @@ typedef struct s_tree_node
 	t_paths		*p;
 	int			in_fd;
 	int			out_fd;
-	char		*infile;
 	char		*outfile;
 	int			is_here_doc;
 	char		*delimiter;
 	int 		empty_fd;
 	int			**pipefd;
+	bool		is_last_node;
 	t_tree_node	*parent;
 	t_tree_node	*left;
 	t_tree_node	*right;

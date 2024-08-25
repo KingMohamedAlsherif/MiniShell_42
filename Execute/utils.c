@@ -36,30 +36,27 @@ int is_empty(char *av)
 	return (1);
 }
 
-void check_filepaths(t_tree_node *n)
+void check_infile_cmdpaths(t_tree_node *n)
 {
-	int		i;
-	int		exit_switch;
 	char	*err_msg;
 
-	i = -1;
-	exit_switch = 0;
-	while (p->exec_cmd_path[++i])
+	while (!n->is_last_node)
 	{
-		if (!i && !p->hd_shift && access(av[1], R_OK) < 0)
-			i++;
-		if (i == p->cmd_ct - 1)
-			exit_switch = 1;
+		if (n->in_fd < 0)
+		{
+			err_msg = ft_strjoin("command not found", p->cmd_args[i][0]);
+			ft_error(errno, err_msg, p, exit_switch);
+		}
 		if (!ft_strncmp(p->exec_cmd_path[i], "invalid", 7)
 			&& ft_strlen(av[i + 2 + p->hd_shift]))
 		{
-			err_msg = ft_strjoin("Command not found: ", p->cmd_args[i][0]);
+			err_msg = ft_strjoin("command not found", p->cmd_args[i][0]);
 			ft_error(errno, err_msg, p, exit_switch);
 		}
 		else if (!ft_strlen(av[i + 2 + p->hd_shift]))
 		{
 			close_fds(p);
-			ft_error(errno, ft_strdup("Permission denied:"), p, exit_switch);
+			ft_error(errno, ft_strdup("permission denied:"), p, exit_switch);
 		}
 	}
 }
