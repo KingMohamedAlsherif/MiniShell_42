@@ -12,49 +12,12 @@
 
 #include "../minishell.h"
 
-<<<<<<< HEAD
 void init_outfile(t_tree_node *n)
 {
 	// maybe std_input can replace empty_fd
 	n->empty_fd = open("empty.txt", O_TRUNC | O_CREAT, 0777);
 	if (n->empty_fd < 0)
-		ft_error(errno, ft_strdup("empty.txt"), &p, 1);
-=======
-void	get_exec_cmd_paths(t_paths p, t_token *t)
-{
-	int	i;
-
-	while (t)
-	{
-		i = -1;
-		if (t->type == CMD)
-		{
-			while (p.split_filepaths[++i])
-			{
-				p.filepath_0 = ft_strjoin(p.split_filepaths[i], "/");
-				p.filepath = ft_strjoin(p.filepath_0, t->str);
-				free(p.filepath_0);
-				if (access(p.filepath, X_OK) > -1)
-				{
-					t->exec_cmd_path = ft_strdup(p.filepath);
-					free(p.filepath);
-					break;
-				}
-				free(p.filepath);
-			}
-			if (!p.split_filepaths[i])
-				t->exec_cmd_path = ft_strdup("invalid");
-		}
-		t = t->next;
-	}
-}
-
-void init_outfile(t_tree_node *n)
-{
-	n->empty_fd = open("empty.txt", O_TRUNC | O_CREAT, 0777);
-	if (n->empty_fd < 0)
 		ft_error(errno, ft_strdup("empty.txt"), n, 1);
->>>>>>> 9a837cc87971b70f5d4eba414c430dd2067fcb42
 	if (!n->is_here_doc)
 		n->out_fd = open(n->outfile, O_WRONLY | O_TRUNC | O_CREAT, 0777);
 	else
@@ -99,7 +62,7 @@ void	get_exec_cmd_paths(t_paths p, t_token *t)
 	while (t)
 	{
 		i = -1;
-		if (t->type = CMD)
+		if (t->type == CMD)
 		{
 			while (p.split_filepaths[++i])
 			{
@@ -140,18 +103,19 @@ void init_filepaths(t_paths *p, char **env)
 	// p->env = env;
 }
 
-int	count_cmds(t_token *t_head)
-{
-	int	cmd_ct;
+// int	count_cmds(t_token *t_head)
+// {
+// 	int	cmd_ct;
 
-	cmd_ct = 0;
-	while (t_head->next)
-	{
-		if (t_head->type == CMD)
-			cmd_ct++;	
-	}
-	return (cmd_ct);
-}
+// 	cmd_ct = 0;
+// 	while (t_head->next)
+// 	{
+// 		if (t_head->type == CMD)
+// 			cmd_ct++;	
+// 	}
+// 	return (cmd_ct);
+// }
+
 void	init_tree_node(t_tree_node *n, t_paths p)
 {
 	n->p = p;
@@ -210,23 +174,17 @@ int	main(int ac, char **av, char **env)
 	t_tree_node	*n_head;
 	t_tree_node	*n;
 	t_paths 	p;
-	int			i;
-	int			cmd_ct;
 
+	(void)ac;
+	(void)av;
+	n_head = NULL;
+	t_head = NULL;
 	create_tokens_tree(n_head, t_head, p);
-	cmd_ct = count_cmds(t_head);
+	// cmd_ct = count_cmds(t_head);
 	if (env)
 	{
 		init_filepaths(&p, env);
 		get_exec_cmd_paths(p, t_head);
-<<<<<<< HEAD
-		init_infile_outfile(&n);
-		check_infile_cmdpaths(start_node(n_head));
-		pipex(&p, av[1]);
-		free_all(&p);
-	}
-	return (n_head);
-=======
 		n = n_head;
 		while (!n->is_last_node)
 		{
@@ -234,10 +192,14 @@ int	main(int ac, char **av, char **env)
 			traverse_tree(&n);
 		}
 		// check_filepaths(start_node(n_head));
-		// init_exec(&p, av[1]);
+		n = n_head;
+		while (!n->is_last_node)
+		{
+			init_exec(n);
+			traverse_tree(&n);
+		}
 		// free_all(&p);
 	}
 	// return (n_head);
 	return (0);
->>>>>>> 9a837cc87971b70f5d4eba414c430dd2067fcb42
 }

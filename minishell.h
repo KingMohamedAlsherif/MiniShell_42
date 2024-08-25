@@ -64,23 +64,17 @@ typedef struct s_tree_node
 	t_paths		p;
 	int			in_fd;
 	int			out_fd;
+	char		*infile;
 	char		*outfile;
 	int			is_here_doc;
 	char		*delimiter;
 	int 		empty_fd;
 	int			**pipefd;
-<<<<<<< HEAD
-	bool		is_last_node;
-	t_tree_node	*parent;
-	t_tree_node	*left;
-	t_tree_node	*right;
-=======
 	struct s_tree_node	*parent;
 	struct s_tree_node	*left;
 	struct s_tree_node	*right;
 	int			is_last_node;
 	bool		is_read;
->>>>>>> 9a837cc87971b70f5d4eba414c430dd2067fcb42
 } t_tree_node;
 
 typedef struct s_exec
@@ -105,5 +99,6 @@ void		check_filepaths(t_tree_node *head);
 int			is_empty(char *av);
 t_tree_node	*start_node(t_tree_node *n);
 void		traverse_tree(t_tree_node **n);
+void		init_exec(t_tree_node *n);
 
 #endif
