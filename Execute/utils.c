@@ -19,16 +19,30 @@ t_tree_node	*start_node(t_tree_node *n)
 	return (n);
 }
 
+void	reset_read_flag(t_tree_node **n)
+{
+	(*n)->is_read = 0;
+	if ((*n)->parent && ((!(*n)->left && !(*n)->right)
+		|| (!(*n)->left->is_read && !(*n)->right->is_read)))
+		*n = (*n)->parent;
+	else if ((*n)->left && (*n)->left->is_read)
+		*n = (*n)->left;
+	else
+		*n = (*n)->right;
+}
+
 void	traverse_tree(t_tree_node **n)
 {
 	(*n)->is_read = 1;
+	if ((*n)->parent && (*n)->parent->is_last_node)
+		return ;
 	if ((*n)->parent && ((!(*n)->left && !(*n)->right)
 		|| ((*n)->left->is_read && (*n)->right->is_read)))
 		*n = (*n)->parent;
-	if ((*n)->left && !(*n)->left->is_read)
+	else if ((*n)->left && !(*n)->left->is_read)
 		*n = (*n)->left;
-	// if ((*n)->left && (*n)->left->is_read && (*n)->right)
-	*n = (*n)->right;
+	else
+		*n = (*n)->right;
 }
 
 int is_empty(char *av)
@@ -48,74 +62,56 @@ int is_empty(char *av)
 	return (1);
 }
 
-void check_infile_cmdpaths(t_tree_node *n)
+// void check_infile_cmdpaths(t_tree_node *n)
+// {
+// 	char	*err_msg;
+
+// 	while (!n->is_last_node)
+// 	{
+// 		if (n->in_fd < 0)
+// 		{
+// 			err_msg = ft_strjoin("command not found", p->cmd_args[i][0]);
+// 			ft_error(errno, err_msg, p, exit_switch);
+// 		}
+// 		if (!ft_strncmp(p->exec_cmd_path[i], "invalid", 7)
+// 			&& ft_strlen(av[i + 2 + p->hd_shift]))
+// 		{
+// 			err_msg = ft_strjoin("command not found", p->cmd_args[i][0]);
+// 			ft_error(errno, err_msg, p, exit_switch);
+// 		}
+// 		else if (!ft_strlen(av[i + 2 + p->hd_shift]))
+// 		{
+// 			close_fds(p);
+// 			ft_error(errno, ft_strdup("permission denied:"), p, exit_switch);
+// 		}
+// 	}
+// }
+
+// void setup_p_cp_arr(t_exec *p)
+// {
+// 	int i;
+
+// 	i = -1;
+// 	p->fd = ft_calloc(p->pipe_ct, sizeof(int *));
+// 	if (!p->fd)
+// 		ft_error(errno, ft_strdup("fd calloc"), p, 1);
+// 	while (++i < p->pipe_ct)
+// 	{
+// 		p->fd[i] = ft_calloc(2, sizeof(int));
+// 		if (!p->fd)
+// 			ft_error(errno, ft_strdup("fd calloc"), p, 1);
+// 	}
+// 	p->pid = ft_calloc(p->cmd_ct, sizeof(int));
+// 	if (!p->pid)
+// 		ft_error(errno, ft_strdup("pid calloc"), p, 1);
+// }
+
+void close_fds(t_tree_node *n)
 {
-	char	*err_msg;
-
-	while (!n->is_last_node)
-	{
-		if (n->in_fd < 0)
-		{
-			err_msg = ft_strjoin("command not found", p->cmd_args[i][0]);
-			ft_error(errno, err_msg, p, exit_switch);
-		}
-		if (!ft_strncmp(p->exec_cmd_path[i], "invalid", 7)
-			&& ft_strlen(av[i + 2 + p->hd_shift]))
-		{
-			err_msg = ft_strjoin("command not found", p->cmd_args[i][0]);
-			ft_error(errno, err_msg, p, exit_switch);
-		}
-		else if (!ft_strlen(av[i + 2 + p->hd_shift]))
-		{
-			close_fds(p);
-			ft_error(errno, ft_strdup("permission denied:"), p, exit_switch);
-		}
-	}
-}
-
-void setup_p_cp_arr(t_exec *p)
-{
-	int i;
-
-	i = -1;
-	p->fd = ft_calloc(p->pipe_ct, sizeof(int *));
-	if (!p->fd)
-		ft_error(errno, ft_strdup("fd calloc"), p, 1);
-	while (++i < p->pipe_ct)
-	{
-		p->fd[i] = ft_calloc(2, sizeof(int));
-		if (!p->fd)
-			ft_error(errno, ft_strdup("fd calloc"), p, 1);
-	}
-	p->pid = ft_calloc(p->cmd_ct, sizeof(int));
-	if (!p->pid)
-		ft_error(errno, ft_strdup("pid calloc"), p, 1);
-}
-
-void close_fds(t_exec *p)
-{
-	p->j = -1;
-	p->k = -1;
-	if (p->pipe_ct)
-	{
-		while (++p->j < p->pipe_ct)
-		{
-			while (++p->k < 2)
-				close(p->fd[p->j][p->k]);
-			p->k = -1;
-		}
-	}
-	if (p->outfile > -1)
-		close(p->outfile);
-	if (p->empty_fd == p->infile && p->empty_fd)
-		close(p->empty_fd);
-	else
-	{
-		if (p->empty_fd > -1)
-			close(p->empty_fd);
-		if (p->infile > -1)
-			close(p->infile);
-	}
+	if (n->in_fd > -1)
+		close(n->in_fd);
+	if (n->out_fd > -1)
+		close(n->out_fd);
 	unlink("tmp.txt");
 	unlink("empty.txt");
 }
@@ -127,9 +123,10 @@ void ft_error(int error, char *str, t_tree_node *n, int exit_switch)
 	else
 		ft_printf("%s: %s\n", strerror(error), str);
 	free(str);
+	(void)n;
 	if (exit_switch)
 	{
-		free_all(n);
+		// free_all(n);
 		exit(EXIT_FAILURE);
 	}
 }

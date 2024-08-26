@@ -52,29 +52,30 @@ typedef struct s_token
 
 typedef struct s_paths
 {
-	char 		*all_filepaths;
-	char 		**split_filepaths;
-	char 		*filepath_0;
-	char 		*filepath;
+	char 	*all_filepaths;
+	char 	**split_filepaths;
+	char 	*filepath_0;
+	char 	*filepath;
+	char	**env;
 } t_paths;
 
 typedef struct s_tree_node
 {
-	t_token		token;
-	t_paths		p;
-	int			in_fd;
-	int			out_fd;
-	char		*infile;
-	char		*outfile;
-	int			is_here_doc;
-	char		*delimiter;
-	int 		empty_fd;
-	int			**pipefd;
+	t_token				*token;
+	t_paths				*p;
+	int					in_fd;
+	int					out_fd;
+	char				*infile;
+	char				*outfile;
+	int					is_here_doc;
+	char				*delimiter;
+	int 				empty_fd;
+	int					*pipefd;
 	struct s_tree_node	*parent;
 	struct s_tree_node	*left;
 	struct s_tree_node	*right;
-	int			is_last_node;
-	bool		is_read;
+	int					is_last_node;
+	bool				is_read;
 } t_tree_node;
 
 typedef struct s_exec
@@ -92,13 +93,14 @@ void		pipex(t_exec *p, char *infile);
 void		ft_error(int error, char *str, t_tree_node *p, int exit_switch);
 void		free_char_arr(char **twoD, char ***threeD);
 void		free_int_array(int **twoD, int cmd_ct);
-void		free_all(t_exec *p);
+void		free_all(t_tree_node *n);
 void		setup_p_cp_arr(t_exec *p);
-void		close_fds(t_exec *p);
+void		close_fds(t_tree_node *n);
 void		check_filepaths(t_tree_node *head);
 int			is_empty(char *av);
 t_tree_node	*start_node(t_tree_node *n);
 void		traverse_tree(t_tree_node **n);
 void		init_exec(t_tree_node *n);
+void		reset_read_flag(t_tree_node **n);
 
 #endif

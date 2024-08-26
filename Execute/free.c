@@ -48,10 +48,18 @@ void free_char_arr(char **twoD, char ***threeD)
 
 void free_all(t_tree_node *n)
 {
-	free(n->infile);
-	free(n->outfile);
-	free(n->delimiter);
-	free_char_arr(n->cmd_args, NULL);
+	while (n->parent)
+		n = n->parent;
+	while (n->left)
+		n = n->left;
+	while (!n->is_last_node)
+	{
+		free(n->infile);
+		free(n->outfile);
+		free(n->delimiter);
+		free_char_arr(n->token->cmd_args, NULL);
+		traverse_tree(&n);
+	}
 	// free(p->filepaths);
 	// free(p->pid);
 	// free_int_array(p->fd, p->pipe_ct);

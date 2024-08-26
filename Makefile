@@ -11,7 +11,8 @@
 # **************************************************************************** #
 
 NAME = minishell
-CFLAGS = -Wall -Werror -Wextra -g3 
+CFLAGS = -Wall -Werror -Wextra -g3 -fsanitize=address
+# CFLAGS = -Wall -Werror -Wextra -g3
 LIBFT_DIR = ./libft
 LIBS = ./libft/libft.a -lreadline
 OBJS = $(SRCS:.c=.o)
