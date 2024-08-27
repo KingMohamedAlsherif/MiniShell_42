@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 16:09:22 by chon              #+#    #+#             */
-/*   Updated: 2024/08/25 15:04:38 by chon             ###   ########.fr       */
+/*   Updated: 2024/08/27 16:24:15 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	reset_read_flag(t_tree_node **n)
 {
 	(*n)->is_read = 0;
 	if ((*n)->parent && ((!(*n)->left && !(*n)->right)
-		|| (!(*n)->left->is_read && !(*n)->right->is_read)))
+		|| ((*n)->left && (*n)->left->is_read && (*n)->right && (*n)->right->is_read)))
 		*n = (*n)->parent;
 	else if ((*n)->left && (*n)->left->is_read)
 		*n = (*n)->left;
@@ -34,10 +34,10 @@ void	reset_read_flag(t_tree_node **n)
 void	traverse_tree(t_tree_node **n)
 {
 	(*n)->is_read = 1;
-	if ((*n)->parent && (*n)->parent->is_last_node)
+	if ((*n)->is_last_node)
 		return ;
 	if ((*n)->parent && ((!(*n)->left && !(*n)->right)
-		|| ((*n)->left->is_read && (*n)->right->is_read)))
+		|| ((*n)->left && (*n)->left->is_read && (*n)->right && (*n)->right->is_read)))
 		*n = (*n)->parent;
 	else if ((*n)->left && !(*n)->left->is_read)
 		*n = (*n)->left;
@@ -108,9 +108,9 @@ int is_empty(char *av)
 
 void close_fds(t_tree_node *n)
 {
-	if (n->in_fd > -1)
+	if (n->in_fd > 2)
 		close(n->in_fd);
-	if (n->out_fd > -1)
+	if (n->out_fd > 2)
 		close(n->out_fd);
 	unlink("tmp.txt");
 	unlink("empty.txt");

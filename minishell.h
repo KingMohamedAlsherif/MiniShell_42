@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/08/25 15:15:09 by chon             ###   ########.fr       */
+/*   Updated: 2024/08/27 17:47:39 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,24 @@
 	// ii)	unclosed quotes
 	// iii)	() without && or ||
 
+typedef struct s_paths
+{
+	char 	*all_filepaths;
+	char 	**split_filepaths;
+	char 	*filepath_0;
+	char 	*filepath;
+	char	**env;
+} t_paths;
+
 typedef enum
 {
 	CMD,
+	ARG,
 	PIPE,
 	REDIRECT_IN,
 	REDIRECT_OUT,
 	HEREDOC,
+	END,
 } token_type;
 
 typedef struct s_token
@@ -50,15 +61,6 @@ typedef struct s_token
 	struct s_token *next;
 } t_token;
 
-typedef struct s_paths
-{
-	char 	*all_filepaths;
-	char 	**split_filepaths;
-	char 	*filepath_0;
-	char 	*filepath;
-	char	**env;
-} t_paths;
-
 typedef struct s_tree_node
 {
 	t_token				*token;
@@ -69,11 +71,12 @@ typedef struct s_tree_node
 	char				*outfile;
 	int					is_here_doc;
 	char				*delimiter;
-	int 				empty_fd;
+	// int 				empty_fd;
 	int					*pipefd;
 	struct s_tree_node	*parent;
 	struct s_tree_node	*left;
 	struct s_tree_node	*right;
+	int					is_first_node;
 	int					is_last_node;
 	bool				is_read;
 } t_tree_node;

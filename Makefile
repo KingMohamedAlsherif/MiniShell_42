@@ -6,15 +6,15 @@
 #    By: chon <chon@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/10 11:20:21 by chon              #+#    #+#              #
-#    Updated: 2024/08/25 15:10:11 by chon             ###   ########.fr        #
+#    Updated: 2024/08/27 16:23:03 by chon             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
-CFLAGS = -Wall -Werror -Wextra -g3 -fsanitize=address
+CFLAGS = -Wall -Werror -Wextra -g3 -fsanitize=address 
 # CFLAGS = -Wall -Werror -Wextra -g3
 LIBFT_DIR = ./libft
-LIBS = ./libft/libft.a -lreadline
+LIBS = ./libft/libft.a -L$(HOME)/.local/opt/readline/lib -I$(HOME)/.local/opt/readline/include -lreadline
 OBJS = $(SRCS:.c=.o)
 # SRCS = main.c
 SRCS = ./parsing/parse.c ./execute/exec.c ./execute/utils.c ./execute/free.c

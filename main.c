@@ -17,10 +17,16 @@ volatile	sig_atomic_t signal_received;
 void	signal_handler(int signum)
 {
 	if (signum == SIGINT)
+	{
+		// rl_replace_line("", 0);
+		printf("\n");
+		rl_on_new_line();
+		rl_redisplay();
 		signal_received = 1;
+	}
 }
 
-void	init_signals()
+int	init_signals(void)
 {
 	struct sigaction sa;
 
@@ -32,32 +38,32 @@ void	init_signals()
 		perror("sigaction");
 		return (1);
 	}
+	return (0);
 }
 
 int	main(void)
 {
 	char	*input;
 
-	init_signals();
+	if (init_signals())
+		return (1);
 	while (1)
 	{
 		input = readline("Minishell $ ");
 		if (!input)
 		{
-			if (signal_received)
-			{
-				signal_received = 0;
-				write(STDOUT_FILENO, input, ft_strlen(input));
-				free(input);
-				printf("\b\b  \n");
-				continue ;
-			}
-			// printf("\b\bexit\n");
 			printf("exit\n");
 			break ;
 		}
-		// if (!ft_strncmp(input, "clear", 6))
-		// 	rl_clear_history();
+		if (signal_received)
+		{
+			add_history(input);
+			free(input);
+			signal_received = 0;
+			continue ;
+		}
+		if (!ft_strncmp(input, "clear", 6))
+			clear_history();
 		add_history(input);
 		free(input);
 	}
