@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 18:16:55 by chon              #+#    #+#             */
-/*   Updated: 2024/08/27 17:02:32 by chon             ###   ########.fr       */
+/*   Updated: 2024/08/27 18:11:24 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,6 +218,7 @@ void	create_tokens_tree(t_tree_node **n_head, t_token **t_head, t_paths p)
 	n_3->parent = *n_head;
 
 	n_3->right = n_4;
+	n_4->token = NULL;
 	init_tree_node(n_4, p, pipefd);
 	n_4->is_last_node = 1;
 	n_4->parent = n_3;
@@ -252,7 +253,7 @@ int	main(int ac, char **av, char **env)
 		while (!n->is_last_node)
 			reset_read_flag(&n);
 		n = start_node(n_head);
-		printf("%s\n", n->token->exec_cmd_path);
+		// printf("%s\n", n->token->exec_cmd_path);
 		// printf("%s\n", n->token->cmd_args[0]);
 		// printf("%d\n", n->is_last_node);
 		init_exec(n);
