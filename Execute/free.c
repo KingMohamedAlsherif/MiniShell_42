@@ -48,10 +48,6 @@ void free_char_arr(char **twoD, char ***threeD)
 
 void free_all(t_tree_node *n)
 {
-	while (n->parent)
-		n = n->parent;
-	while (n->left)
-		n = n->left;
 	while (!n->is_last_node)
 	{
 		free(n->infile);

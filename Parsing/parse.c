@@ -33,6 +33,7 @@ void init_infile_outfile(t_tree_node *n)
 {
 	char *line;
 
+	// if (n->is_here_doc || (!n->infile && n->is_first_node))
 	if (n->is_here_doc)
 	{
 		n->in_fd = open("tmp.txt", O_RDWR | O_TRUNC | O_CREAT, 0777);
@@ -146,10 +147,9 @@ void	create_tokens_tree(t_tree_node **n_head, t_token **t_head, t_paths p)
 	t_tree_node	*n_2;
 	t_tree_node	*n_3;
 	t_tree_node	*n_4;
-	// char		*ls_args[] = {"ls", NULL};
-	char		**ls_args_cat;
-	char		**ls_args_ls;
-	char		**ls_args_grep;
+	char		**args_cat;
+	char		**args_ls;
+	char		**args_grep;
 	int			pipefd[2];
 
 	if (pipe(pipefd) < 0)
@@ -164,21 +164,22 @@ void	create_tokens_tree(t_tree_node **n_head, t_token **t_head, t_paths p)
 	n_3 = malloc(sizeof(t_tree_node));
 	n_4 = malloc(sizeof(t_tree_node));
 	
-	ls_args_cat = malloc(sizeof(char *) * 2);
-	ls_args_cat[0] = "cat";
-	ls_args_cat[1] = NULL;
-	ls_args_ls = malloc(sizeof(char *) * 2);
-	ls_args_ls[0] = "ls";
-	ls_args_ls[1] = NULL;
-	ls_args_grep = malloc(sizeof(char *) * 3);
-	ls_args_grep[0] = "grep";
-	ls_args_grep[1] = "i";
-	ls_args_grep[2] = NULL;
+	args_cat = malloc(sizeof(char *) * 2);
+	args_cat[0] = "cat";
+	args_cat[1] = NULL;
+	args_ls = malloc(sizeof(char *) * 2);
+	args_ls[0] = "ls";
+	args_ls[1] = NULL;
+	args_grep = malloc(sizeof(char *) * 3);
+	args_grep[0] = "grep";
+	args_grep[1] = "i";
+	args_grep[2] = NULL;
 
 	// t_1->type = CMD;
 	// // t_1->str = "ls";
 	// t_1->str = "cat";
-	// t_1->cmd_args = ls_args;
+	// // t_1->cmd_args = args;
+	// t_1->cmd_args = args_cat;
 	// t_1->next = t_2;
 	// n_1->token = t_1;
 	// init_tree_node(n_1, p, pipefd);
@@ -198,19 +199,18 @@ void	create_tokens_tree(t_tree_node **n_head, t_token **t_head, t_paths p)
 	t_1->next = t_2;
 	t_2->type = CMD;
 	t_2->str = "grep";
-	t_2->cmd_args = ls_args_grep;
+	t_2->cmd_args = args_grep;
 	n_1->left = n_2;
 	n_2->token = t_2;
 	init_tree_node(n_2, p, pipefd);
 	n_2->is_first_node = 1;
 	n_2->infile = "1";
-	n_2->in_fd = open("1", O_RDONLY);
 	n_2->parent = *n_head;
 	
 	t_2->next = t_3;
 	t_3->type = CMD;
 	t_3->str = "cat";
-	t_3->cmd_args = ls_args_cat;
+	t_3->cmd_args = args_cat;
 	t_3->next = NULL;
 	n_1->right = n_3;
 	n_3->token = t_3;
@@ -257,7 +257,7 @@ int	main(int ac, char **av, char **env)
 		// printf("%s\n", n->token->cmd_args[0]);
 		// printf("%d\n", n->is_last_node);
 		init_exec(n);
-		// free_all(&p);
+		// free_all(start_node(n));
 	}
 	// return (n_head);
 	return (0);

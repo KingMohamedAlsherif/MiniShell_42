@@ -108,10 +108,17 @@ int is_empty(char *av)
 
 void close_fds(t_tree_node *n)
 {
-	if (n->in_fd > 2)
-		close(n->in_fd);
-	if (n->out_fd > 2)
-		close(n->out_fd);
+	t_tree_node	*n_0;
+
+	n_0 = start_node(n);
+	while (!n_0->is_last_node)
+	{
+		if (n_0->in_fd > 2)
+			close(n_0->in_fd);
+		if (n_0->out_fd > 2)
+			close(n_0->out_fd);
+		traverse_tree(&n_0);
+	}
 	unlink("tmp.txt");
 	unlink("empty.txt");
 }
