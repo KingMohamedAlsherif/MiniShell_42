@@ -18,8 +18,8 @@ void	signal_handler(int signum)
 {
 	if (signum == SIGINT)
 	{
-		// rl_replace_line("", 0);
-		printf("\n");
+		printf("\n\b\b  ");
+		rl_replace_line("", 0);
 		rl_on_new_line();
 		rl_redisplay();
 		signal_received = 1;

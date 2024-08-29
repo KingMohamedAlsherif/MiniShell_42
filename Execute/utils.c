@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 16:09:22 by chon              #+#    #+#             */
-/*   Updated: 2024/08/27 16:24:15 by chon             ###   ########.fr       */
+/*   Updated: 2024/08/29 13:36:34 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,9 @@ void close_fds(t_tree_node *n)
 	t_tree_node	*n_0;
 
 	n_0 = start_node(n);
+	// printf("%s: %d %d\n", n_0->token->cmd_args[0], n_0->pipefd[0], n_0->pipefd[1]);
+	close(n_0->pipefd[0]);
+	close(n_0->pipefd[1]);
 	while (!n_0->is_last_node)
 	{
 		if (n_0->in_fd > 2)

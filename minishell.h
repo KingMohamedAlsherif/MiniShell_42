@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/08/27 17:47:39 by chon             ###   ########.fr       */
+/*   Updated: 2024/08/29 14:51:11 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,5 +105,6 @@ t_tree_node	*start_node(t_tree_node *n);
 void		traverse_tree(t_tree_node **n);
 void		init_exec(t_tree_node *n);
 void		reset_read_flag(t_tree_node **n);
+void 		rl_replace_line(const char *text, int clear_undo);
 
 #endif
