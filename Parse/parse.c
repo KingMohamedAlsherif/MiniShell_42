@@ -92,13 +92,10 @@ void	get_exec_cmd_paths(t_paths p, t_token *t)
 
 void init_filepaths(t_paths *p, char **env)
 {
-	int	i;
-
 	p->all_filepaths = NULL;
 	p->split_filepaths = NULL;
 	p->filepath_0 = NULL;
 	p->filepath = NULL;
-	i = 0;
 	p->all_filepaths = getenv("PATH");
     // if (!p->all_filepaths)
 	// 	ft_error(errno, ft_strdup("env"), NULL, 1);
@@ -190,8 +187,9 @@ void	create_tokens_tree(t_tree_node **n_head, t_token **t_head, t_paths p)
 	// t_1->cmd_args = args_cat;
 	// t_1->next = t_2;
 	// n_1->token = t_1;
-	// init_tree_node(n_1, p, pipefd);
+	// init_tree_node(n_1, p);
 	// n_1->infile = "1";
+	// n_1->outfile = "outttt";
 
 	// n_1->right = n_2;
 	// t_2->type = END;
@@ -216,6 +214,7 @@ void	create_tokens_tree(t_tree_node **n_head, t_token **t_head, t_paths p)
 	n_2->infile = "1";
 	n_2->parent = *n_head;
 	
+	t_2->next = t_3;
 	t_3->type = CMD;
 	t_3->str = "grep";
 	t_3->cmd_args = args_grep_2;
@@ -272,23 +271,18 @@ int	main(int ac, char **av, char **env)
 		while (!n->is_last_node)
 		{
 			init_infile_outfile(n);
+			n->pipefd = pipefd;
 			traverse_tree(&n);
 		}
 		// check_filepaths(start_node(n_head));
-		n = start_node(n_head);
-		while (!n->is_last_node)
-		{
-			n->pipefd = pipefd;
-			reset_read_flag(&n);
-		}
 		n = start_node(n_head);
 		// printf("infile:%d\n", n->in_fd);
 		// printf("%s\n", n->token->exec_cmd_path);
 		// printf("%s\n", n->token->cmd_args[0]);
 		// printf("%d\n", n->is_last_node);
-		// printf("%s: %d %d\n", n->token->cmd_args[0], n->pipefd[0], n->pipefd[1]);
+		// printf("%s: %d %d\n", n->parent->right->token->cmd_args[0], n->pipefd[0], n->pipefd[1]);
 		init_exec(n);
-		// free_all(start_node(n));
+		// free_all(start_node(n_head));
 	}
 	// return (n_head);
 	return (0);

@@ -106,5 +106,6 @@ void		traverse_tree(t_tree_node **n);
 void		init_exec(t_tree_node *n);
 void		reset_read_flag(t_tree_node **n);
 void 		rl_replace_line(const char *text, int clear_undo);
+void 		rl_clear_history (void);
 
 #endif

@@ -17,6 +17,8 @@ void execute(t_tree_node *n)
 	int	use_in_fd;
 	int	use_out_fd;
 
+	// printf("%s\n", n->token->exec_cmd_path);
+	// printf("%s\n", n->token->cmd_args[0]);
 	if (n->infile)
 		use_in_fd = n->in_fd;
 	else
@@ -42,7 +44,6 @@ void init_exec(t_tree_node *n)
 	t_tree_node *n_head;
 	int			pid;
 
-	// printf("hits\n");
 	if (n->right && n->right->is_last_node)
 		execute(n);
 	else

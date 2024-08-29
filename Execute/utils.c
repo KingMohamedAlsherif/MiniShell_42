@@ -14,32 +14,41 @@
 
 t_tree_node	*start_node(t_tree_node *n)
 {
+	while (n->parent)
+		n = n->parent;
 	while (n->left)
 		n = n->left;
 	return (n);
 }
 
-void	reset_read_flag(t_tree_node **n)
-{
-	(*n)->is_read = 0;
-	if ((*n)->parent && ((!(*n)->left && !(*n)->right)
-		|| ((*n)->left && (*n)->left->is_read && (*n)->right && (*n)->right->is_read)))
-		*n = (*n)->parent;
-	else if ((*n)->left && (*n)->left->is_read)
-		*n = (*n)->left;
-	else
-		*n = (*n)->right;
-}
+// void	reset_read_flag(t_tree_node **n)
+// {
+// 	(*n)->is_read = 0;
+// 	if ((*n)->parent && ((!(*n)->left && !(*n)->right)
+// 		|| ((*n)->left && !(*n)->left->is_read && (*n)->right && !(*n)->right->is_read)))
+// 		*n = (*n)->parent;
+// 	else if ((*n)->left && (*n)->left->is_read)
+// 		*n = (*n)->left;
+// 	else
+// 		*n = (*n)->right;
+// }
 
 void	traverse_tree(t_tree_node **n)
 {
-	(*n)->is_read = 1;
+	// (*n)->is_read = 1;
+	bool	unread_flag;
+	bool	read_flag;
+
+	unread_flag = (*n)->is_read;
+	read_flag = ((*n)->is_read + 1) % 2;
+	(*n)->is_read = read_flag;
 	if ((*n)->is_last_node)
 		return ;
 	if ((*n)->parent && ((!(*n)->left && !(*n)->right)
-		|| ((*n)->left && (*n)->left->is_read && (*n)->right && (*n)->right->is_read)))
+		|| ((*n)->left && (*n)->left->is_read == read_flag
+			&& (*n)->right && (*n)->right->is_read == read_flag)))
 		*n = (*n)->parent;
-	else if ((*n)->left && !(*n)->left->is_read)
+	else if ((*n)->left && (*n)->left->is_read == unread_flag)
 		*n = (*n)->left;
 	else
 		*n = (*n)->right;

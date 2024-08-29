@@ -18,11 +18,11 @@ void	signal_handler(int signum)
 {
 	if (signum == SIGINT)
 	{
-		printf("\n\b\b  ");
+		// printf("\033[12C  ");
+		printf("\n");
 		rl_replace_line("", 0);
 		rl_on_new_line();
 		rl_redisplay();
-		signal_received = 1;
 	}
 }
 
@@ -44,6 +44,7 @@ int	init_signals(void)
 int	main(void)
 {
 	char	*input;
+	char	**split_input;
 
 	if (init_signals())
 		return (1);
@@ -55,16 +56,15 @@ int	main(void)
 			printf("exit\n");
 			break ;
 		}
-		if (signal_received)
+		split_input = ft_split(input, ' ');
+		// printf("%s %d\n", split_input[0], ft_strncmp(split_input[0], "clear", 5));
+		if (!ft_strncmp(split_input[0], "clear", 6) && !split_input[1])
 		{
-			add_history(input);
-			free(input);
-			signal_received = 0;
-			continue ;
+			rl_clear_history();
+			printf("hits\n");
 		}
-		if (!ft_strncmp(input, "clear", 6))
-			clear_history();
 		add_history(input);
+		free_char_arr(split_input, NULL);
 		free(input);
 	}
 	return (0);
