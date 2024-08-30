@@ -1,17 +1,11 @@
-#include "parsing.h"
-
-typedef struct s_token {
-    token_type type;
-    char *value;
-    struct s_token *next;
-} t_token;
+#include "../minishell.h"
 
 // Creat a t_token node contain the token with the type
 t_token *create_token(char *value, token_type type) {
     t_token *new_token = malloc(sizeof(t_token));
     if (!new_token)
         return NULL;
-    new_token->value = strdup(value);
+    new_token->value = ft_strdup(value);
     new_token->type = type;
     new_token->next = NULL;
     return new_token;
@@ -50,8 +44,6 @@ token_type      get_token_type(char *str)
         return (OR);
     else if (str[0] == '&' && str[1] == str[0])
         return (AND);
-    else if (str[0] == '$')
-        return (DOLLAR_S);
     else
         return (WORD);
 }
@@ -79,7 +71,6 @@ char *get_next_token(char **input)
     size_t len = 0;
 
     // Skip leading spaces
-    printf("Start of the func : --%c--\n", **input);
     while (**input && isspace(**input))
         (*input)++;
     start = *input;
@@ -94,7 +85,6 @@ char *get_next_token(char **input)
                 if (start[len] == '$')
                 {
                     *input = &start[len];
-                    printf("THis is where is stoped : (%c)\n", **input);
                     get_next_token(input);
                 }
             }
@@ -112,10 +102,9 @@ char *get_next_token(char **input)
             value = get_next_token(input);
             if (getenv(value) == NULL)
                 return(value);
-            printf("Insed env : %s\n", value);
-            len = strlen(getenv(value));
+            len = ft_strlen(getenv(value));
             word = malloc(len);
-            strncpy(word, getenv(value), len);
+            ft_strncpy(word, getenv(value), len);
             word[len] = '\0';
             return word;
             }
@@ -123,7 +112,7 @@ char *get_next_token(char **input)
             exit(1);
         while (**input)
         {
-            if ((isspace(**input) || strchr("|<>$", **input))) 
+            if ((isspace(**input) || ft_strchr("|<>$", **input))) 
                 break;
             (*input)++;
             len++;
@@ -157,7 +146,7 @@ t_token *tokenize(char *input) {
         }
         if (*input == '\0')
             break;
-        if (strchr("|<>", *input)) 
+        if (ft_strchr("|<>", *input)) 
         {
             char operator[3] = { *input, '\0', '\0' };
             if ((*input == '>' || *input == '<' || *input == '|' || *input == '&') && *(input + 1) == *input)
@@ -168,7 +157,7 @@ t_token *tokenize(char *input) {
             add_token(&tokens, create_token(operator, get_token_type(operator)));
             input++;
         }
-        else if (strchr("$", *input))
+        else if (ft_strchr("$", *input))
         {
             char *word = get_next_token(&input);
             add_token(&tokens, create_token(word, get_token_type(word)));
