@@ -49,7 +49,8 @@ typedef enum
 	REDIRECT_IN,
 	REDIRECT_OUT,
 	HEREDOC,
-	END,
+	CD,
+	END
 } token_type;
 
 typedef struct s_token
@@ -107,5 +108,6 @@ void		init_exec(t_tree_node *n);
 void		reset_read_flag(t_tree_node **n);
 void 		rl_replace_line(const char *text, int clear_undo);
 void 		rl_clear_history (void);
+void		cd(t_tree_node *n);
 
 #endif

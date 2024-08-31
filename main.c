@@ -61,10 +61,10 @@ int	main(void)
 		if (!ft_strncmp(split_input[0], "clear", 6) && !split_input[1])
 		{
 			rl_clear_history();
-			printf("hits\n");
+			// printf("hits\n");
 		}
 		add_history(input);
-		free_char_arr(split_input, NULL);
+		// free_char_arr(split_input, NULL);
 		free(input);
 	}
 	return (0);
