@@ -19,20 +19,33 @@ int         parsing(t_token     **tokens, t_tree_node   **AST)
 int     parse_word(t_token  *token, t_tree_node **AST)
 {
     t_tree_node *new_tree;
+    t_args *new_arg;
 
-    if (!(*AST))
+    if ((*AST)->type == WORD)
     {
-        
-        new_tree = malloc(sizeof(t_tree_node));
-        new_tree->parent = token;
-        new_tree->value = ft_strdup(token->value);
-        new_tree->left = NULL;
-        new_tree->right = NULL;
+        new_arg = create_arg_node(token->value);
+        if (!new_arg)
+            return (MALLOC_ERROR)
+        add_arg(new_tree->token->cmd_args, new_arg);
+        return (0);
     }
-    else
+    new_tree = malloc(sizeof(t_tree_node));
+    new_tree->parent = NULL;
+    new_tree->type = CMD;
+    new_tree->token = token;
+    new_tree->left = NULL;
+    new_tree->right = NULL;
+    new_arg = create_arg_node(token->value);
+    if (!new_arg)
+        return (MALLOC_ERROR)
+    add_arg(new_tree->token->cmd_args, new_arg);
+
+    if ((*AST)->type == PIPE)
     {
-        new_tree->right = token;
+        new_tree->parent = (*AST);
+        (*AST)->right = new_tree;
     }
+    return (0);
 }
 
 int     parse_pip(t_token  *token, t_tree_node     **AST)

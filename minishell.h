@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/08/29 14:51:11 by chon             ###   ########.fr       */
+/*   Updated: 2024/08/30 19:58:59 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_paths
 
 typedef enum
 {
+	WORD,
 	CMD,
 	ARG,
 	PIPE,
@@ -55,16 +56,23 @@ typedef enum
 typedef struct s_token
 {
 	token_type	type;
-	char 		*str;
+	char 		*value;
 	char 		*exec_cmd_path;
-	char		**cmd_args;
+	t_args		cmd_args;
 	struct s_token *next;
 } t_token;
+
+typedef	struct s_args
+{
+	char	*arg;
+	struct s_args *next;
+} 		t_args;
 
 typedef struct s_tree_node
 {
 	t_token				*token;
 	t_paths				*p;
+	token_type			type;
 	int					in_fd;
 	int					out_fd;
 	char				*infile;
@@ -79,6 +87,7 @@ typedef struct s_tree_node
 	int					is_first_node;
 	int					is_last_node;
 	bool				is_read;
+	char		*value;
 } t_tree_node;
 
 typedef struct s_exec
