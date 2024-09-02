@@ -6,7 +6,7 @@
 #    By: chon <chon@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/10 11:20:21 by chon              #+#    #+#              #
-#    Updated: 2024/08/29 14:53:32 by chon             ###   ########.fr        #
+#    Updated: 2024/08/31 15:27:55 by chon             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,8 +14,8 @@ NAME = minishell
 CFLAGS = -Wall -Werror -Wextra -g3 -fsanitize=address 
 # CFLAGS = -Wall -Werror -Wextra
 LIBFT_DIR = ./libft
-# LIBS = ./libft/libft.a -L$(HOME)/.local/opt/readline/lib -I$(HOME)/.local/opt/readline/include -lreadline
-LIBS = ./libft/libft.a -lreadline
+LIBS = ./libft/libft.a -L$(HOME)/.local/opt/readline/lib -I$(HOME)/.local/opt/readline/include -lreadline
+# LIBS = ./libft/libft.a -lreadline
 OBJS = $(SRCS:.c=.o)
 # SRCS = main.c
 SRCS = ./parse/parse.c ./execute/exec.c ./execute/utils.c ./execute/free.c ./builtins/builtins.c

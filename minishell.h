@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/08/29 14:51:11 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/02 14:04:04 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ typedef struct s_tree_node
 	int					is_here_doc;
 	char				*delimiter;
 	// int 				empty_fd;
-	int					*pipefd;
+	int					**pipefd;
 	struct s_tree_node	*parent;
 	struct s_tree_node	*left;
 	struct s_tree_node	*right;

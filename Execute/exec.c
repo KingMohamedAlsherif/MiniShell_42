@@ -21,6 +21,8 @@ void execute(t_tree_node *n)
 	// printf("%s\n", n->token->cmd_args[0]);
 	if (n->infile)
 		use_in_fd = n->in_fd;
+	else if (n->is_first_node)
+		use_in_fd = 0;
 	else
 		use_in_fd = n->pipefd[0];
 	if (n->outfile)
@@ -44,28 +46,23 @@ void init_exec(t_tree_node *n)
 	t_tree_node *n_head;
 	int			pid;
 
-	if (n->right && n->right->is_last_node)
-		execute(n);
-	else
+	n_head = n;
+	while (!n->is_last_node)
 	{
-		n_head = n;
-		while (!n->is_last_node)
+		if (n->token->type == CD)
+			cd(n);
+		if (n->token->type == CMD)
 		{
-			if (n->token->type == CD)
-				cd(n);
-			if (n->token->type == CMD)
-			{
-				// printf("%s\n", n->token->exec_cmd_path);
-				// printf("%s\n", n->token->cmd_args[0]);
-				pid = fork();
-				if (pid < 0)
-					ft_error(errno, ft_strdup("fork"), n, 1);
-				if (!pid)
-					execute(n);
-				waitpid(pid, NULL, WNOHANG);
-			}
-			traverse_tree(&n);
+			// printf("%s\n", n->token->exec_cmd_path);
+			// printf("%s\n", n->token->cmd_args[0]);
+			pid = fork();
+			if (pid < 0)
+				ft_error(errno, ft_strdup("fork"), n, 1);
+			if (!pid)
+				execute(n);
+			waitpid(pid, NULL, WNOHANG);
 		}
-		close_fds(n_head);
+		traverse_tree(&n);
 	}
+	close_fds(n_head);
 }
