@@ -17,8 +17,8 @@ LIBFT_DIR = ./libft
 LIBS = ./libft/libft.a -L$(HOME)/.local/opt/readline/lib -I$(HOME)/.local/opt/readline/include -lreadline
 # LIBS = ./libft/libft.a -lreadline
 OBJS = $(SRCS:.c=.o)
-# SRCS = main.c
-SRCS = ./parse/parse.c ./execute/exec.c ./execute/utils.c ./execute/free.c ./builtins/builtins.c
+SRCS = main.c
+# SRCS = ./parse/parse.c ./execute/exec.c ./execute/utils.c ./execute/free.c ./builtins/builtins.c
 # OBJS_B = $(SRCS_B:.c=.o)
 # SRCS_B = 
 

@@ -32,6 +32,19 @@
 	// ii)	unclosed quotes
 	// iii)	() without && or ||
 
+typedef struct s_env
+{
+	char			*str;
+	int				ascii_order;
+	struct s_env	*next;
+}	t_env;
+
+typedef struct s_export
+{
+	char			*str;
+	struct s_export	*next;
+}	t_export;
+
 typedef struct s_paths
 {
 	char 	*all_filepaths;
