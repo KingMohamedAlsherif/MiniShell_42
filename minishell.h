@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/02 14:04:04 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/02 15:24:03 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef enum
 	CMD,
 	ARG,
 	PIPE,
+	AND,
 	REDIRECT_IN,
 	REDIRECT_OUT,
 	HEREDOC,
@@ -99,15 +100,15 @@ void		free_char_arr(char **twoD, char ***threeD);
 void		free_int_array(int **twoD, int cmd_ct);
 void		free_all(t_tree_node *n);
 void		setup_p_cp_arr(t_exec *p);
-void		close_fds(t_tree_node *n);
 void		check_filepaths(t_tree_node *head);
 int			is_empty(char *av);
 t_tree_node	*start_node(t_tree_node *n);
 void		traverse_tree(t_tree_node **n);
-void		init_exec(t_tree_node *n);
+void		init_exec(t_tree_node *n, int pipe_ct, int cmd_ct);
 void		reset_read_flag(t_tree_node **n);
 void 		rl_replace_line(const char *text, int clear_undo);
 void 		rl_clear_history (void);
 void		cd(t_tree_node *n);
+void 		close_fds(t_tree_node *n, int pipe_ct);
 
 #endif
