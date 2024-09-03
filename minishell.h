@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/02 15:24:03 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/03 15:58:58 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ typedef struct s_tree_node
 	int					is_first_node;
 	int					is_last_node;
 	bool				is_read;
+	t_env				*ms_env;
+	t_export			*ms_export;
 } t_tree_node;
 
 typedef struct s_exec
@@ -123,5 +125,9 @@ void 		rl_replace_line(const char *text, int clear_undo);
 void 		rl_clear_history (void);
 void		cd(t_tree_node *n);
 void 		close_fds(t_tree_node *n, int pipe_ct);
+int			count_lst_nodes(t_env *head);
+void		create_env_export(t_env **env_head, t_export **export_head, char **env);
+int			is_number(char *str);
+int			has_valid_chars(char *str);
 
 #endif

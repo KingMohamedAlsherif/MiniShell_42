@@ -1,26 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strncmp.c                                       :+:      :+:    :+:   */
+/*   utils_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/16 13:41:22 by chon              #+#    #+#             */
-/*   Updated: 2024/09/03 14:08:50 by chon             ###   ########.fr       */
+/*   Created: 2024/09/03 11:19:14 by chon              #+#    #+#             */
+/*   Updated: 2024/09/03 15:10:00 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
+int	is_number(char *str)
 {
-	while (n > 0)
+	while (*str)
 	{
-		if (*s1 != *s2 || *s1 == '\0' || *s2 == '\0')
-			return ((unsigned char)*s1 - (unsigned char)*s2);
-		s1++;
-		s2++;
-		n--;
+		if (!ft_isdigit(*str))
+			return (0);
+		str++;
 	}
-	return (0);
+	return (1);
+}
+
+int	count_lst_nodes(t_env *head)
+{
+	int	node_ct;
+
+	node_ct = 0;
+	while (head)
+	{
+		node_ct++;
+		head = head->next;
+	}
+	return (node_ct);
 }
