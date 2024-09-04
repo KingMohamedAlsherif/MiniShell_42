@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/03 15:58:58 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/04 13:04:58 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,18 +32,12 @@
 	// ii)	unclosed quotes
 	// iii)	() without && or ||
 
-typedef struct s_env
+typedef struct s_lst
 {
 	char			*str;
 	int				ascii_order;
-	struct s_env	*next;
-}	t_env;
-
-typedef struct s_export
-{
-	char			*str;
-	struct s_export	*next;
-}	t_export;
+	struct s_lst	*next;
+}	t_lst;
 
 typedef struct s_paths
 {
@@ -94,8 +88,8 @@ typedef struct s_tree_node
 	int					is_first_node;
 	int					is_last_node;
 	bool				is_read;
-	t_env				*ms_env;
-	t_export			*ms_export;
+	t_lst				*ms_env;
+	t_lst				*ms_export;
 } t_tree_node;
 
 typedef struct s_exec
@@ -125,9 +119,12 @@ void 		rl_replace_line(const char *text, int clear_undo);
 void 		rl_clear_history (void);
 void		cd(t_tree_node *n);
 void 		close_fds(t_tree_node *n, int pipe_ct);
-int			count_lst_nodes(t_env *head);
-void		create_env_export(t_env **env_head, t_export **export_head, char **env);
+int			count_lst_nodes(t_lst *head);
+void		create_env_export(t_lst **env_head, t_lst **export_head, char **env);
 int			is_number(char *str);
 int			has_valid_chars(char *str);
+void		insert_node(t_tree_node *n, char *str);
+t_lst		*new_node(char *str, int ascii_order);
+void		update_order(t_lst *head, t_lst *node);
 
 #endif

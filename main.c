@@ -43,10 +43,10 @@ int	init_signals(void)
 
 int	main(int ac, char **av, char **env)
 {
-	char		*input;
-	char		**split_input;
-	t_env		*ms_env;
-	t_export	*ms_export;
+	char	*input;
+	char	**split_input;
+	t_lst	*ms_env;
+	t_lst	*ms_export;
 
 	(void)ac;
 	(void)av;
@@ -59,7 +59,7 @@ int	main(int ac, char **av, char **env)
 		split_input = ft_split(input, ' ');
 		if (!input || !ft_strncmp(split_input[0], "exit", 5))
 		{
-			if (split_input[1] && !is_number(split_input[1]))
+			if (input && split_input[1] && !is_number(split_input[1]))
 				printf("exit\nbash: exit: %s: numeric argument required\n"
 					, split_input[1]);
 			else

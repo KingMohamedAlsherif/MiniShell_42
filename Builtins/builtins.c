@@ -28,6 +28,11 @@ void	get_cwd(t_tree_node *n)
 		ft_error(errno, "cwd", n, 1);
 }
 
+void	unset(t_tree_node *n)
+{
+	
+}
+
 void	env(t_tree_node *n)
 {
 	if (!n->token->cmd_args)
@@ -62,11 +67,7 @@ void	export(t_tree_node *n)
 				printf("bash: export: `%s': not a valid identifier\n"
 					, n->token->cmd_args[i]);
 			else
-			{
-				if (ft_strchr(n->token->cmd_args[i], '='))
-					
-			}
-
+				insert_node(n, n->token->cmd_args[i]);
 		}
 	}
 }
