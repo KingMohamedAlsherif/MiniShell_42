@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:19:14 by chon              #+#    #+#             */
-/*   Updated: 2024/09/04 12:47:59 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/04 17:54:34 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@ t_lst	*new_node(char *str, int ascii_order)
 
 	node = malloc(sizeof(t_lst));
 	if (!node)
-		return (NULL);
+		exit (1);
 	node->str = str;
 	node->ascii_order = ascii_order;
-	node->next = NULL;
+	node->fwd = NULL;
 	return (node);
 }
 
@@ -44,7 +44,7 @@ int	count_lst_nodes(t_lst *head)
 	while (head)
 	{
 		node_ct++;
-		head = head->next;
+		head = head->fwd;
 	}
 	return (node_ct);
 }

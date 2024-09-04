@@ -30,7 +30,25 @@ void	get_cwd(t_tree_node *n)
 
 void	unset(t_tree_node *n)
 {
-	
+	char	*new_str;
+	int		i;
+	t_lst	*env_node;
+
+	i = -1;
+	while (n->token->cmd_args[++i])
+	{
+		env_node = n->ms_env;
+		new_str = remove_quotes(n->token->cmd_args[i]);
+		while (env_node)
+		{
+			if (!ft_strncmp(env_node->str, new_str, ft_strlen(new_str) + 1))
+			{
+				del_node(env_node);
+				continue ;
+			}
+			env_node = env_node->fwd;
+		}
+	}
 }
 
 void	env(t_tree_node *n)
@@ -41,21 +59,47 @@ void	env(t_tree_node *n)
 		{
 			if (ft_strchr(n->ms_env->str, '='))
 				printf("%s", n->ms_env->str);
-			n->ms_env = n->ms_env->next;
+			n->ms_env = n->ms_env->fwd;
 		}
 	}
 }
 
+void	export_update(t_tree_node *n, char *str)
+{
+	char	*new_str;
+	t_lst	*env_node;
+	t_lst	*export_node;
+
+	new_str = remove_quotes(str);
+	env_node = n->ms_env;
+	while (env_node)
+	{
+		if (!ft_strncmp(env_node->str, new_str, ft_strlen(new_str) + 1))
+		{
+			free(env_node->str);
+			env_node->str = ft_strdup(new_str);
+			export_node = n->ms_export;
+			while (export_node->ascii_order != env_node->ascii_order)
+				export_node = export_node->fwd;
+			free(export_node);
+			export_node->str = export_str(new_str);
+			return ;
+		}
+		env_node = env_node->fwd;
+	}
+	insert_node(n, new_str);
+}
+
 void	export(t_tree_node *n)
 {
-	int	i;
+	int		i;
 
 	if (!n->token->cmd_args)
 	{
 		while (n->ms_export)
 		{
 			printf("%s", n->ms_export->str);
-			n->ms_export = n->ms_export->next;
+			n->ms_export = n->ms_export->fwd;
 		}
 	}
 	else
@@ -67,7 +111,7 @@ void	export(t_tree_node *n)
 				printf("bash: export: `%s': not a valid identifier\n"
 					, n->token->cmd_args[i]);
 			else
-				insert_node(n, n->token->cmd_args[i]);
+				export_update(n, n->token->cmd_args[i]);
 		}
 	}
 }

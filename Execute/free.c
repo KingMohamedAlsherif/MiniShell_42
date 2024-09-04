@@ -6,13 +6,22 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:18:37 by chon              #+#    #+#             */
-/*   Updated: 2024/08/23 17:42:35 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/04 17:39:41 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void free_int_array(int **twoD, int pipe_ct)
+void	del_node(t_lst *node)
+{
+	t_lst	*tmp;
+
+	tmp = node;
+	free(node->str);
+	free(node);
+}
+
+void	free_int_array(int **twoD, int pipe_ct)
 {
 	int i;
 
@@ -25,7 +34,7 @@ void free_int_array(int **twoD, int pipe_ct)
 	}
 }
 
-void free_char_arr(char **twoD, char ***threeD)
+void	free_char_arr(char **twoD, char ***threeD)
 {
 	int i;
 	int j;
@@ -46,7 +55,7 @@ void free_char_arr(char **twoD, char ***threeD)
 	}
 }
 
-void free_all(t_tree_node *n)
+void	free_all(t_tree_node *n)
 {
 	while (!n->is_last_node)
 	{

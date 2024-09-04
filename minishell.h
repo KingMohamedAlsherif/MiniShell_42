@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/04 13:04:58 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/04 17:54:52 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ typedef struct s_lst
 {
 	char			*str;
 	int				ascii_order;
-	struct s_lst	*next;
+	struct s_lst	*bwd;
+	struct s_lst	*fwd;
 }	t_lst;
 
 typedef struct s_paths
@@ -46,7 +47,7 @@ typedef struct s_paths
 	char 	*filepath_0;
 	char 	*filepath;
 	char	**env;
-} t_paths;
+}	t_paths;
 
 typedef enum
 {
@@ -59,7 +60,7 @@ typedef enum
 	HEREDOC,
 	CD,
 	END
-} token_type;
+}	token_type;
 
 typedef struct s_token
 {
@@ -68,7 +69,7 @@ typedef struct s_token
 	char 		*exec_cmd_path;
 	char		**cmd_args;
 	struct s_token *next;
-} t_token;
+}	t_token;
 
 typedef struct s_tree_node
 {
@@ -90,25 +91,12 @@ typedef struct s_tree_node
 	bool				is_read;
 	t_lst				*ms_env;
 	t_lst				*ms_export;
-} t_tree_node;
+}	t_tree_node;
 
-typedef struct s_exec
-{
-	char ***cmd_args;
-	int *pid;
-	int infile;
-	int outfile;
-	int orig_v_c_s;
-	int pipe_ct;
-	char **env;
-} t_exec;
-
-void		pipex(t_exec *p, char *infile);
 void		ft_error(int error, char *str, t_tree_node *p, int exit_switch);
 void		free_char_arr(char **twoD, char ***threeD);
 void		free_int_array(int **twoD, int cmd_ct);
 void		free_all(t_tree_node *n);
-void		setup_p_cp_arr(t_exec *p);
 void		check_filepaths(t_tree_node *head);
 int			is_empty(char *av);
 t_tree_node	*start_node(t_tree_node *n);
@@ -126,5 +114,8 @@ int			has_valid_chars(char *str);
 void		insert_node(t_tree_node *n, char *str);
 t_lst		*new_node(char *str, int ascii_order);
 void		update_order(t_lst *head, t_lst *node);
+char		*remove_quotes(char *str);
+char		*export_str(char *str);
+void		del_node(t_lst *node);
 
 #endif
