@@ -11,7 +11,7 @@ t_args *create_arg_node(char *value)
     new_arg->next = NULL;
     return new_arg;
 }
-void add_arg(t_token **args, t_token *new_arg)
+void add_arg(t_args **args, t_args *new_arg)
 {
     if (*args == NULL)
     {
@@ -19,7 +19,7 @@ void add_arg(t_token **args, t_token *new_arg)
     }
     else
     {
-        t_token *current = *args;
+        t_args *current = *args;
         while (current->next)
             current = current->next;
         current->next = new_arg;

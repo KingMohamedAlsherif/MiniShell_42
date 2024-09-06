@@ -3,21 +3,22 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: chon <chon@student.42.fr>                  +#+  +:+       +#+         #
+#    By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/10 11:20:21 by chon              #+#    #+#              #
-#    Updated: 2024/08/29 14:53:32 by chon             ###   ########.fr        #
+#    Updated: 2024/09/06 08:12:25 by kingmohamedalshe ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
-# CFLAGS = -Wall -Werror -Wextra -g3 -fsanitize=address 
-CFLAGS = -Wall -Werror -Wextra -g3
+CFLAGS = -g3 -fsanitize=address 
+# CFLAGS = -Wall -Werror -Wextra -g3
+#  CFLAGS = -g3
 LIBFT_DIR = ./libft
 LIBS = ./libft/libft.a -L$(HOME)/.local/opt/readline/lib -I$(HOME)/.local/opt/readline/include -lreadline
 OBJS = $(SRCS:.c=.o)
-# SRCS = main.c
-SRCS = ./parse/parse.c ./execute/exec.c ./execute/utils.c ./execute/free.c
+SRCS = main.c parsing/pars_utils.c parsing/parser.c parsing/tokenizer.c 
+# SRCS = ./parse/parse.c ./execute/exec.c ./execute/utils.c ./execute/free.c
 # OBJS_B = $(SRCS_B:.c=.o)
 # SRCS_B = 
 
