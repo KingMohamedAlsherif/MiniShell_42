@@ -170,7 +170,7 @@ t_token *tokenize(char **input, t_token  **tokens)
         else
         {
             char *word = get_next_token(input);
-            add_token(tokens, create_token(word,get_token_type(word)));
+            add_token(tokens, create_token(word, get_token_type(word)));
             free(word);
         }
     }

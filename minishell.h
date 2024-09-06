@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
+/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/05 19:36:35 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/06 16:07:27 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ typedef struct s_token
 	char 		*value;
 	char 		*exec_cmd_path;
 	t_args		*cmd_args;
+	char		**cmd_args;
 	struct s_token *next;
 } t_token;
 
@@ -84,11 +85,13 @@ typedef struct s_tree_node
 	token_type			type;
 	t_args				*args;
 	int					in_fd;
+	int					*in_fds; // for in and out files inside the nodes
+	int					*out_fds;
 	int					out_fd;
-	char				*infile;
+	char				*infile; 
 	char				*outfile;
-	int					is_here_doc;
-	char				*delimiter;
+	int					is_here_doc; // if there is => 1, if not => 0
+	char				*delimiter; // store the delimiter to use it to stop
 	// int 				empty_fd;
 	int					*pipefd;
 	struct s_tree_node	*parent;

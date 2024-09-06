@@ -27,14 +27,14 @@ int     parse_word(t_token  *token, t_tree_node **AST)
         return (MALLOC_ERROR);
     if ((*AST)->type == WORD)
     {
-        add_arg(&(new_tree->token->cmd_args), new_arg);
+        add_arg((*AST)->token->cmd_args, new_arg);
         return (0);
     }
     new_tree = malloc(sizeof(t_tree_node));
     if (!new_tree)
         return (MALLOC_ERROR);
     new_tree->parent = NULL;
-    new_tree->type = CMD;
+    new_tree->token->type = CMD;
     new_tree->token = token;
     new_tree->left = NULL;
     new_tree->right = NULL;
@@ -44,7 +44,7 @@ int     parse_word(t_token  *token, t_tree_node **AST)
     add_arg(&(new_tree->token->cmd_args), new_arg);
     if ((*AST)->type == PIPE)
     {
-        new_tree->parent = (*AST);
+        // new_tree->parent = (*AST);
         (*AST)->right = new_tree;
     }
     return (0);
