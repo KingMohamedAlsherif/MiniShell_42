@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:24:09 by chon              #+#    #+#             */
-/*   Updated: 2024/09/04 15:10:49 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/06 12:33:22 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	create_ms_export(t_lst **export_head, t_lst *ms_env)
 	env_head = ms_env;
 	node_ct = count_lst_nodes(ms_env);
 	while (ms_env->ascii_order)
-		ms_env = ms_env->next;
+		ms_env = ms_env->fwd;
 	;
 	*export_head = new_node(export_str(ms_env->str), ms_env->ascii_order);
 	export_head_ptr = *export_head;
@@ -76,10 +76,11 @@ void	create_ms_export(t_lst **export_head, t_lst *ms_env)
 	while (++i < node_ct)
 	{
 		while (ms_env->ascii_order != i)
-			ms_env = ms_env->next;
-		export_head_ptr->next = new_node(export_str(ms_env->str), ms_env->ascii_order);
+			ms_env = ms_env->fwd;
+		export_head_ptr->fwd = new_node(export_str(ms_env->str), ms_env->ascii_order);
+		export_head_ptr->fwd->bwd = export_head_ptr;
 		ms_env = env_head;
-		export_head_ptr = export_head_ptr->next;
+		export_head_ptr = export_head_ptr->fwd;
 	}
 }
 
@@ -97,7 +98,7 @@ void	update_order(t_lst *head, t_lst *node)
 			rank++;
 		else if (ft_strncmp(node->str, head->str, node_str_len) < 0)
 			node->ascii_order++;
-		head = head->next;
+		head = head->fwd;
 		i++;
 	}
 	node->ascii_order = rank;
@@ -113,14 +114,15 @@ void	create_env_export(t_lst **env_head, t_lst **export_head, char **env)
 	i = 0;
 	while (env[++i])
 	{
-		(*env_head)->next = new_node(ft_strdup(env[i]), 0);
-		*env_head = (*env_head)->next;
+		(*env_head)->fwd = new_node(ft_strdup(env[i]), 0);
+		*env_head = (*env_head)->fwd;
+		(*env_head)->fwd->bwd = *env_head;
 	}
 	*env_head = head_ptr;
 	while (head_ptr)
 	{
 		update_order(*env_head, head_ptr);
-		head_ptr = head_ptr->next;
+		head_ptr = head_ptr->fwd;
 	}
 	create_ms_export(export_head, *env_head);
 }

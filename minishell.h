@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/04 17:54:52 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/06 13:20:40 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,6 @@ t_lst		*new_node(char *str, int ascii_order);
 void		update_order(t_lst *head, t_lst *node);
 char		*remove_quotes(char *str);
 char		*export_str(char *str);
-void		del_node(t_lst *node);
+void		del_node(t_tree_node *n, int rank);
 
 #endif

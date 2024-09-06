@@ -6,7 +6,7 @@
 #    By: chon <chon@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/10 11:20:21 by chon              #+#    #+#              #
-#    Updated: 2024/09/04 16:18:23 by chon             ###   ########.fr        #
+#    Updated: 2024/09/06 12:55:08 by chon             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ LIBS = ./libft/libft.a -L$(HOME)/.local/opt/readline/lib -I$(HOME)/.local/opt/re
 OBJS = $(SRCS:.c=.o)
 # SRCS = main.c env_export.c utils_main.c
 SRCS = ./parse/parse.c ./execute/exec.c ./execute/utils_exec.c ./execute/free.c \
-./builtins/builtins.c ./builtins/utils_builtins.c
+./builtins/builtins.c ./builtins/export.c ./builtins/utils_builtins.c
 # OBJS_B = $(SRCS_B:.c=.o)
 # SRCS_B = 
 

@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:19:14 by chon              #+#    #+#             */
-/*   Updated: 2024/09/04 17:54:34 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/06 12:22:53 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ t_lst	*new_node(char *str, int ascii_order)
 	node->str = str;
 	node->ascii_order = ascii_order;
 	node->fwd = NULL;
+	node->bwd = NULL;
 	return (node);
 }
 

@@ -6,19 +6,16 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:18:37 by chon              #+#    #+#             */
-/*   Updated: 2024/09/04 17:39:41 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/06 13:14:09 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	del_node(t_lst *node)
+void	free_lst_node(t_lst *node)
 {
-	t_lst	*tmp;
-
-	tmp = node;
-	free(node->str);
-	free(node);
+	free (node->str);
+	free (node);
 }
 
 void	free_int_array(int **twoD, int pipe_ct)
