@@ -62,6 +62,14 @@ typedef enum
 	SPACE
 } token_type;
 
+typedef struct s_var
+{
+	char	*start;
+	char	*tmp_str;
+	char	*str;
+	int		len;
+	char	quote;
+}	t_var;
 
 typedef	struct s_args
 {
@@ -141,5 +149,6 @@ void init_exec(t_tree_node *n);
 void reset_read_flag(t_tree_node **n);
 void rl_replace_line(const char *text, int clear_undo);
 void rl_clear_history(void);
+void    add_token(t_token *token_ptr, char *str, token_type type);
 
 #endif
