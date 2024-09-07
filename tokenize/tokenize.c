@@ -118,9 +118,52 @@ char *get_next_token(char **input)
     return word;
 }
 
+int	get_operator(char **input)
+{
+	if (**(input + 1) && **(input + 1) == **input)
+	{
+		(*input)++;
+		if (**input == '<')
+			return (HEREDOC);
+		if (**input == '>')
+			return (APPEND_OUT);
+		if (**input == '|')
+			return (OR);
+		else
+			return (AND);
+	}
+	else
+	{
+		if (**input == '<')
+			return (REDIRECT_IN);
+		if (**input == '>')
+			return (REDIRECT_OUT);
+		if (**input == '|')
+			return (PIPE);
+	}
+}
+
 char    *get_str(char **input)
 {
-	if (*input == '\'' || *input == '\"')
+	char	*str;
+	int		len;
+	char	quote;
+	int		quote_switch;
+
+	len = 0;
+	quote_switch = 0;
+	while (!ft_strchr(" \n\t\f\v\r", **input))
+	{
+		if (*input == '\'' || *input == '\"')
+		{
+			quote = *input;
+			quote_switch = (quote_switch + 1) % 2;
+			(*input)++;
+		}
+		if (*input != quote)
+			len++;
+		(*input)++;
+	}
 }
 
 void    tokenize(char *input, t_token **tokens) 
@@ -133,32 +176,12 @@ void    tokenize(char *input, t_token **tokens)
     {
         while(ft_strchr(" \n\t\f\v\r", *input))
             input++;
-        else if (ft_strchr("<>|&", *input)) 
-        {
-            if (*(input + 1) && *(input + 1) == *input)
-            {
-                if (*input == '<')
-					add_token(token_ptr, NULL, HEREDOC);
-                if (*input == '>')
-					add_token(token_ptr, NULL, APPEND_OUT);
-                if (*input == '|')
-					add_token(token_ptr, NULL, OR);
-				else
-					add_token(token_ptr, NULL, AND);
-                input++;
-            }
-            else
-                add_token(token_ptr, NULL, *input);
-            input++;
-        }
+        else if (ft_strchr("<>|&", *input))
+			add_token(token_ptr, NULL, get_operator(&input));
         else
-        {
-            char *word = get_next_token(input);
-            add_token(tokens, create_token(word, get_token_type(word)));
-            free(word);
-        }
+            add_token(token_ptr, get_str(&input), WORD);
+		input++;
     }
-    return (0);
 }
 
 void print_tokens(t_token *tokens) {
