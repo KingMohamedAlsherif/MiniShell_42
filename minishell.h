@@ -54,6 +54,7 @@ typedef enum
 	REDIRECT_IN,
 	REDIRECT_OUT,
 	HEREDOC,
+	APPEND_OUT;
 	DOUBLE_Q,
 	SINGLE_Q,
 	OR,
@@ -71,7 +72,7 @@ typedef	struct s_args
 typedef struct s_token
 {
 	token_type	type;
-	char 		*value;
+	char 		*str;
 	char 		*exec_cmd_path;
 	t_args		*cmd_args;
 	char		**cmd_args;

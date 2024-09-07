@@ -72,9 +72,9 @@ int	main(void)
 			printf("exit\n");
 			break ;
 		}
-		if (tokenize(&input, &tokens) == 0)
+		tokenize(input, &tokens);
 			// printf("It's Working\n");
-			print_tokens(tokens);
+		print_tokens(tokens);
 		// parsing(tokens, ast);
 		// print_tree(*ast);
 		// split_input = ft_split(input, ' ');

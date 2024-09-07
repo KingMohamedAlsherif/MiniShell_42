@@ -1,26 +1,18 @@
 #include "../minishell.h"
 
-// Creat a t_token node contain the token with the type
-t_token *create_token(char *value, token_type type) {
-    t_token *new_token = malloc(sizeof(t_token));
-    if (!new_token)
-        return NULL;
-    new_token->value = ft_strdup(value);
-    new_token->type = type;
-    new_token->next = NULL;
-    return new_token;
-}
-
-// Add the token to the list of tokens
-void add_token(t_token **tokens, t_token *new_token) {
-    if (*tokens == NULL) {
-        *tokens = new_token;
-    } else {
-        t_token *current = *tokens;
-        while (current->next)
-            current = current->next;
-        current->next = new_token;
-    }
+// Create a t_token node contain the token with the type
+void    add_token(t_token *token_ptr, char *str, token_type type)
+{
+    token_ptr = malloc(sizeof(t_token));
+    if (!token_ptr)
+        return (NULL);
+    if (!str)
+        token_ptr->str = NULL;
+    else
+        token_ptr->str = ft_strdup(str);
+    token_ptr->type = type;
+    token_ptr->next = NULL;
+    token_ptr = token_ptr->next;
 }
 
 // Check and return the token_type
@@ -65,7 +57,7 @@ int         search_closed_qouts(char   **input)
 char *get_next_token(char **input)
 {
     char *start;
-    char   *value;
+    char   *str;
     char *word;
     // char quote = 0;
     size_t len = 0;
@@ -84,8 +76,8 @@ char *get_next_token(char **input)
             {
                 if (start[len] == '$')
                 {
-                    *input = &start[len];
-                    get_next_token(input);
+					*input = &start[len];
+					get_next_token(input);
                 }
             }
             *input = &start[len + 1];
@@ -99,12 +91,12 @@ char *get_next_token(char **input)
     {
         if (**input == '$') {
             (*input)++;
-            value = get_next_token(input);
-            if (getenv(value) == NULL)
-                return(value);
-            len = ft_strlen(getenv(value));
+            str = get_next_token(input);
+            if (getenv(str) == NULL)
+                return(str);
+            len = ft_strlen(getenv(str));
             word = malloc(len);
-            ft_strlcpy(word, getenv(value), len);
+            ft_strlcpy(word, getenv(str), len);
             word[len] = '\0';
             return word;
             }
@@ -126,46 +118,38 @@ char *get_next_token(char **input)
     return word;
 }
 
-int skip_whitespace(char **input) 
+char    *get_str(char **input)
 {
-    if (**input == '\0' || !isspace(**input))
-        return (SYNTAX_ERROR);
-    while (**input && isspace(**input))
-        (*input)++;
-    return(0);
+	if (*input == '\'' || *input == '\"')
 }
 
-t_token *tokenize(char **input, t_token  **tokens) 
+void    tokenize(char *input, t_token **tokens) 
 {
-    char operator[3];
+    t_token *token_ptr;
 
-    if (!input || !*input) // Check input is NULL
-        return NULL;
-    while (**input)
+    *tokens = NULL;
+    token_ptr = *tokens;
+    while (*input)
     {
-        if (skip_whitespace(input) == 0)
+        while(ft_strchr(" \n\t\f\v\r", *input))
+            input++;
+        else if (ft_strchr("<>|&", *input)) 
         {
-            // char *word = get_next_token(&input);
-            add_token(tokens, create_token("I'm Space",SPACE));
-        }
-        if (**input == '\0')
-            break;
-        if (ft_strchr("|<>", **input)) 
-        {
-            char operator[3] = { **input, '\0', '\0'};
-            if ((**input == '>' || **input == '<' || **input == '|' || **input == '&') && *(*input + 1) == **input)
+            if (*(input + 1) && *(input + 1) == *input)
             {
-                operator[1] = **input;
-                (*input)++;
+                if (*input == '<')
+					add_token(token_ptr, NULL, HEREDOC);
+                if (*input == '>')
+					add_token(token_ptr, NULL, APPEND_OUT);
+                if (*input == '|')
+					add_token(token_ptr, NULL, OR);
+				else
+					add_token(token_ptr, NULL, AND);
+                input++;
             }
-            add_token(tokens, create_token(operator, get_token_type(operator)));
-            (*input)++;
-        }
-        else if (ft_strchr("$", **input))
-        {
-            char *word = get_next_token(input);
-            add_token(tokens, create_token(word, get_token_type(word)));
-            free(word);
+            else
+                add_token(token_ptr, NULL, *input);
+            input++;
         }
         else
         {
@@ -180,7 +164,7 @@ t_token *tokenize(char **input, t_token  **tokens)
 void print_tokens(t_token *tokens) {
     while (tokens) 
     {
-        printf("Token: %s, Type: %d\n", tokens->value, tokens->type);
+        printf("Token: %s, Type: %d\n", tokens->str, tokens->type);
         tokens = tokens->next;
     }
 }
@@ -191,7 +175,7 @@ void free_tokens(t_token *tokens) {
     while (tokens) {
         tmp = tokens;
         tokens = tokens->next;
-        free(tmp->value);
+        free(tmp->str);
         free(tmp);
     }
 }
@@ -203,11 +187,11 @@ void free_tokens(t_token *tokens) {
 //     tmp = *tokens;
 //     while(tmp)
 //     {
-//         if (tmp->value[0] == '$')
+//         if (tmp->str[0] == '$')
 //         {
-//             tmp->value = &tmp->value[1];
-//             tmp->value = getenv(tmp->value);
-//             printf("This is env: %s\n", tmp->value);
+//             tmp->str = &tmp->str[1];
+//             tmp->str = getenv(tmp->str);
+//             printf("This is env: %s\n", tmp->str);
 //         }
 //         tmp = tmp->next;
 //     }
