@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 16:09:22 by chon              #+#    #+#             */
-/*   Updated: 2024/08/29 13:36:34 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/03 11:18:42 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,14 +115,19 @@ int is_empty(char *av)
 // 		ft_error(errno, ft_strdup("pid calloc"), p, 1);
 // }
 
-void close_fds(t_tree_node *n)
+void close_fds(t_tree_node *n, int pipe_ct)
 {
 	t_tree_node	*n_0;
+	int			i;
 
 	n_0 = start_node(n);
 	// printf("%s: %d %d\n", n_0->token->cmd_args[0], n_0->pipefd[0], n_0->pipefd[1]);
-	close(n_0->pipefd[0]);
-	close(n_0->pipefd[1]);
+	i = -1;
+	while (++i < pipe_ct)
+	{
+		close(n_0->pipefd[i][0]);
+		close(n_0->pipefd[i][1]);
+	}
 	while (!n_0->is_last_node)
 	{
 		if (n_0->in_fd > 2)
@@ -140,7 +145,7 @@ void ft_error(int error, char *str, t_tree_node *n, int exit_switch)
 	if (!error)
 		ft_printf("%s\n", str);
 	else
-		ft_printf("%s: %s\n", strerror(error), str);
+		ft_printf("%s: %s\n", str, strerror(error));
 	free(str);
 	(void)n;
 	if (exit_switch)

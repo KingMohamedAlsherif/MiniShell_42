@@ -4,7 +4,7 @@ void    add_token(t_token *token_ptr, char *str, token_type type)
 {
     token_ptr = malloc(sizeof(t_token));
     if (!token_ptr)
-        return (NULL);
+        exit (1);
     if (!str)
         token_ptr->str = NULL;
     else

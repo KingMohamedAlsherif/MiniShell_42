@@ -36,14 +36,14 @@ char    *get_str(char **input, t_lst *env)
 		s.tmp_str = NULL;
 		s.len = 0;
 		if (ft_strchr("\'\"", **input))
-			get_str_in_quotes(input, **input, &s);
+			get_str_in_quotes(input, **input, env, &s);
 		else
 		{
 			s.start = *input;
 			while (**input && ft_strchr("\'\" \n\t\f\v\r<>|&", **input))
 				mv_ptr_incr_len(input, &s.len);
 			if (*s.start == '$')
-				s.tmp_str = get_env(input);
+				s.tmp_str = get_env(input, env);
 			else
 				s.tmp_str = ft_substr(s.start, 0, s.len);
 		}
@@ -73,9 +73,8 @@ int	get_operator(char **input)
 			return (REDIRECT_IN);
 		if (**input == '>')
 			return (REDIRECT_OUT);
-		if (**input == '|')
-			return (PIPE);
 	}
+	return (PIPE);
 }
 
 void    tokenize(char *input, t_token **tokens, t_lst *env) 
@@ -88,7 +87,7 @@ void    tokenize(char *input, t_token **tokens, t_lst *env)
     {
         while(ft_strchr(" \n\t\f\v\r", *input))
             input++;
-        else if (ft_strchr("<>|&", *input))
+        if (ft_strchr("<>|&", *input))
 			add_token(token_ptr, NULL, get_operator(&input));
         else
             add_token(token_ptr, get_str(&input, env), WORD);
