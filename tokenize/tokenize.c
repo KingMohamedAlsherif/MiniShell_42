@@ -1,25 +1,29 @@
 #include "../minishell.h"
 
-void	get_str_in_quotes(char **input, char quote, t_lst *env, t_var *s)
+char	*get_str_in_quotes(char **input, char quote, t_lst *env, t_var *s)
 {
+	char	*str;
+
 	(*input)++;
 	s->start = *input;
 	while (**input != quote)
 	{
-		if (s->quote == '\'')
-			while (**input && **input != s->quote)
+		if (quote == '\'')
+			while (**input && **input != quote)
 				mv_ptr_incr_len(input, &s->len);
 		else 
-			while (**input && **input != s->quote && **input != '$')
+			while (**input && **input != quote && **input != '$')
 				mv_ptr_incr_len(input, &s->len);
 		if (!(**input))
 			exit (1);
-		s->tmp_str = ft_substr(s->start, 0, s->len);
 		if (*s->start == '$')
-			s->tmp_str = get_env(input);
+			str = get_env(input, env);
 		else
-			s->tmp_str = ft_substr(s->start, 0, s->len);
+			str = ft_substr(s->start, 0, s->len);
+		if (**input != quote)
+			str = ft_strjoin(str, get_str_in_quotes(input, quote, env, s));
 	}
+	return (str);
 }
 
 char    *get_str(char **input, t_lst *env)

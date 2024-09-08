@@ -41,11 +41,12 @@ char    *get_env(char **input, t_lst *env)
 	char	*env_var;
 
 	s.len = 0;
+    (*input)++;
 	s.start = *input;
 	while (**input && ft_strchr("\'\" \n\t\f\v\r<>|&", **input))
 		mv_ptr_incr_len(input, &s.len);
 	env_var = ft_substr(s.start, 0, s.len);
-	while (ftstrncmp(env->var, env_var, ft_strlen(env_var) + 1))
+	while (ft_strncmp(env->var, env_var, ft_strlen(env_var) + 1))
 		env = env->fwd;
     free(env_var);
 	env_var = ft_strdup(env->str);
