@@ -6,7 +6,7 @@
 /*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/06 16:22:58 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/08 10:08:14 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ typedef	struct s_args
 } 		t_args;
 
 
-
 typedef struct s_token
 {
 	token_type	type;
@@ -79,12 +78,24 @@ typedef struct s_token
 	struct s_token *next;
 } t_token;
 
+typedef struct s_redir
+{
+	token_type	type;
+	int 		mode;
+	char 		*file_name;
+	int			fd;	
+	struct s_redir		*next;
+} 			t_redir;
+
 typedef struct s_tree_node
 {
 	t_token				*token;
+	t_redir				redir;
 	t_paths				*p;
 	token_type			type;
 	t_args				*args;
+	int					*in_fds;
+	int					*out_fds;
 	int					in_fd;
 	int					out_fd;
 	char				*infile;
@@ -121,6 +132,7 @@ int 		parse_word(t_token *token, t_tree_node **AST);
 int 		parse_pip(t_token *token, t_tree_node **AST);
 t_token 	*tokenize(char **input, t_token **tokens);
 void 		print_tokens(t_token *tokens);
+int 		init_cmd(t_token *token, t_tree_node **ast);
 
 
 

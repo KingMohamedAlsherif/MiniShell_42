@@ -41,23 +41,69 @@
 // 	return (0);
 // }
 
+// void print_node_data(int type)
+// {
+// 	if (type)
+// 		printf("%d\n", type); // Modify this according to your data type
+// }
+
+// void print_tree(t_tree_node *root)
+// {
+// 	if (root == NULL)
+// 		return;
+
+// 	// Print current node's data
+// 	print_node_data(root->type);
+
+// 	// Traverse left subtree
+// 	print_tree(root->left);
+
+// 	// Traverse right subtree
+// 	print_tree(root->right);
+// }
+
+// void print_tree(t_tree_node *node, int level)
+// {
+// 	if (!node)
+// 		return;
+
+// 	// Indent based on tree level
+// 	for (int i = 0; i < level; i++)
+// 	{
+// 		printf("  ");
+// 	}
+
+// 	// Print the current node data
+// 	printf("Node (type: %d, value: %s)\n", node->type, node->token->value);
+
+// 	// Recursively print left and right children
+// 	print_tree(node->left, level + 1);
+// 	print_tree(node->right, level + 1);
+// }
+
 void	print_tree(t_tree_node	*ast)
 {
-	while(ast)
+	if (ast)
 	{
-		printf("its the type here ==> %d\n", ast->token->type);
+		printf("AST ==> (( %s )) and Type =>%d\n ", ast->token->value, ast->type);
 	}
-	if (ast->right)
+	if (ast && ast->right)
+	{
+		printf("RIGHT\n");
 		print_tree(ast->right);
-	if (ast->left)
+	}
+	if (ast && ast->left)
+	{
+		printf("LIFT\n");
 		print_tree(ast->left);
+	}
 }
 
 int	main(void)
 {
 	char	*input;
 	// char	**split_input;
-	t_tree_node **ast;
+	t_tree_node *ast;
 	t_token *tokens;
 
 	ast = NULL;
@@ -72,10 +118,17 @@ int	main(void)
 			printf("exit\n");
 			break ;
 		}
-		if (tokenize(&input, &tokens) == 0)
+		tokenize(&input, &tokens);
+		parsing(&tokens, &ast);
+		print_tree(ast);
+		// if (parsing(&tokens, &ast) == 1 || parsing(&tokens, &ast) == 2)
+		// {
+		// 	// print_tree(ast);
+		// 	printf("A7a\n");
+		// }
+				// printf("Return Vlue => 0\n");
+		// print_tokens(tokens);
 			// printf("It's Working\n");
-			print_tokens(tokens);
-		// parsing(tokens, ast);
 		// print_tree(*ast);
 		// split_input = ft_split(input, ' ');
 		// // printf("%s %d\n", split_input[0], ft_strncmp(split_input[0], "clear", 5));

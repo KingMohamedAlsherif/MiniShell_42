@@ -8,6 +8,7 @@ t_token *create_token(char *value, token_type type) {
     new_token->value = ft_strdup(value);
     new_token->type = type;
     new_token->next = NULL;
+    new_token->cmd_args = NULL;
     return new_token;
 }
 
@@ -27,7 +28,7 @@ void add_token(t_token **tokens, t_token *new_token) {
 token_type      get_token_type(char *str)
 {
     if (str[0] == '|' && str[1] == '\0')
-        return(SPACE);
+        return(PIPE);
     else if (str[0] == '|' && str[1] == '\0')
         return (PIPE);
     else if (str[0] == '<' && str[1] == '\0')
