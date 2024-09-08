@@ -23,7 +23,6 @@ void print_tokens(t_token *tokens)
     }
 }
 
-// Function to free the tokens
 void free_tokens(t_token *tokens)
 {
     t_token *tmp;
@@ -39,11 +38,18 @@ void free_tokens(t_token *tokens)
 char    *get_env(char **input, t_lst *env)
 {
 	t_var	s;
+	char	*env_var;
 
 	s.len = 0;
+	s.start = *input;
 	while (**input && ft_strchr("\'\" \n\t\f\v\r<>|&", **input))
 		mv_ptr_incr_len(input, &s.len);
-    return (s.str);
+	env_var = ft_substr(s.start, 0, s.len);
+	while (ftstrncmp(env->var, env_var, ft_strlen(env_var) + 1))
+		env = env->fwd;
+    free(env_var);
+	env_var = ft_strdup(env->str);
+	return (env_var);
 }
 
 void    mv_ptr_incr_len(char **input, int *len)

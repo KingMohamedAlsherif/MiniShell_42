@@ -1,37 +1,41 @@
 #include "../minishell.h"
 
+void	get_str_in_quotes(char **input, char quote, t_lst *env, t_var *s)
+{
+	(*input)++;
+	s->start = *input;
+	while (**input != quote)
+	{
+		if (s->quote == '\'')
+			while (**input && **input != s->quote)
+				mv_ptr_incr_len(input, &s->len);
+		else 
+			while (**input && **input != s->quote && **input != '$')
+				mv_ptr_incr_len(input, &s->len);
+		if (!(**input))
+			exit (1);
+		s->tmp_str = ft_substr(s->start, 0, s->len);
+		if (*s->start == '$')
+			s->tmp_str = get_env(input);
+		else
+			s->tmp_str = ft_substr(s->start, 0, s->len);
+	}
+}
+
 char    *get_str(char **input, t_lst *env)
 {
 	t_var	s;
 
-	s.tmp_str = NULL;
 	s.str = NULL;
-	s.start = *input;
 	while (**input && ft_strchr(" \n\t\f\v\r<>|&", **input))
 	{
+		s.tmp_str = NULL;
+		s.len = 0;
 		if (ft_strchr("\'\"", **input))
-		{
-			s.quote = **input;
-			(*input)++;
-			s.len = 0;
-			if (s.quote == '\'')
-			{
-				while (**input && **input != s.quote)
-					mv_ptr_incr_len(input, &s.len);
-				s.tmp_str = ft_substr(s.start, 0, s.len);
-			}
-			else
-			{
-				while (**input && **input != s.quote && **input != '$')
-					mv_ptr_incr_len(input, &s.len);
-				s.tmp_str = ft_substr(s.start, 0, s.len);
-				if (**input == '$')
-					s.str = ft_strjoin(s.tmp_str, get_env(input, env));
-			}
-		}
+			get_str_in_quotes(input, **input, &s);
 		else
 		{
-			s.len = 0;
+			s.start = *input;
 			while (**input && ft_strchr("\'\" \n\t\f\v\r<>|&", **input))
 				mv_ptr_incr_len(input, &s.len);
 			if (*s.start == '$')
@@ -39,9 +43,9 @@ char    *get_str(char **input, t_lst *env)
 			else
 				s.tmp_str = ft_substr(s.start, 0, s.len);
 		}
+		if (s.tmp_str)
+			s.str = ft_strjoin(s.tmp_str, s.str);
 	}
-	if (!s.str)
-		s.str = s.tmp_str;
 	return (s.str);
 }
 
