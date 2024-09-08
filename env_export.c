@@ -38,13 +38,13 @@ char	*export_str(char *str)
 	char	*tmp_str_3;
 	char	*export_str;
 
-	export_str = ft_strjoin("declare -x ", str);
+	export_str = ft_strjoin(ft_strdup("declare -x "), str);
 	if (ft_strchr(str, '='))
 	{
 		split_str = ft_split(str, '=');
-		tmp_str = ft_strjoin("declare -x ", split_str[0]);
-		tmp_str_2 = ft_strjoin("=\"", split_str[1]);
-		tmp_str_3 = ft_strjoin(tmp_str_2, "\"");
+		tmp_str = ft_strjoin(ft_strdup("declare -x "), split_str[0]);
+		tmp_str_2 = ft_strjoin(ft_strdup("=\""), split_str[1]);
+		tmp_str_3 = ft_strjoin(tmp_str_2, ft_strdup("\""));
 		// free_char_arr(split_str, NULL);
 		free(tmp_str_2);
 		free(export_str);
@@ -68,7 +68,6 @@ void	create_ms_export(t_lst **export_head, t_lst *ms_env)
 	node_ct = count_lst_nodes(ms_env);
 	while (ms_env->ascii_order)
 		ms_env = ms_env->fwd;
-	;
 	*export_head = new_node(export_str(ms_env->str), ms_env->ascii_order);
 	export_head_ptr = *export_head;
 	ms_env = env_head;
@@ -78,9 +77,9 @@ void	create_ms_export(t_lst **export_head, t_lst *ms_env)
 		while (ms_env->ascii_order != i)
 			ms_env = ms_env->fwd;
 		export_head_ptr->fwd = new_node(export_str(ms_env->str), ms_env->ascii_order);
-		export_head_ptr->fwd->bwd = export_head_ptr;
-		ms_env = env_head;
 		export_head_ptr = export_head_ptr->fwd;
+		export_head_ptr->bwd = export_head_ptr;
+		ms_env = env_head;
 	}
 }
 
@@ -91,12 +90,12 @@ void	update_order(t_lst *head, t_lst *node)
 	int i = -1;
 
 	rank = 0;
-	node_str_len = ft_strlen(node->str) + 1;
+	node_str_len = ft_strlen(node->var) + 1;
 	while (head)
 	{
-		if (ft_strncmp(node->str, head->str, node_str_len) > 0)
+		if (ft_strncmp(node->var, head->var, node_str_len) > 0)
 			rank++;
-		else if (ft_strncmp(node->str, head->str, node_str_len) < 0)
+		else if (ft_strncmp(node->var, head->var, node_str_len) < 0)
 			node->ascii_order++;
 		head = head->fwd;
 		i++;
@@ -116,7 +115,7 @@ void	create_env_export(t_lst **env_head, t_lst **export_head, char **env)
 	{
 		(*env_head)->fwd = new_node(ft_strdup(env[i]), 0);
 		*env_head = (*env_head)->fwd;
-		(*env_head)->fwd->bwd = *env_head;
+		(*env_head)->bwd = *env_head;
 	}
 	*env_head = head_ptr;
 	while (head_ptr)

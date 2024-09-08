@@ -15,12 +15,19 @@
 t_lst	*new_node(char *str, int ascii_order)
 {
 	t_lst	*node;
+	char	**split_str;
 
 	node = malloc(sizeof(t_lst));
 	if (!node)
 		exit (1);
-	node->str = str;
+	split_str = ft_split(str, '=');
+	node->var = ft_strdup(split_str[0]);
+	if (split_str[1])
+		node->str = ft_strdup(split_str[1]);
+	else
+		node->str = NULL;
 	node->ascii_order = ascii_order;
+	free_char_arr(split_str, NULL);
 	node->fwd = NULL;
 	node->bwd = NULL;
 	return (node);

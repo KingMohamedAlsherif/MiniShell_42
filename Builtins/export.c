@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	insert_node(t_tree_node *n, char *str)
 {
@@ -71,7 +71,7 @@ void	export(t_tree_node *n)
 	t_lst	*export_node;
 	int		i;
 
-	if (!n->token->cmd_args)
+	if (!n->token->cmd_args_arr)
 	{
 		export_node = n->ms_export;
 		while (export_node)
@@ -83,13 +83,13 @@ void	export(t_tree_node *n)
 	else
 	{
 		i = -1;
-		while (n->token->cmd_args[++i])
+		while (n->token->cmd_args_arr[++i])
 		{
-			if (!has_valid_chars(n->token->cmd_args[i]))
+			if (!has_valid_chars(n->token->cmd_args_arr[i]))
 				printf("bash: export: `%s': not a valid identifier\n"
-					, n->token->cmd_args[i]);
+					, n->token->cmd_args_arr[i]);
 			else
-				export_update(n, n->token->cmd_args[i]);
+				export_update(n, n->token->cmd_args_arr[i]);
 		}
 	}
 }

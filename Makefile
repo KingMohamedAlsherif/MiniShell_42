@@ -3,7 +3,7 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: chon <chon@student.42.fr>                  +#+  +:+       +#+         #
+#    By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/10 11:20:21 by chon              #+#    #+#              #
 #    Updated: 2024/09/06 12:55:08 by chon             ###   ########.fr        #
@@ -12,14 +12,15 @@
 
 NAME = minishell
 CFLAGS = -Wall -Werror -Wextra -g3 -fsanitize=address 
-# CFLAGS = -Wall -Werror -Wextra
 LIBFT_DIR = ./libft
 LIBS = ./libft/libft.a -L$(HOME)/.local/opt/readline/lib -I$(HOME)/.local/opt/readline/include -lreadline
 # LIBS = ./libft/libft.a -lreadline
 OBJS = $(SRCS:.c=.o)
-# SRCS = main.c env_export.c utils_main.c
-SRCS = ./parse/parse.c ./execute/exec.c ./execute/utils_exec.c ./execute/free.c \
-./builtins/builtins.c ./builtins/export.c ./builtins/utils_builtins.c
+SRCS = main.c env_export.c utils_main.c  \
+tokenize/tokenize.c tokenize/utils_tokenize.c ./parse/parse.c ./execute/exec.c \
+./execute/utils_exec.c ./execute/free.c ./builtins/builtins.c ./builtins/export.c \
+./builtins/utils_builtins.c
+# SRCS = parsing/pars_utils.c parsing/parser.c
 # OBJS_B = $(SRCS_B:.c=.o)
 # SRCS_B = 
 

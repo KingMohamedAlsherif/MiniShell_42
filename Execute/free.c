@@ -59,7 +59,7 @@ void	free_all(t_tree_node *n)
 		free(n->infile);
 		free(n->outfile);
 		free(n->delimiter);
-		free_char_arr(n->token->cmd_args, NULL);
+		free_char_arr(n->token->cmd_args_arr, NULL);
 		traverse_tree(&n);
 	}
 	// free(p->filepaths);

@@ -38,7 +38,7 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 	if (dup2(use_out_fd, STDOUT_FILENO) < 0)
 		ft_error(errno, ft_strdup("dup outfile"), n, 1);
 	close_fds(n, pipe_ct);
-	if (execve(n->token->exec_cmd_path, n->token->cmd_args, n->p->env) < 0)
+	if (execve(n->token->exec_cmd_path, n->token->cmd_args_arr, n->p->env) < 0)
 		ft_error(errno, ft_strdup("execve"), n, 1);
 }
 
