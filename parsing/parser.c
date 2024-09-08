@@ -68,7 +68,7 @@ int         parsing(t_token     **tokens, t_tree_node   **ast)
 //     return (0);
 // }
 
-int     parse_word(t_token  *token, t_tree_node **ast)
+int      parse_word(t_token  *token, t_tree_node **ast)
 {
     t_tree_node *new_tree;
     t_args *new_arg;
@@ -138,72 +138,80 @@ int     parse_pip(t_token  *token, t_tree_node     **ast)
     return (0);
 }
 
-int         parse_Redir(t_token     *token, t_tree_node     **ast)
+int         parse_Redir(t_token     **token, t_tree_node     **ast)
 {
-    if (!(*ast) || (*ast)->type != CMD)
-        return (SYNTAX_ERROR);
-
-    t_tree_node *new_tree;
-    new_tree = malloc(sizeof(t_tree_node));
-    if (!new_tree)
+    // if (!(*ast) || (*ast)->type != CMD)
+    //     return (SYNTAX_ERROR);
+    if ((*token)->type == REDIRECT_IN)
+        redir_in(ast, (*token)->value);
+    else if ((*token)->type == REDIRECT_OUT)
+        redir_out(ast, (*token)->value);
+    else if ((*token)->type == HEREDOC)
     {
-        printf("MALLOC_ERROR\n");
-        return (MALLOC_ERROR);
+        redir_heredoc(ast, (*token)->next->value);
+        *token = (*token)->next;
     }
-    new_tree->token = token;
-    new_tree->type = PIPE;
-    new_tree->parent = NULL;
-    new_tree->left = *ast;
-    new_tree->right = NULL;
-    if ((*ast)->type == CMD)
-        (*ast)->parent = new_tree;
-    *ast = new_tree;
+    else if ((*token)->type == APPEND)
+    {
+        redir_append(ast, (*token)->next->value);
+        token = (*token)->next;
+    }
+    return (0);
 }
-
-// int parse_redirection(t_token *token, t_tree_node **ast)
+// void add_redir(t_redir **redirs, char *filename, int is_heredoc, char *heredoc_delim, int is_append, int regular_infile, int regular_outfile)
 // {
-//     // Ensure the current AST node is a command (or create a new command node)
-//     if (!(*ast) || (*ast)->type != CMD)
+//     t_redir *new_redir = malloc(sizeof(t_redir));
+//     if (!new_redir)
+//         return; // Handle memory allocation error
+
+//     new_redir->filename = filename;
+//     new_redir->is_heredoc = is_heredoc;
+//     new_redir->heredoc_delim = heredoc_delim;
+//     new_redir->is_append = is_append;
+//     new_redir->regular_infile = regular_infile;
+//     new_redir->regular_outfile = regular_outfile;
+//     new_redir->next = NULL;
+
+//     if (*redirs == NULL)
 //     {
-//         printf("SYNTAX_ERROR: Redirection without a command\n");
+//         *redirs = new_redir;
+//     }
+//     else
+//     {
+//         t_redir *current = *redirs;
+//         while (current->next)
+//             current = current->next;
+//         current->next = new_redir;
+//     }
+// }
+
+// int parse_redirection(t_token *token, t_tree_node *cmd_node)
+// {
+//     if (!cmd_node || cmd_node->type != CMD)
+//     {
+//         printf("SYNTAX_ERROR: Redirection without command\n");
 //         return SYNTAX_ERROR;
 //     }
 
-//     t_tree_node *cmd_node = *ast; // Command node where we attach redirection
-
-//     // Identify the type of redirection and handle accordingly
-//     if (token->type == REDIR_IN)
+//     // Handle input redirection
+//     if (token->type == REDIRECT_IN)
 //     {
-//         // Handle input redirection
-//         if (cmd_node->in_count < 10)
-//         {
-//             cmd_node->in_files[cmd_node->in_count] = open(token->value, O_RDONLY);
-//             if (cmd_node->in_files[cmd_node->in_count] == -1)
-//                 return FILE_OPEN_ERROR;
-//             cmd_node->in_count++;
-//         }
+//         add_redir(&(cmd_node->redirs), token->value, 0, NULL, 0, 1, 0);
 //     }
-//     else if (token->type == REDIR_OUT)
+//     // Handle heredoc
+//     else if (token->type == HEREDOC)
 //     {
-//         // Handle output redirection (overwrite)
-//         if (cmd_node->out_count < 10)
-//         {
-//             cmd_node->out_files[cmd_node->out_count] = open(token->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-//             if (cmd_node->out_files[cmd_node->out_count] == -1)
-//                 return FILE_OPEN_ERROR;
-//             cmd_node->out_count++;
-//         }
+//         add_redir(&(cmd_node->redirs), NULL, 1, token->value, 0, 1, 0);
 //     }
-//     else if (token->type == REDIR_APPEND)
+//     // Handle output redirection
+//     else if (token->type == REDIRECT_OUT)
 //     {
-//         // Handle output redirection (append)
-//         if (cmd_node->out_count < 10)
-//         {
-//             cmd_node->out_files[cmd_node->out_count] = open(token->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
-//             if (cmd_node->out_files[cmd_node->out_count] == -1)
-//                 return FILE_OPEN_ERROR;
-//             cmd_node->out_count++;
-//         }
+//         add_redir(&(cmd_node->redirs), token->value, 0, NULL, 0, 0, 1);
+//     }
+//     // Handle append redirection
+//     else if (token->type == APPEND_OUT)
+//     {
+//         add_redir(&(cmd_node->redirs), token->value, 0, NULL, 1, 0, 1);
 //     }
 
 //     return 0;

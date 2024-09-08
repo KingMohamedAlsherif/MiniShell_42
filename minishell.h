@@ -6,7 +6,7 @@
 /*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/08 10:08:14 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/08 17:43:16 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ typedef enum
 	REDIRECT_IN,
 	REDIRECT_OUT,
 	HEREDOC,
+	APPEND,
 	DOUBLE_Q,
 	SINGLE_Q,
 	OR,
@@ -78,22 +79,25 @@ typedef struct s_token
 	struct s_token *next;
 } t_token;
 
+// (In_file redirection)
 typedef struct s_redir
 {
-	token_type	type;
-	int 		mode;
-	char 		*file_name;
-	int			fd;	
-	struct s_redir		*next;
-} 			t_redir;
+	char 			 *filename;
+	int 			 is_heredoc;
+	char 			 *heredoc_delim;   // Delimiter for heredoc
+	int 			 regular_infile;	
+	int 			 is_append;
+	int 			 regular_outfile;	
+	struct s_redir   *next;
+} t_redir;
 
 typedef struct s_tree_node
 {
 	t_token				*token;
-	t_redir				redir;
 	t_paths				*p;
 	token_type			type;
 	t_args				*args;
+	t_redir 			*redir;
 	int					*in_fds;
 	int					*out_fds;
 	int					in_fd;
@@ -102,6 +106,7 @@ typedef struct s_tree_node
 	char				*outfile;
 	int					is_here_doc;
 	char				*delimiter;
+	
 	// int 				empty_fd;
 	int					*pipefd;
 	struct s_tree_node	*parent;
