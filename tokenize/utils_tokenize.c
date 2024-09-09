@@ -5,6 +5,8 @@ void	add_token(t_token **tokens, char *str, token_type type)
     t_token	*new_token;
 	t_token	*last;
 
+	if (!type && !str)
+		return ;
 	new_token = malloc(sizeof(t_token));
     if (!new_token)
         exit (1);
@@ -66,7 +68,7 @@ char    *get_env(char **input, t_lst *env)
 		env = env->fwd;
     free(env_var);
 	env_var = ft_strdup(env->str);
-	(*input)++;
+	// (*input)++;
 	return (env_var);
 }
 
@@ -74,4 +76,15 @@ void    mv_ptr_incr_len(char **input, int *len)
 {
 	(*input)++;
     (*len)++;
+}
+
+bool	valid_quote_pairs(char *input)
+{
+	char	*sngl_quote_ptr;
+	char	*dbl_quote_ptr;
+
+	sngl_quote_ptr = ft_strchr(input, '\'');
+	dbl_quote_ptr = ft_strchr(input, '\"');
+	
+	input = ft
 }

@@ -5,7 +5,7 @@ char	*get_str_in_quotes(char **input, char quote, t_lst *env, t_var *s)
 	char	*str;
 
 	(*input)++;
-	// printf("%s\n", *input);
+	printf("%s\n", *input);
 	// printf("%c\n", quote);
 	if (**input == quote)
 	{
@@ -33,6 +33,7 @@ char	*get_str_in_quotes(char **input, char quote, t_lst *env, t_var *s)
 		if (**input && **input != quote)
 		{
 			printf("recursive hits\n");
+			(*input)--;
 			str = ft_strjoin(str, get_str_in_quotes(input, quote, env, s));
 		}
 	}
@@ -95,6 +96,9 @@ int	get_operator(char **input)
 void    tokenize(char *input, t_token **tokens, t_lst *env) 
 {
 	*tokens = NULL;
+
+	if (!valid_quote_pairs(input))
+		exit (1);
 	while (*input)
     {
 		while(ft_strchr(" \n\t\f\v\r", *input))

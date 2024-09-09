@@ -144,6 +144,7 @@ void		free_tokens(t_token *tokens);
 void    	add_token(t_token **tokens, char *str, token_type type);
 char    	*get_env(char **input, t_lst *env);
 void    	mv_ptr_incr_len(char **input, int *len);
+bool		valid_quote_pairs(char *input);
 
 int 		parsing(t_token **tokens, t_tree_node **AST);
 int 		parse_word(t_token *token, t_tree_node **AST);
