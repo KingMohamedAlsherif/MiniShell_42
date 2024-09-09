@@ -14,7 +14,9 @@
 
 void	free_lst_node(t_lst *node)
 {
-	free (node->str);
+	free (node->var_n_val);
+	free (node->var);
+	free (node->val);
 	free (node);
 }
 

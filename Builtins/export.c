@@ -45,20 +45,26 @@ void	export_update(t_tree_node *n, char *str)
 	char	*new_str;
 	t_lst	*env_node;
 	t_lst	*export_node;
+	char	**s_new_str;
 
 	new_str = remove_quotes(str);
+	s_new_str = ft_split(new_str, '=');
 	env_node = n->ms_env;
 	while (env_node)
 	{
-		if (!ft_strncmp(env_node->str, new_str, ft_strlen(new_str) + 1))
+		if (!ft_strncmp(env_node->var, s_new_str[0], ft_strlen(s_new_str[0])))
 		{
-			free(env_node->str);
-			env_node->str = ft_strdup(new_str);
+			free(env_node->var_n_val);
+			free(env_node->val);
+			env_node->var_n_val = ft_strdup(new_str);
+			env_node->val = ft_strdup(s_new_str[1]);
 			export_node = n->ms_export;
 			while (export_node->ascii_order != env_node->ascii_order)
 				export_node = export_node->fwd;
-			free(export_node);
-			export_node->str = export_str(new_str);
+			free(export_node->var_n_val);
+			// free(export_node->val);
+			export_node->var_n_val = export_str(new_str);
+			// export_node->val = export_str(new_str);
 			return ;
 		}
 		env_node = env_node->fwd;
@@ -76,7 +82,7 @@ void	export(t_tree_node *n)
 		export_node = n->ms_export;
 		while (export_node)
 		{
-			printf("%s", export_node->var_str);
+			printf("%s", export_node->var_n_val);
 			export_node = export_node->fwd;
 		}
 	}

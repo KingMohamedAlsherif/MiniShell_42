@@ -41,7 +41,7 @@ void	unset(t_tree_node *n)
 		new_str = remove_quotes(n->token->cmd_args_arr[i]);
 		while (env_node)
 		{
-			if (!ft_strncmp(env_node->str, new_str, ft_strlen(new_str) + 1))
+			if (!ft_strncmp(env_node->var, new_str, ft_strlen(new_str) + 1))
 			{
 				del_node(n->ms_env, env_node->ascii_order);
 				del_node(n->ms_export, env_node->ascii_order);
@@ -58,8 +58,8 @@ void	env(t_tree_node *n)
 	{
 		while (n->ms_env)
 		{
-			if (ft_strchr(n->ms_env->str, '='))
-				printf("%s", n->ms_env->var_str);
+			if (ft_strchr(n->ms_env->var, '='))
+				printf("%s", n->ms_env->var_n_val);
 			n->ms_env = n->ms_env->fwd;
 		}
 	}

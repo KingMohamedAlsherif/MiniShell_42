@@ -18,13 +18,14 @@ char	*get_str_in_quotes(char **input, char quote, t_lst *env, t_var *s)
 
 	(*input)++;
 	// printf("%s\n", *input);
-	// printf("%c\n", quote);
+	// printf("quote: %c\n", quote);
 	if (**input == quote)
 	{
 		(*input)++;
 		return (NULL);
 	}
 	s->start = *input;
+	str = NULL;
 	while (**input && **input != quote)
 	{
 		if (quote == '\'')
@@ -36,16 +37,20 @@ char	*get_str_in_quotes(char **input, char quote, t_lst *env, t_var *s)
 		s->tmp_str = ft_strjoin(s->tmp_str, ft_substr(s->start, 0, s->len));
 		if (**input == '$' && quote == '\"')
 			s->tmp_str = ft_strjoin(s->tmp_str, get_env(input, env, quote));
-		// (*input)++;
 		// if (**input && **input != quote)
 		// {
 		// 	printf("recursive hits\n");
 		// 	(*input)--;
 		// 	str = ft_strjoin(str, get_str_in_quotes(input, quote, env, s));
 		// }
+		// printf("%s\n", s->tmp_str);
+		// printf("%c\n", **input);
 		str = ft_strjoin(str, s->tmp_str);
 		if (**input == quote)
+		{
+			(*input)++;
 			break ;
+		}
 	}
 	return (str);
 }
@@ -73,8 +78,7 @@ char    *get_str(char **input, t_lst *env)
 				s.tmp_str = ft_substr(s.start, 0, s.len);
 			}
 		}
-		if (s.tmp_str)
-			s.str = ft_strjoin(s.str, s.tmp_str);
+		s.str = ft_strjoin(s.str, s.tmp_str);
 	}
 	return (s.str);
 }

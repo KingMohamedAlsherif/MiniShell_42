@@ -32,7 +32,5 @@ char	*ft_strjoin(char *s1, char *s2)
 	ft_memcpy(str + i, s2, s2_len);
 	i += s2_len;
 	str[i] = '\0';
-	free(s1);
-	free(s2);
 	return (str);
 }
