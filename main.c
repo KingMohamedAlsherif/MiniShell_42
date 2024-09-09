@@ -72,24 +72,27 @@ int	main(int ac, char **av, char **env)
 	{
 		input = readline("Minishell $ ");
 		split_input = ft_split(input, ' ');
-		if (!input || !ft_strncmp(split_input[0], "exit", 5))
+		// if (!ft_strncmp(split_input[0], "clear", 6) && !split_input[1])
+		// 	rl_clear_history();
+		if (!input || (split_input[0] && !ft_strncmp(split_input[0], "exit", 5)))
 		{
 			if (input && split_input[1] && !is_number(split_input[1]))
 				printf("exit\nbash: exit: %s: numeric argument required\n"
 					, split_input[1]);
 			else
 				printf("exit\n");
+			free_char_arr(split_input, NULL);
 			break ;
 		}
-		tokenize(input, &tokens, ms_env);
-		// printf("%d\n", tokens->type);
-		print_tokens(tokens);
-		if (!ft_strncmp(split_input[0], "clear", 6) && !split_input[1])
-			rl_clear_history();
-		add_history(input);
-		// free_char_arr(split_input, NULL);
-		free(input);
-		free_tokens(tokens);
+		else
+		{
+			tokenize(input, &tokens, ms_env);
+			print_tokens(tokens);
+			add_history(input);
+			free_char_arr(split_input, NULL);
+			free(input);
+			free_tokens(tokens);
+		}
 	}
 	return (0);
 }

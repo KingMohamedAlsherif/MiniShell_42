@@ -59,7 +59,7 @@ void	env(t_tree_node *n)
 		while (n->ms_env)
 		{
 			if (ft_strchr(n->ms_env->str, '='))
-				printf("%s", n->ms_env->str);
+				printf("%s", n->ms_env->var_str);
 			n->ms_env = n->ms_env->fwd;
 		}
 	}

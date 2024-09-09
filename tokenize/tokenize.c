@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenize.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/09 14:27:19 by chon              #+#    #+#             */
+/*   Updated: 2024/09/09 17:49:51 by chon             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 char	*get_str_in_quotes(char **input, char quote, t_lst *env, t_var *s)
@@ -5,7 +17,7 @@ char	*get_str_in_quotes(char **input, char quote, t_lst *env, t_var *s)
 	char	*str;
 
 	(*input)++;
-	printf("%s\n", *input);
+	// printf("%s\n", *input);
 	// printf("%c\n", quote);
 	if (**input == quote)
 	{
@@ -13,11 +25,6 @@ char	*get_str_in_quotes(char **input, char quote, t_lst *env, t_var *s)
 		return (NULL);
 	}
 	s->start = *input;
-	if (!ft_strchr(*input, quote))
-	{
-		printf("exit hit\n");
-		exit (1);
-	}
 	while (**input && **input != quote)
 	{
 		if (quote == '\'')
@@ -28,14 +35,16 @@ char	*get_str_in_quotes(char **input, char quote, t_lst *env, t_var *s)
 				mv_ptr_incr_len(input, &s->len);
 		str = ft_substr(s->start, 0, s->len);
 		(*input)++;
-		if (**input == '$')
-			str = ft_strjoin(str, get_env(input, env));
-		if (**input && **input != quote)
-		{
-			printf("recursive hits\n");
-			(*input)--;
-			str = ft_strjoin(str, get_str_in_quotes(input, quote, env, s));
-		}
+		if (**input == '$' && quote == '\"')
+			str = ft_strjoin(str, get_env(input, env, quote));
+		// if (**input && **input != quote)
+		// {
+		// 	printf("recursive hits\n");
+		// 	(*input)--;
+		// 	str = ft_strjoin(str, get_str_in_quotes(input, quote, env, s));
+		// }
+		else
+			break ;
 	}
 	return (str);
 }
@@ -49,20 +58,22 @@ char    *get_str(char **input, t_lst *env)
 	{
 		s.tmp_str = NULL;
 		s.len = 0;
-		if (ft_strchr("\'\"", **input))
+		if (**input == '\'' || **input == '\"')
 			s.tmp_str = get_str_in_quotes(input, **input, env, &s);
 		else
 		{
 			s.start = *input;
-			while (**input && !ft_strchr("\'\" \n\t\f\v\r<>|&", **input))
-				mv_ptr_incr_len(input, &s.len);
 			if (*s.start == '$')
-				s.tmp_str = get_env(input, env);
+				s.tmp_str = get_env(input, env, 1);
 			else
+			{
+				while (**input && !ft_strchr("\'\" \n\t\f\v\r<>|&$", **input))
+					mv_ptr_incr_len(input, &s.len);
 				s.tmp_str = ft_substr(s.start, 0, s.len);
+			}
 		}
 		if (s.tmp_str)
-			s.str = ft_strjoin(s.tmp_str, s.str);
+			s.str = ft_strjoin(s.str, s.tmp_str);
 	}
 	return (s.str);
 }
@@ -98,17 +109,20 @@ void    tokenize(char *input, t_token **tokens, t_lst *env)
 	*tokens = NULL;
 
 	if (!valid_quote_pairs(input))
-		exit (1);
-	while (*input)
-    {
-		while(ft_strchr(" \n\t\f\v\r", *input))
-            input++;
-        if (ft_strchr("<>|&", *input))
+		printf("must close quotes\n");
+	else
+		while (*input)
 		{
-			add_token(tokens, NULL, get_operator(&input));
-			input++;
-		}
-        else
-            add_token(tokens, get_str(&input, env), WORD);
-    }
+			while(*input && ft_strchr(" \n\t\f\v\r", *input))
+				input++;
+			if (!*input)
+				break ;
+			if (ft_strchr("<>|&", *input))
+			{
+				add_token(tokens, NULL, get_operator(&input));
+				input++;
+			}
+			else
+				add_token(tokens, get_str(&input, env), WORD);
+	    }
 }

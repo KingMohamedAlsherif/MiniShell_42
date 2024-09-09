@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 12:53:22 by chon              #+#    #+#             */
-/*   Updated: 2024/09/06 13:00:44 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/09 16:27:47 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	export(t_tree_node *n)
 		export_node = n->ms_export;
 		while (export_node)
 		{
-			printf("%s", export_node->str);
+			printf("%s", export_node->var_str);
 			export_node = export_node->fwd;
 		}
 	}

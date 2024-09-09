@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:19:14 by chon              #+#    #+#             */
-/*   Updated: 2024/09/06 12:22:53 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/09 16:43:31 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,13 @@ t_lst	*new_node(char *str, int ascii_order)
 	node = malloc(sizeof(t_lst));
 	if (!node)
 		exit (1);
+	node->var_n_val = ft_strdup(str);
 	split_str = ft_split(str, '=');
 	node->var = ft_strdup(split_str[0]);
 	if (split_str[1])
-		node->str = ft_strdup(split_str[1]);
+		node->val = ft_strdup(split_str[1]);
 	else
-		node->str = NULL;
+		node->val = NULL;
 	node->ascii_order = ascii_order;
 	free_char_arr(split_str, NULL);
 	node->fwd = NULL;

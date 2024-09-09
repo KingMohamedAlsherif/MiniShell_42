@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/06 16:07:27 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/09 17:05:21 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,9 @@
 
 typedef struct s_lst
 {
+	char			*var_n_val;
 	char			*var;
-	char			*str;
+	char			*val;
 	int				ascii_order;
 	struct s_lst	*bwd;
 	struct s_lst	*fwd;
@@ -142,9 +143,10 @@ void 		print_tokens(t_token *tokens);
 void 		add_arg(t_args **args, t_args *new_arg);
 void		free_tokens(t_token *tokens);
 void    	add_token(t_token **tokens, char *str, token_type type);
-char    	*get_env(char **input, t_lst *env);
+char    	*get_env(char **input, t_lst *env, char convert);
 void    	mv_ptr_incr_len(char **input, int *len);
 bool		valid_quote_pairs(char *input);
+char		sngl_or_dbl(char *input);
 
 int 		parsing(t_token **tokens, t_tree_node **AST);
 int 		parse_word(t_token *token, t_tree_node **AST);

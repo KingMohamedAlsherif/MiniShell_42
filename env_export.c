@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:24:09 by chon              #+#    #+#             */
-/*   Updated: 2024/09/06 12:33:22 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/09 16:49:39 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,11 @@ char	*export_str(char *str)
 		tmp_str_2 = ft_strjoin(ft_strdup("=\""), split_str[1]);
 		tmp_str_3 = ft_strjoin(tmp_str_2, ft_strdup("\""));
 		// free_char_arr(split_str, NULL);
-		free(tmp_str_2);
+		// free(tmp_str_2);
 		free(export_str);
 		export_str = ft_strjoin(tmp_str, tmp_str_3);
-		free(tmp_str);
-		free(tmp_str_3);
+		// free(tmp_str);
+		// free(tmp_str_3);
 	}
 	if (!export_str)
 		exit (1);
@@ -68,7 +68,7 @@ void	create_ms_export(t_lst **export_head, t_lst *ms_env)
 	node_ct = count_lst_nodes(ms_env);
 	while (ms_env->ascii_order)
 		ms_env = ms_env->fwd;
-	*export_head = new_node(export_str(ms_env->str), ms_env->ascii_order);
+	*export_head = new_node(export_str(ms_env->var_n_val), ms_env->ascii_order);
 	export_head_ptr = *export_head;
 	ms_env = env_head;
 	i = 0;
@@ -76,7 +76,7 @@ void	create_ms_export(t_lst **export_head, t_lst *ms_env)
 	{
 		while (ms_env->ascii_order != i)
 			ms_env = ms_env->fwd;
-		export_head_ptr->fwd = new_node(export_str(ms_env->str), ms_env->ascii_order);
+		export_head_ptr->fwd = new_node(export_str(ms_env->var_n_val), ms_env->ascii_order);
 		export_head_ptr = export_head_ptr->fwd;
 		export_head_ptr->bwd = export_head_ptr;
 		ms_env = env_head;
@@ -123,5 +123,7 @@ void	create_env_export(t_lst **env_head, t_lst **export_head, char **env)
 		update_order(*env_head, head_ptr);
 		head_ptr = head_ptr->fwd;
 	}
+	// printf("%s=%s\n", (*env_head)->fwd->var, (*env_head)->fwd->val);
 	create_ms_export(export_head, *env_head);
+	// printf("%s=%s\n", (*env_head)->var, (*env_head)->val);
 }
