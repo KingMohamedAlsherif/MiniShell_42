@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:19 by chon              #+#    #+#             */
-/*   Updated: 2024/09/09 17:49:51 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/09 18:35:22 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,17 +33,18 @@ char	*get_str_in_quotes(char **input, char quote, t_lst *env, t_var *s)
 		else 
 			while (**input && **input != quote && **input != '$')
 				mv_ptr_incr_len(input, &s->len);
-		str = ft_substr(s->start, 0, s->len);
-		(*input)++;
+		s->tmp_str = ft_strjoin(s->tmp_str, ft_substr(s->start, 0, s->len));
 		if (**input == '$' && quote == '\"')
-			str = ft_strjoin(str, get_env(input, env, quote));
+			s->tmp_str = ft_strjoin(s->tmp_str, get_env(input, env, quote));
+		// (*input)++;
 		// if (**input && **input != quote)
 		// {
 		// 	printf("recursive hits\n");
 		// 	(*input)--;
 		// 	str = ft_strjoin(str, get_str_in_quotes(input, quote, env, s));
 		// }
-		else
+		str = ft_strjoin(str, s->tmp_str);
+		if (**input == quote)
 			break ;
 	}
 	return (str);
