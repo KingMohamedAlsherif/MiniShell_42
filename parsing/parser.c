@@ -92,22 +92,21 @@ int     parse_pip(t_token  *token, t_tree_node     **ast)
 int         parse_redir(t_token     **token, t_tree_node     **ast)
 {
     t_token         **next;
-    // if (!(*ast) || (*ast)->type != CMD)
-    //     return (SYNTAX_ERROR);
+    if (!token || !*token || !ast || !*ast)
+        return (SYNTAX_ERROR);
     if ((*token)->type == REDIRECT_IN)
-        redir_in(&((*ast)->redir), (*token)->value);
+        redir_in(&((*ast)->redir), (*token)->next->value);
     else if ((*token)->type == REDIRECT_OUT)
-        redir_out(&((*ast)->redir), (*token)->value);
+        redir_out(&((*ast)->redir), (*token)->next->value);
     else if ((*token)->type == HEREDOC)
     {
         redir_heredoc(&((*ast)->redir), (*token)->next->value);
-        *token = (*token)->next;
     }
     else if ((*token)->type == APPEND)
     {
         redir_append(&((*ast)->redir), (*token)->next->value);
-        token = &(*token)->next;
     }
-    next = &(*token)->next;   
+    *token = (*token)->next;
+    printf("Current token value: %s\n", (*token)->value);
     return (0);
 }

@@ -144,11 +144,11 @@ t_token *tokenize(char **input, t_token  **tokens)
         return NULL;
     while (**input)
     {
-        if (skip_whitespace(input) == 0)
-        {
-            // char *word = get_next_token(&input);
-            add_token(tokens, create_token("I'm Space",SPACE));
-        }
+        // if (skip_whitespace(input) == 0)
+        // {
+        //     // char *word = get_next_token(&input);
+        //     add_token(tokens, create_token("I'm Space",SPACE));
+        // }
         if (**input == '\0')
             break;
         if (ft_strchr("|<>", **input)) 

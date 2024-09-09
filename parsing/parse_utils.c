@@ -23,9 +23,9 @@ void add_arg(t_args **args, t_args *new_arg)
     else
     {
         current = *args;
-        while (current)
+        while (current->next)
             current = current->next;
-        current = new_arg;
+        current->next = new_arg;
     }
 }
 
