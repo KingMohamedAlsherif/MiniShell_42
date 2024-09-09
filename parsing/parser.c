@@ -11,62 +11,13 @@ int         parsing(t_token     **tokens, t_tree_node   **ast)
         ret = parse_word(token, ast);
     else if (token && token->type == PIPE)
         ret = parse_pip(token, ast);
-    // else if (token && token->type == REDIRECT_IN || token->type == REDIRECT_OUT 
-    // || token->type == REDIRECT_OUT || token->type == REDIRECT_OUT)
-    //     ret = parse_redir(token, ast);
+    else if (token && (token->type == REDIRECT_IN || token->type == REDIRECT_OUT 
+    || token->type == REDIRECT_OUT || token->type == REDIRECT_OUT))
+        ret = parse_redir(&token, ast);
     if (token != NULL)
         return (parsing(&token->next, ast));
     return (ret);
 }
-
-// int parse_word(t_token *token, t_tree_node **ast)
-// {
-//     t_tree_node *new_tree;
-//     t_args *new_arg;
-
-//     // Case 1: If the current AST node is a command, add the token as an argument
-//     if ((*ast) && (*ast)->type == CMD)
-//     {
-//         new_arg = create_arg_node(token->value);
-//         if (!new_arg)
-//             return (MALLOC_ERROR);
-//         add_arg(&((*ast)->token->cmd_args), new_arg);
-//         return (0);
-//     }
-
-//     // Case 2: Create a new command node
-//     new_tree = malloc(sizeof(t_tree_node));
-//     if (!new_tree)
-//         return (MALLOC_ERROR);
-
-//     // Initialize the new command node
-//     new_tree->parent = NULL;
-//     new_tree->type = CMD;
-//     new_tree->token = token;
-//     new_tree->left = NULL;
-//     new_tree->right = NULL;
-
-//     // Case 3: If the previous node was a pipe, attach the command as the right child
-//     if ((*ast) && (*ast)->type == PIPE)
-//     {
-//         (*ast)->right = new_tree; // Attach the command to the right of the pipe
-//         new_tree->parent = *ast;  // Set the pipe as the parent of the command
-//         *ast = new_tree;          // Move the AST pointer to the new command node
-//     }
-//     // Case 4: If there is no pipe, this becomes a new root
-//     else
-//     {
-//         *ast = new_tree;
-//     }
-
-//     // Create the argument for the command
-//     new_arg = create_arg_node(new_tree->token->value);
-//     if (!new_arg)
-//         return (MALLOC_ERROR);
-//     add_arg(&(new_tree->token->cmd_args), new_arg);
-
-//     return (0);
-// }
 
 int      parse_word(t_token  *token, t_tree_node **ast)
 {
@@ -138,81 +89,25 @@ int     parse_pip(t_token  *token, t_tree_node     **ast)
     return (0);
 }
 
-int         parse_Redir(t_token     **token, t_tree_node     **ast)
+int         parse_redir(t_token     **token, t_tree_node     **ast)
 {
+    t_token         **next;
     // if (!(*ast) || (*ast)->type != CMD)
     //     return (SYNTAX_ERROR);
     if ((*token)->type == REDIRECT_IN)
-        redir_in(ast, (*token)->value);
+        redir_in(&((*ast)->redir), (*token)->value);
     else if ((*token)->type == REDIRECT_OUT)
-        redir_out(ast, (*token)->value);
+        redir_out(&((*ast)->redir), (*token)->value);
     else if ((*token)->type == HEREDOC)
     {
-        redir_heredoc(ast, (*token)->next->value);
+        redir_heredoc(&((*ast)->redir), (*token)->next->value);
         *token = (*token)->next;
     }
     else if ((*token)->type == APPEND)
     {
-        redir_append(ast, (*token)->next->value);
-        token = (*token)->next;
+        redir_append(&((*ast)->redir), (*token)->next->value);
+        token = &(*token)->next;
     }
+    next = &(*token)->next;   
     return (0);
 }
-// void add_redir(t_redir **redirs, char *filename, int is_heredoc, char *heredoc_delim, int is_append, int regular_infile, int regular_outfile)
-// {
-//     t_redir *new_redir = malloc(sizeof(t_redir));
-//     if (!new_redir)
-//         return; // Handle memory allocation error
-
-//     new_redir->filename = filename;
-//     new_redir->is_heredoc = is_heredoc;
-//     new_redir->heredoc_delim = heredoc_delim;
-//     new_redir->is_append = is_append;
-//     new_redir->regular_infile = regular_infile;
-//     new_redir->regular_outfile = regular_outfile;
-//     new_redir->next = NULL;
-
-//     if (*redirs == NULL)
-//     {
-//         *redirs = new_redir;
-//     }
-//     else
-//     {
-//         t_redir *current = *redirs;
-//         while (current->next)
-//             current = current->next;
-//         current->next = new_redir;
-//     }
-// }
-
-// int parse_redirection(t_token *token, t_tree_node *cmd_node)
-// {
-//     if (!cmd_node || cmd_node->type != CMD)
-//     {
-//         printf("SYNTAX_ERROR: Redirection without command\n");
-//         return SYNTAX_ERROR;
-//     }
-
-//     // Handle input redirection
-//     if (token->type == REDIRECT_IN)
-//     {
-//         add_redir(&(cmd_node->redirs), token->value, 0, NULL, 0, 1, 0);
-//     }
-//     // Handle heredoc
-//     else if (token->type == HEREDOC)
-//     {
-//         add_redir(&(cmd_node->redirs), NULL, 1, token->value, 0, 1, 0);
-//     }
-//     // Handle output redirection
-//     else if (token->type == REDIRECT_OUT)
-//     {
-//         add_redir(&(cmd_node->redirs), token->value, 0, NULL, 0, 0, 1);
-//     }
-//     // Handle append redirection
-//     else if (token->type == APPEND_OUT)
-//     {
-//         add_redir(&(cmd_node->redirs), token->value, 0, NULL, 1, 0, 1);
-//     }
-
-//     return 0;
-// }

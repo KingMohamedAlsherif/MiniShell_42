@@ -89,12 +89,12 @@ void	print_tree(t_tree_node	*ast)
 	}
 	if (ast && ast->right)
 	{
-		printf("RIGHT\n");
+		printf("RIGHT =>> ");
 		print_tree(ast->right);
 	}
 	if (ast && ast->left)
 	{
-		printf("LIFT\n");
+		printf("LIFT =>>");
 		print_tree(ast->left);
 	}
 }

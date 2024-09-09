@@ -6,7 +6,7 @@
 /*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/08 17:43:16 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/09 10:55:19 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,11 @@ int 		parse_pip(t_token *token, t_tree_node **AST);
 t_token 	*tokenize(char **input, t_token **tokens);
 void 		print_tokens(t_token *tokens);
 int 		init_cmd(t_token *token, t_tree_node **ast);
-
+int 		parse_redir(t_token **token, t_tree_node **ast);
+void 		redir_in(t_redir **redir, char *filename);
+void 		redir_out(t_redir **redir, char *filename);
+void 		redir_heredoc(t_redir **redir, char *heredoc_d);
+void 		redir_append(t_redir **redir, char *filename);
 
 
 void pipex(t_exec *p, char *infile);
