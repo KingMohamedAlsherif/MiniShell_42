@@ -105,11 +105,28 @@
 // 	}
 // }
 
+void print_args(t_args *tokens)
+{
+	while (tokens)
+	{
+		printf("ARG => %s\n", tokens->arg);
+		tokens = tokens->next;
+	}
+}
+void print_redir(t_redir *tokens)
+{
+	while (tokens)
+	{
+		printf("Redir => %s\n", tokens->filename);
+		tokens = tokens->next;
+	}
+}
+
 void	print_tree(t_tree_node	*ast)
 {
 	if (ast && ast->token)
 	{
-		printf("AST ==> (( %s )) and Type => %d\n ", ast->token->value, ast->type);
+		printf("AST ==> (( %s )) and Type => %d\n", ast->token->value, ast->type);
 	}
 	if (ast && ast->right)
 	{
@@ -121,10 +138,10 @@ void	print_tree(t_tree_node	*ast)
 		printf("LIFT =>>");
 		print_tree(ast->left);
 	}
-	if (ast->args != NULL)
-		printf("ARGS => DONE!\n");
+	if (ast->token->cmd_args != NULL)
+		print_args(ast->token->cmd_args);
 	if (ast->redir != NULL)
-		printf("REDIR => DONE!\n");
+		print_redir(ast->redir);
 }
 
 int	main(void)
@@ -147,6 +164,7 @@ int	main(void)
 			break ;
 		}
 		tokenize(&input, &tokens);
+		print_tokens(tokens);
 		parsing(&tokens, &ast);
 		print_tree(ast);
 		// if (parsing(&tokens, &ast) == 1 || parsing(&tokens, &ast) == 2)
@@ -155,7 +173,6 @@ int	main(void)
 		// 	printf("A7a\n");
 		// }
 				// printf("Return Vlue => 0\n");
-		// print_tokens(tokens);
 			// printf("It's Working\n");
 		// print_tree(*ast);
 		// split_input = ft_split(input, ' ');

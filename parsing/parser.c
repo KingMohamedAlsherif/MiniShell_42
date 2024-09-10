@@ -13,9 +13,9 @@ int         parsing(t_token     **tokens, t_tree_node   **ast)
         ret = parse_pip(token, ast);
     else if (token && (token->type == REDIRECT_IN || token->type == REDIRECT_OUT 
     || token->type == REDIRECT_OUT || token->type == REDIRECT_OUT))
-        ret = parse_redir(&token, ast);
+        ret = parse_redir(tokens, ast);
     if (token != NULL)
-        return (parsing(&token->next, ast));
+        return (parsing(&(*tokens)->next, ast));
     return (ret);
 }
 
@@ -26,6 +26,8 @@ int      parse_word(t_token  *token, t_tree_node **ast)
 
     if ((*ast) && (*ast)->type == CMD)
     {
+        // printf("ast cmd\n");
+        printf("token: %s\n", token->value);
         new_arg = create_arg_node(token->value);
         if (!new_arg)
             return (MALLOC_ERROR);
@@ -39,6 +41,7 @@ int      parse_word(t_token  *token, t_tree_node **ast)
     new_tree->token = token;
     new_tree->left = NULL;
     new_tree->right = NULL;
+    new_tree->redir = NULL;
     new_arg = create_arg_node(new_tree->token->value);
     if (!new_arg)
         return (MALLOC_ERROR);
@@ -83,6 +86,7 @@ int     parse_pip(t_token  *token, t_tree_node     **ast)
     new_tree->parent = NULL;
     new_tree->left = *ast;
     new_tree->right = NULL;
+    new_tree->redir = NULL;
     if ((*ast)->type == CMD)
         (*ast)->parent = new_tree;
     *ast = new_tree;
@@ -92,9 +96,8 @@ int     parse_pip(t_token  *token, t_tree_node     **ast)
 int         parse_redir(t_token     **token, t_tree_node     **ast)
 {
     t_token         **next;
-    if (!token || !*token || !ast || !*ast || !(*token)->next)
+    if (!token || !*token || !ast || !*ast || !(*token)->next) // ensure that next token is word
         return (SYNTAX_ERROR);
-    (*ast)->redir = NULL;
     if ((*token)->type == REDIRECT_IN)
         redir_in(&((*ast)->redir), (*token)->next->value);
     else if ((*token)->type == REDIRECT_OUT)

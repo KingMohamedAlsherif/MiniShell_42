@@ -144,9 +144,9 @@ t_token *tokenize(char **input, t_token  **tokens)
         return NULL;
     while (**input)
     {
-        // if (skip_whitespace(input) == 0)
+        skip_whitespace(input);
         // {
-        //     // char *word = get_next_token(&input);
+        //     // char *word = get_next_token(&input); // Get the Spaces if needed
         //     add_token(tokens, create_token("I'm Space",SPACE));
         // }
         if (**input == '\0')
