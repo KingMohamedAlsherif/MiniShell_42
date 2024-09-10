@@ -6,104 +6,150 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:19 by chon              #+#    #+#             */
-/*   Updated: 2024/09/09 18:35:22 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/10 14:58:53 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*get_str_in_quotes(char **input, char quote, t_lst *env, t_var *s)
-{
-	char	*str;
+// char	*get_str_in_quotes(char **input, char quote, t_lst *env, t_var *s)
+// {
+// 	char	*str;
 
-	(*input)++;
-	// printf("%s\n", *input);
-	// printf("quote: %c\n", quote);
-	if (**input == quote)
-	{
-		(*input)++;
-		return (NULL);
-	}
-	s->start = *input;
-	str = NULL;
-	while (**input && **input != quote)
-	{
-		if (quote == '\'')
-			while (**input && **input != quote)
-				mv_ptr_incr_len(input, &s->len);
-		else 
-			while (**input && **input != quote && **input != '$')
-				mv_ptr_incr_len(input, &s->len);
-		s->tmp_str = ft_strjoin(s->tmp_str, ft_substr(s->start, 0, s->len));
-		if (**input == '$' && quote == '\"')
-			s->tmp_str = ft_strjoin(s->tmp_str, get_env(input, env, quote));
-		// if (**input && **input != quote)
-		// {
-		// 	printf("recursive hits\n");
-		// 	(*input)--;
-		// 	str = ft_strjoin(str, get_str_in_quotes(input, quote, env, s));
-		// }
-		// printf("%s\n", s->tmp_str);
-		// printf("%c\n", **input);
-		str = ft_strjoin(str, s->tmp_str);
-		if (**input == quote)
-		{
-			(*input)++;
-			break ;
-		}
-	}
-	return (str);
-}
+// 	(*input)++;
+// 	// printf("%s\n", *input);
+// 	// printf("quote: %c\n", quote);
+// 	if (**input == quote)
+// 	{
+// 		(*input)++;
+// 		return (NULL);
+// 	}
+// 	s->start = *input;
+// 	str = NULL;
+// 	while (**input && **input != quote)
+// 	{
+// 		s->tmp_str = NULL;
+// 		s->len = 0;
+// 		printf("**input: %c\n", **input);
+// 		if (quote == '\'')
+// 		{
+// 			while (**input && **input != quote)
+// 				mv_ptr_incr_len(input, &s->len);
+// 			s->tmp_str = ft_substr(s->start, 0, s->len);
+// 		}
+// 		else
+// 		{
+// 			while (**input && **input != quote && **input != '$')
+// 				mv_ptr_incr_len(input, &s->len);
+// 			s->tmp_str = ft_substr(s->start, 0, s->len);
+// 			if (**input == '$' && quote == '\"')
+// 				s->tmp_str = ft_strjoin(s->tmp_str, get_env(input, env, quote));
+// 		}
+// 		// if (**input && **input != quote)
+// 		// {
+// 		// 	printf("recursive hits\n");
+// 		// 	(*input)--;
+// 		// 	str = ft_strjoin(str, get_str_in_quotes(input, quote, env, s));
+// 		// }
+// 		// printf("tmpstr: %s\n", s->tmp_str);
+// 		str = ft_strjoin(str, s->tmp_str);
+// 		if (**input == quote)
+// 		{
+// 			(*input)++;
+// 			break ;
+// 		}
+// 	}
+// 	return (str);
+// }
 
-char    *get_str(char **input, t_lst *env)
+// char    *get_str(char **input, t_lst *env)
+// {
+// 	t_var	s;
+
+// 	s.str = NULL;
+// 	while (**input && !ft_strchr(" \n\t\f\v\r<>|&", **input))
+// 	{
+// 		s.tmp_str = NULL;
+// 		s.len = 0;
+// 		if (**input == '\'' || **input == '\"')
+// 			s.tmp_str = get_str_in_quotes(input, **input, env, &s);
+// 		else
+// 		{
+// 			s.start = *input;
+// 			if (*s.start == '$')
+// 				s.tmp_str = get_env(input, env, 1);
+// 			else
+// 			{
+// 				while (**input && !ft_strchr("\'\" \n\t\f\v\r<>|&$", **input))
+// 					mv_ptr_incr_len(input, &s.len);
+// 				s.tmp_str = ft_substr(s.start, 0, s.len);
+// 			}
+// 		}
+// 		s.str = ft_strjoin(s.str, s.tmp_str);
+// 	}
+// 	return (s.str);
+// }
+
+char    *get_str(char **input, t_lst *env, char quote)
 {
 	t_var	s;
 
 	s.str = NULL;
-	while (**input && !ft_strchr(" \n\t\f\v\r<>|&", **input))
+	s.std_blockers = ft_strdup("\'\" \n\t\f\v\r<>|&$");
+	s.sgl_quote_block = ft_strdup("\'");
+	s.dbl_quote_block = ft_strdup("\"$");
+	s.blockers = s.std_blockers;
+	while (**input)
 	{
-		s.tmp_str = NULL;
 		s.len = 0;
+		if (**input == '\'')
+			s.blockers = s.sgl_quote_block;
+		else if (**input == '\"')
+			s.blockers = s.dbl_quote_block;
 		if (**input == '\'' || **input == '\"')
-			s.tmp_str = get_str_in_quotes(input, **input, env, &s);
-		else
 		{
-			s.start = *input;
-			if (*s.start == '$')
-				s.tmp_str = get_env(input, env, 1);
-			else
-			{
-				while (**input && !ft_strchr("\'\" \n\t\f\v\r<>|&$", **input))
-					mv_ptr_incr_len(input, &s.len);
-				s.tmp_str = ft_substr(s.start, 0, s.len);
-			}
+			quote = **input;
+			(*input)++;
+			if (**input == *(*input - 1))
+				return (NULL);
 		}
-		s.str = ft_strjoin(s.str, s.tmp_str);
+		if (**input == '$' && quote != '\'')
+			return (get_env_test(input, env));
+		s.start = *input;
+		while (**input && !ft_strchr(s.blockers, **input))
+			mv_ptr_incr_len(input, &s.len);
+		s.str = ft_substr(s.start, 0, s.len);
+		// printf("%c\n", **input);
+		if (!**input || ft_strchr(s.blockers, **input))
+			break ;
+		s.str = ft_strjoin(s.str, get_str(input, env, quote));
 	}
+	// printf("%s\n", s.str);
 	return (s.str);
 }
 
 int	get_operator(char **input)
 {
-	if (*(*input + 1) && *(*input + 1) == **input)
+	(*input)++;
+	if (**input && **input == *(*input - 1))
 	{
 		(*input)++;
-		if (**input == '<')
+		if (*(*input - 1) == '<')
 			return (HEREDOC);
-		if (**input == '>')
+		if (*(*input - 1) == '>')
 			return (APPEND_OUT);
-		if (**input == '|')
+		if (*(*input - 1) == '|')
 			return (OR);
 		else
 			return (AND);
 	}
 	else
 	{
-		if (**input == '<')
+		if (*(*input - 1) == '<')
 			return (REDIRECT_IN);
-		if (**input == '>')
+		if (*(*input - 1) == '>')
 			return (REDIRECT_OUT);
-		if (**input == '&')
+		if (*(*input - 1) == '&')
 			exit (1);
 		return (PIPE);
 	}
@@ -123,11 +169,8 @@ void    tokenize(char *input, t_token **tokens, t_lst *env)
 			if (!*input)
 				break ;
 			if (ft_strchr("<>|&", *input))
-			{
 				add_token(tokens, NULL, get_operator(&input));
-				input++;
-			}
 			else
-				add_token(tokens, get_str(&input, env), WORD);
+				add_token(tokens, get_str(&input, env, 0), WORD);
 	    }
 }

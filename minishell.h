@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/09 17:05:21 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/10 14:12:08 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,10 @@ typedef struct s_var
 	char	*str;
 	int		len;
 	char	quote;
+	char	*blockers;
+	char	*std_blockers;
+	char	*sgl_quote_block;
+	char	*dbl_quote_block;
 }	t_var;
 
 typedef	struct s_args
@@ -143,7 +147,8 @@ void 		print_tokens(t_token *tokens);
 void 		add_arg(t_args **args, t_args *new_arg);
 void		free_tokens(t_token *tokens);
 void    	add_token(t_token **tokens, char *str, token_type type);
-char    	*get_env(char **input, t_lst *env, char convert);
+char    	*get_env(char **input, t_lst *env);
+char    	*get_env_test(char **input, t_lst *env);
 void    	mv_ptr_incr_len(char **input, int *len);
 bool		valid_quote_pairs(char *input);
 char		sngl_or_dbl(char *input);
