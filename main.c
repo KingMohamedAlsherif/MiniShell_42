@@ -81,37 +81,35 @@
 // 	print_tree(node->right, level + 1);
 // }
 
-void print_args(t_args *args)
-{
-	t_args *current = args;
+// void print_args(t_args *args)
+// {
+// 	t_args *current = args;
 
-	if (!current)
-	{
-		printf("No arguments to display.\n");
-		return;
-	}
+// 	if (!current)
+// 	{
+// 		printf("No arguments to display.\n");
+// 		return;
+// 	}
 
-	while (current)
-	{
-		if (current->arg != NULL) // Check if the argument is not NULL
-		{
-			printf("Argument: %s\n", current->arg);
-		}
-		else
-		{
-			printf("Argument is NULL\n"); // If it's NULL, print this message
-		}
-		current = current->next;
-	}
-}
+// 	while (current)
+// 	{
+// 		if (current->arg != NULL) // Check if the argument is not NULL
+// 		{
+// 			printf("Argument: %s\n", current->arg);
+// 		}
+// 		else
+// 		{
+// 			printf("Argument is NULL\n"); // If it's NULL, print this message
+// 		}
+// 		current = current->next;
+// 	}
+// }
 
 void	print_tree(t_tree_node	*ast)
 {
-	if (ast)
+	if (ast && ast->token)
 	{
 		printf("AST ==> (( %s )) and Type => %d\n ", ast->token->value, ast->type);
-		if (ast->args)
-			print_args(&(ast->args));
 	}
 	if (ast && ast->right)
 	{
@@ -123,6 +121,10 @@ void	print_tree(t_tree_node	*ast)
 		printf("LIFT =>>");
 		print_tree(ast->left);
 	}
+	if (ast->args != NULL)
+		printf("ARGS => DONE!\n");
+	if (ast->redir != NULL)
+		printf("REDIR => DONE!\n");
 }
 
 int	main(void)

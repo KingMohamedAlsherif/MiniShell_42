@@ -11,9 +11,10 @@ static void add_redir(t_redir **redir, t_redir *new_redir)
     else
     {
         current = *redir;
-        while (current->next)
+        while (current && current->next)
             current = current->next;
-        current->next = new_redir;
+        if (current)
+            current->next = new_redir;
     }
 }
 
@@ -42,7 +43,8 @@ void redir_out(t_redir **redir, char *filename)
     t_redir *new_redir;
 
     tmp = NULL;
-    new_redir = malloc(sizeof(t_redir));
+    new_redir = NULL;
+    new_redir = ft_calloc( 1 , sizeof(t_redir));
     if (!new_redir)
         return;
     new_redir->filename = filename;

@@ -92,8 +92,9 @@ int     parse_pip(t_token  *token, t_tree_node     **ast)
 int         parse_redir(t_token     **token, t_tree_node     **ast)
 {
     t_token         **next;
-    if (!token || !*token || !ast || !*ast)
+    if (!token || !*token || !ast || !*ast || !(*token)->next)
         return (SYNTAX_ERROR);
+    (*ast)->redir = NULL;
     if ((*token)->type == REDIRECT_IN)
         redir_in(&((*ast)->redir), (*token)->next->value);
     else if ((*token)->type == REDIRECT_OUT)
@@ -107,6 +108,6 @@ int         parse_redir(t_token     **token, t_tree_node     **ast)
         redir_append(&((*ast)->redir), (*token)->next->value);
     }
     *token = (*token)->next;
-    printf("Current token value: %s\n", (*token)->value);
+    // printf("Current token value: %s\n", (*token)->value);
     return (0);
 }
