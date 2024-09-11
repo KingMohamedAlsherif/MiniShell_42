@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:11 by chon              #+#    #+#             */
-/*   Updated: 2024/09/10 15:00:57 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/11 13:41:32 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@ void	add_token(t_token **tokens, char *str, token_type type)
 	t_token	*new_token;
 	t_token	*last;
 
-	if (type < 0 || (type == WORD && !str))
-		return ;
+	// printf("%s\n", str);
+	// if (type < 0 || (type == WORD && !str))
+	// if (type < 0)
+	// 	return ;
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 		exit (1);

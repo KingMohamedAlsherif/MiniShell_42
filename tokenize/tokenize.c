@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:19 by chon              #+#    #+#             */
-/*   Updated: 2024/09/10 14:58:53 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/11 14:30:02 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,15 +90,15 @@
 // 	return (s.str);
 // }
 
-char    *get_str(char **input, t_lst *env, char open_quote, char close_quote)
+char    *get_str(char **input, t_lst *env, char quote)
 {
 	t_var	s;
 
 	s.str = NULL;
 	s.std_blockers = ft_strdup("\'\" \n\t\f\v\r<>|&$");
+	s.std_block_ex_quotes = ft_strdup(" \n\t\f\v\r<>|&$");
 	s.sgl_quote_block = ft_strdup("\'");
 	s.dbl_quote_block = ft_strdup("\"$");
-	s.usd_block = ft_strdup(" \n\t\f\v\r");
 	s.blockers = s.std_blockers;
 	while (**input)
 	{
@@ -118,7 +118,7 @@ char    *get_str(char **input, t_lst *env, char open_quote, char close_quote)
 		if (**input == '$' && quote != '\'')
 		{
 			(*input)++;
-			s.blockers = s.usd_block;
+			s.blockers = s.std_blockers;
 			s.convert = 1;
 		}
 		s.start = *input;
@@ -126,9 +126,15 @@ char    *get_str(char **input, t_lst *env, char open_quote, char close_quote)
 		if (s.convert)
 			s.str = get_env_test(s.str, env);
 		// printf("%c\n", **input);
-		if (!**input || ft_strchr(s.blockers, **input))
+		if (!**input || (!quote && ft_strchr(s.std_block_ex_quotes, **input))
+			|| (quote && **input == quote
+				&& ft_strchr(s.std_block_ex_quotes, *(*input + 1))))
+		{
+			if (**input == quote)
+				(*input)++;	
 			break ;
-		s.str = ft_strjoin(s.str, get_str(input, env, quote));
+		}
+		s.str = ft_strjoin(s.str, get_str(input, env, 0));
 	}
 	// printf("%s\n", s.str);
 	return (s.str);
@@ -177,6 +183,6 @@ void    tokenize(char *input, t_token **tokens, t_lst *env)
 			if (ft_strchr("<>|&", *input))
 				add_token(tokens, NULL, get_operator(&input));
 			else
-				add_token(tokens, get_str(&input, env, 0, 0), WORD);
+				add_token(tokens, get_str(&input, env, 0), WORD);
 	    }
 }

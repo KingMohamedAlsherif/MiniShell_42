@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/10 14:12:08 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/11 14:15:04 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ typedef struct s_var
 	char	*std_blockers;
 	char	*sgl_quote_block;
 	char	*dbl_quote_block;
-	char	*usd_block;
+	char	*std_block_ex_quotes;
 	bool	convert;
 }	t_var;
 
