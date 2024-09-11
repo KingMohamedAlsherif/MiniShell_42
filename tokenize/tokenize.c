@@ -90,7 +90,7 @@
 // 	return (s.str);
 // }
 
-char    *get_str(char **input, t_lst *env, char quote)
+char    *get_str(char **input, t_lst *env, char open_quote, char close_quote)
 {
 	t_var	s;
 
@@ -98,10 +98,12 @@ char    *get_str(char **input, t_lst *env, char quote)
 	s.std_blockers = ft_strdup("\'\" \n\t\f\v\r<>|&$");
 	s.sgl_quote_block = ft_strdup("\'");
 	s.dbl_quote_block = ft_strdup("\"$");
+	s.usd_block = ft_strdup(" \n\t\f\v\r");
 	s.blockers = s.std_blockers;
 	while (**input)
 	{
 		s.len = 0;
+		s.convert = 0;
 		if (**input == '\'')
 			s.blockers = s.sgl_quote_block;
 		else if (**input == '\"')
@@ -114,11 +116,15 @@ char    *get_str(char **input, t_lst *env, char quote)
 				return (NULL);
 		}
 		if (**input == '$' && quote != '\'')
-			return (get_env_test(input, env));
+		{
+			(*input)++;
+			s.blockers = s.usd_block;
+			s.convert = 1;
+		}
 		s.start = *input;
-		while (**input && !ft_strchr(s.blockers, **input))
-			mv_ptr_incr_len(input, &s.len);
-		s.str = ft_substr(s.start, 0, s.len);
+		s.str = get_substr(input, s.blockers);
+		if (s.convert)
+			s.str = get_env_test(s.str, env);
 		// printf("%c\n", **input);
 		if (!**input || ft_strchr(s.blockers, **input))
 			break ;
@@ -171,6 +177,6 @@ void    tokenize(char *input, t_token **tokens, t_lst *env)
 			if (ft_strchr("<>|&", *input))
 				add_token(tokens, NULL, get_operator(&input));
 			else
-				add_token(tokens, get_str(&input, env, 0), WORD);
+				add_token(tokens, get_str(&input, env, 0, 0), WORD);
 	    }
 }

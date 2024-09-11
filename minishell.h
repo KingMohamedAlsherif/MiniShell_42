@@ -84,6 +84,8 @@ typedef struct s_var
 	char	*std_blockers;
 	char	*sgl_quote_block;
 	char	*dbl_quote_block;
+	char	*usd_block;
+	bool	convert;
 }	t_var;
 
 typedef	struct s_args
@@ -148,10 +150,11 @@ void 		add_arg(t_args **args, t_args *new_arg);
 void		free_tokens(t_token *tokens);
 void    	add_token(t_token **tokens, char *str, token_type type);
 char    	*get_env(char **input, t_lst *env);
-char    	*get_env_test(char **input, t_lst *env);
-void    	mv_ptr_incr_len(char **input, int *len);
+char    	*get_env_test(char *input, t_lst *env);
+// void    	mv_ptr_incr_len(char **input, int *len);
 bool		valid_quote_pairs(char *input);
 char		sngl_or_dbl(char *input);
+char		*get_substr(char **input, char *blocker);
 
 int 		parsing(t_token **tokens, t_tree_node **AST);
 int 		parse_word(t_token *token, t_tree_node **AST);

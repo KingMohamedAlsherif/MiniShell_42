@@ -92,31 +92,41 @@ void	free_tokens(t_token *token)
 // 	return (env_val);
 // }
 
-char	*get_env_test(char **input, t_lst *env)
+char	*get_env_test(char *str, t_lst *env)
 {
-	t_var	s;
-	char	*env_val;
-
-	s.len = 0;
-	(*input)++;
-	if (!**input || ft_strchr("\'\" $", **input))
-	{
-		if (**input)
-			(*input)++;
-		return (ft_strdup("$"));
-	}
-	while (env && ft_strncmp(env->var, env_val, ft_strlen(env_val)))
+	// s.len = 0;
+	// if (!**input || ft_strchr("\'\" $", **input))
+	// {
+	// 	if (**input)
+	// 		(*input)++;
+	// 	return (ft_strdup("$"));
+	// }
+	while (env && ft_strncmp(env->var, str, ft_strlen(str)))
 		env = env->fwd;
 	if (!env)
 		return (NULL);
-	env_val = ft_strdup(env->val);
-	return (env_val);
+	return (ft_strdup(env->val));
 }
 
-void	mv_ptr_incr_len(char **input, int *len)
+// void	mv_ptr_incr_len(char **input, int *len)
+// {
+// 	(*input)++;
+// 	(*len)++;
+// }
+
+char	*get_substr(char **input, char *blocker)
 {
-	(*input)++;
-	(*len)++;
+	int		len;
+	char	*start;
+
+	len = 0;
+	start = *input;
+	while (**input && !ft_strchr(blocker, **input))
+	{
+		(*input)++;
+		len++;
+	}
+	return (ft_substr(start, 0, len));
 }
 
 bool	valid_quote_pairs(char *input)
