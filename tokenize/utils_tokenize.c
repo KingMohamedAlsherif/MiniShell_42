@@ -137,7 +137,7 @@ bool	valid_quote_pairs(char *input)
 	{
 		if (*input == '\'' || *input == '\"')
 		{
-			if (!(input + 1))
+			if (!*(input + 1))
 				return (0);
 			input = ft_strchr(input + 1, *input);
 			if (!input)
@@ -145,7 +145,7 @@ bool	valid_quote_pairs(char *input)
 			input++;
 		}
 		else
-			while (*input && (*input != '\'' || *input != '\"'))
+			while (*input && !(*input == '\'' || *input == '\"'))
 				input++;
 	}
 	return (1);

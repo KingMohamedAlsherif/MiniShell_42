@@ -113,7 +113,10 @@ char    *get_str(char **input, t_lst *env, char quote)
 			quote = **input;
 			(*input)++;
 			if (**input == *(*input - 1))
+			{
+				(*input)++;
 				return (NULL);
+			}
 		}
 		if (**input == '$' && quote != '\'')
 		{
@@ -130,7 +133,7 @@ char    *get_str(char **input, t_lst *env, char quote)
 			|| (quote && **input == quote
 				&& ft_strchr(s.std_block_ex_quotes, *(*input + 1))))
 		{
-			if (**input == quote)
+			if (quote && **input == quote)
 				(*input)++;	
 			break ;
 		}
