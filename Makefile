@@ -6,13 +6,13 @@
 #    By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/10 11:20:21 by chon              #+#    #+#              #
-#    Updated: 2024/09/10 09:56:56 by kingmohamedalshe ###   ########.fr        #
+#    Updated: 2024/09/13 14:15:43 by kingmohamedalshe ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
-CFLAGS = -g3 -fsanitize=address 
-# CFLAGS = -Wall -Werror -Wextra -g3
+# CFLAGS = -g3 -fsanitize=address 
+CFLAGS = -Wall -Werror -Wextra -g3
 #  CFLAGS = -g3
 LIBFT_DIR = ./libft
 LIBS = ./libft/libft.a -L$(HOME)/.local/opt/readline/lib -I$(HOME)/.local/opt/readline/include -lreadline

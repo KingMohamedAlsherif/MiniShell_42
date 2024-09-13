@@ -138,7 +138,6 @@ int skip_whitespace(char **input)
 
 t_token *tokenize(char **input, t_token  **tokens) 
 {
-    char operator[3];
 
     if (!input || !*input) // Check input is NULL
         return NULL;
@@ -146,7 +145,7 @@ t_token *tokenize(char **input, t_token  **tokens)
     {
         skip_whitespace(input);
         // {
-        //     // char *word = get_next_token(&input); // Get the Spaces if needed
+        //     // char *word = get_next_token(&input); // Get the Spaces if needed 
         //     add_token(tokens, create_token("I'm Space",SPACE));
         // }
         if (**input == '\0')

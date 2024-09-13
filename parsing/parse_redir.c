@@ -20,7 +20,6 @@ static void add_redir(t_redir **redir, t_redir *new_redir)
 
 void redir_in(t_redir **redir, char *filename)
 {
-    t_redir *tmp;
     t_redir *new_redir;
 
     new_redir = malloc(sizeof(t_redir));
@@ -59,7 +58,6 @@ void redir_out(t_redir **redir, char *filename)
 
 void redir_heredoc(t_redir **redir, char *heredoc_d)
 {
-    t_redir *tmp;
     t_redir *new_redir;
 
     new_redir = malloc(sizeof(t_redir));
@@ -78,7 +76,6 @@ void redir_heredoc(t_redir **redir, char *heredoc_d)
 
 void redir_append(t_redir **redir, char *filename)
 {
-    t_redir *tmp;
     t_redir *new_redir;
 
     new_redir = malloc(sizeof(t_redir));

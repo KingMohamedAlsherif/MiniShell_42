@@ -95,7 +95,6 @@ int     parse_pip(t_token  *token, t_tree_node     **ast)
 
 int         parse_redir(t_token     **token, t_tree_node     **ast)
 {
-    t_token         **next;
     if (!token || !*token || !ast || !*ast || !(*token)->next) // ensure that next token is word
         return (SYNTAX_ERROR);
     if ((*token)->type == REDIRECT_IN)
