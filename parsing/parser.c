@@ -12,7 +12,7 @@ int         parsing(t_token     **tokens, t_tree_node   **ast)
     else if (token && token->type == PIPE)
         ret = parse_pip(token, ast);
     else if (token && (token->type == REDIRECT_IN || token->type == REDIRECT_OUT 
-    || token->type == REDIRECT_OUT || token->type == REDIRECT_OUT))
+    || token->type == HEREDOC || token->type == APPEND))
         ret = parse_redir(tokens, ast);
     if (token != NULL)
         return (parsing(&(*tokens)->next, ast));

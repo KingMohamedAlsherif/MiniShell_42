@@ -164,7 +164,7 @@ int	main(void)
 			break ;
 		}
 		tokenize(&input, &tokens);
-		print_tokens(tokens);
+		// print_tokens(tokens);
 		parsing(&tokens, &ast);
 		print_tree(ast);
 		// if (parsing(&tokens, &ast) == 1 || parsing(&tokens, &ast) == 2)
