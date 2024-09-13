@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:24:09 by chon              #+#    #+#             */
-/*   Updated: 2024/09/09 16:49:39 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/13 16:55:08 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,9 @@ char	*export_str(char *str)
 		tmp_str = ft_strjoin(ft_strdup("declare -x "), split_str[0]);
 		tmp_str_2 = ft_strjoin(ft_strdup("=\""), split_str[1]);
 		tmp_str_3 = ft_strjoin(tmp_str_2, ft_strdup("\""));
-		// free_char_arr(split_str, NULL);
-		// free(tmp_str_2);
+		free(split_str);
 		free(export_str);
 		export_str = ft_strjoin(tmp_str, tmp_str_3);
-		// free(tmp_str);
-		// free(tmp_str_3);
 	}
 	if (!export_str)
 		exit (1);
@@ -117,6 +114,9 @@ void	create_env_export(t_lst **env_head, t_lst **export_head, char **env)
 		*env_head = (*env_head)->fwd;
 		(*env_head)->bwd = *env_head;
 	}
+	(*env_head)->fwd = new_node(ft_strdup("$=4321"), 0);
+	*env_head = (*env_head)->fwd;
+	(*env_head)->bwd = *env_head;
 	*env_head = head_ptr;
 	while (head_ptr)
 	{

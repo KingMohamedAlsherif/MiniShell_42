@@ -6,16 +6,16 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:11 by chon              #+#    #+#             */
-/*   Updated: 2024/09/11 13:41:32 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/13 17:08:16 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	add_token(t_token **tokens, char *str, token_type type)
+void add_token(t_token **tokens, char *str, token_type type)
 {
-	t_token	*new_token;
-	t_token	*last;
+	t_token *new_token;
+	t_token *last;
 
 	// printf("%s\n", str);
 	// if (type < 0 || (type == WORD && !str))
@@ -23,9 +23,9 @@ void	add_token(t_token **tokens, char *str, token_type type)
 	// 	return ;
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
-		exit (1);
+		exit(1);
 	if (!str)
-		new_token->str = NULL;
+		new_token->str = ft_strdup("\0");
 	else
 		new_token->str = str;
 	new_token->type = type;
@@ -41,7 +41,7 @@ void	add_token(t_token **tokens, char *str, token_type type)
 	}
 }
 
-void	print_tokens(t_token *token)
+void print_tokens(t_token *token)
 {
 	while (token)
 	{
@@ -55,9 +55,9 @@ void	print_tokens(t_token *token)
 	}
 }
 
-void	free_tokens(t_token *token)
+void free_tokens(t_token *token)
 {
-	t_token	*tmp;
+	t_token *tmp;
 
 	while (token)
 	{
@@ -68,59 +68,34 @@ void	free_tokens(t_token *token)
 	}
 }
 
-// char	*get_env(char **input, t_lst *env, char	convert)
-// {
-// 	t_var	s;
-// 	char	*env_val;
-
-// 	s.len = 0;
-// 	(*input)++;
-// 	if (!**input || ft_strchr("\'\" $", **input))
-// 		return (ft_strdup("$"));
-// 	s.start = *input;
-// 	while (**input && !ft_strchr("\'\" \n\t\f\v\r<>|&$", **input))
-// 		mv_ptr_incr_len(input, &s.len);
-// 	env_val = ft_substr(s.start, 0, s.len);
-// 	if (convert == 1 || convert == '\"')
-// 	{
-// 		while (env && ft_strncmp(env->var, env_val, ft_strlen(env_val)))
-// 			env = env->fwd;
-// 		free(env_val);
-// 		if (!env)
-// 			return (NULL);
-// 		env_val = ft_strdup(env->val);
-// 	}
-// 	// (*input)++;
-// 	return (env_val);
-// }
-
-char	*get_env_test(char *str, t_lst *env)
+char *get_env(char *str, t_lst *env)
 {
-	// s.len = 0;
-	// if (!**input || ft_strchr("\'\" $", **input))
-	// {
-	// 	if (**input)
-	// 		(*input)++;
-	// 	return (ft_strdup("$"));
-	// }
-	while (env && ft_strncmp(env->var, str, ft_strlen(str)))
+	size_t	str_len;
+
+	str_len = ft_strlen(str);
+	if (!str || !str_len)
+		return (ft_strdup("$"));
+	while (env)
+	{
+		if (ft_strlen(env->var) > str_len)
+			str_len = ft_strlen(env->var);
+		if (!ft_strncmp(env->var, str, str_len))
+			break ;
 		env = env->fwd;
+	}
+	free(str);
 	if (!env)
 		return (NULL);
 	return (ft_strdup(env->val));
 }
 
-// void	mv_ptr_incr_len(char **input, int *len)
-// {
-// 	(*input)++;
-// 	(*len)++;
-// }
-
-char	*get_substr(char **input, char *blocker)
+char *get_substr(char **input, char *blocker)
 {
-	int		len;
-	char	*start;
+	int len;
+	char *start;
 
+	if (!**input)
+		return (NULL);
 	len = 0;
 	start = *input;
 	while (**input && !ft_strchr(blocker, **input))
@@ -131,7 +106,7 @@ char	*get_substr(char **input, char *blocker)
 	return (ft_substr(start, 0, len));
 }
 
-bool	valid_quote_pairs(char *input)
+bool valid_quote_pairs(char *input)
 {
 	while (*input)
 	{

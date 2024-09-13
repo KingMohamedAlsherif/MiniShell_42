@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/11 14:15:04 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/13 18:14:43 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ typedef enum
 typedef struct s_var
 {
 	char	*start;
-	char	*tmp_str;
 	char	*str;
 	int		len;
 	char	quote;
@@ -85,6 +84,7 @@ typedef struct s_var
 	char	*sgl_quote_block;
 	char	*dbl_quote_block;
 	char	*std_block_ex_quotes;
+	char	*usd_blockers;
 	bool	convert;
 }	t_var;
 
@@ -149,8 +149,7 @@ void 		print_tokens(t_token *tokens);
 void 		add_arg(t_args **args, t_args *new_arg);
 void		free_tokens(t_token *tokens);
 void    	add_token(t_token **tokens, char *str, token_type type);
-char    	*get_env(char **input, t_lst *env);
-char    	*get_env_test(char *input, t_lst *env);
+char    	*get_env(char *input, t_lst *env);
 // void    	mv_ptr_incr_len(char **input, int *len);
 bool		valid_quote_pairs(char *input);
 char		sngl_or_dbl(char *input);
