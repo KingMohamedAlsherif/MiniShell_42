@@ -42,7 +42,7 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 		ft_error(errno, ft_strdup("execve"), n, 1);
 }
 
-void init_exec(t_tree_node *n, int pipe_ct, int cmd_ct)
+void init_exec(t_tree_node *n, int pipe_ct)
 {
 	t_tree_node *n_head;
 	int			pid;
@@ -53,7 +53,7 @@ void init_exec(t_tree_node *n, int pipe_ct, int cmd_ct)
 	while (!n->is_last_node)
 	{
 		if ((n->parent && n->parent->token->type == AND
-			&& n->token->type == CD) || cmd_ct == 1)
+			&& n->token->type == CD))
 			cd(n);
 		if (n->token->type == CMD)
 		{

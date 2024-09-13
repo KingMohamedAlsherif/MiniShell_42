@@ -101,7 +101,7 @@ int	main(int ac, char **av, char **env)
 		split_input = ft_split(input, ' ');
 		// if (!ft_strncmp(split_input[0], "clear", 6) && !split_input[1])
 		// 	rl_clear_history();
-		if (!input || (split_input[0] && !ft_strncmp(split_input[0], "exit", 5)))
+		if (!input || !env || (split_input[0] && !ft_strncmp(split_input[0], "exit", 5)))
 		{
 			if (input && split_input[1] && !is_number(split_input[1]))
 				printf("exit\nbash: exit: %s: numeric argument required\n"
@@ -111,12 +111,12 @@ int	main(int ac, char **av, char **env)
 			free_char_arr(split_input, NULL);
 			break ;
 		}
-		else
+		else if (env)
 		{
 			add_history(input);
 			tokenize(input, &tokens, ms_env);
 			print_tokens(tokens);
-			parsing(&tokens, &ast);
+			parsing(&tokens, &ast, ms_env);
 			print_tree(ast);
 			free_char_arr(split_input, NULL);
 			free(input);

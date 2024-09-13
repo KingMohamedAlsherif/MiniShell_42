@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-int         parsing(t_token     **tokens, t_tree_node   **ast)
+int	parsing(t_token **tokens, t_tree_node **ast, t_lst *ms_env)
 {
     t_token *token;
     int     ret;
@@ -15,7 +15,8 @@ int         parsing(t_token     **tokens, t_tree_node   **ast)
     || token->type == HEREDOC || token->type == APPEND))
         ret = parse_redir(tokens, ast);
     if (token != NULL)
-        return (parsing(&(*tokens)->next, ast));
+        return (parsing(&(*tokens)->next, ast, ms_env));
+	create_fds(ast, ms_env);
     return (ret);
 }
 

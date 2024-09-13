@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/13 19:07:58 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/13 19:31:04 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,15 +169,16 @@ bool		valid_quote_pairs(char *input);
 char		sngl_or_dbl(char *input);
 char		*get_substr(char **input, char *blocker);
 
-int 		parsing(t_token **tokens, t_tree_node **AST);
-int 		parse_word(t_token *token, t_tree_node **AST);
-int 		parse_pip(t_token *token, t_tree_node **AST);
+int 		parsing(t_token **tokens, t_tree_node **ast, t_lst *ms_env);
+int 		parse_word(t_token *token, t_tree_node **ast);
+int 		parse_pip(t_token *token, t_tree_node **ast);
 int 		init_cmd(t_token *token, t_tree_node **ast);
 int 		parse_redir(t_token **token, t_tree_node **ast);
 void 		redir_in(t_redir **redir, char *filename);
 void 		redir_out(t_redir **redir, char *filename);
 void 		redir_heredoc(t_redir **redir, char *heredoc_d);
 void 		redir_append(t_redir **redir, char *filename);
+void		create_fds(t_tree_node **ast, t_lst ms_env);
 
 
 void		ft_error(int error, char *str, t_tree_node *p, int exit_switch);
@@ -188,7 +189,7 @@ void		check_filepaths(t_tree_node *head);
 int			is_empty(char *av);
 t_tree_node	*start_node(t_tree_node *n);
 void		traverse_tree(t_tree_node **n);
-void		init_exec(t_tree_node *n, int pipe_ct, int cmd_ct);
+void		init_exec(t_tree_node *n, int pipe_ct);
 void		reset_read_flag(t_tree_node **n);
 void 		rl_replace_line(const char *text, int clear_undo);
 void 		rl_clear_history (void);
