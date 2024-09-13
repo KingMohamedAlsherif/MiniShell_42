@@ -41,23 +41,50 @@ int	init_signals(void)
 	return (0);
 }
 
+void print_args(t_args *tokens)
+{
+	while (tokens)
+	{
+		printf("ARG => %s\n", tokens->arg);
+		tokens = tokens->next;
+	}
+}
+void print_redir(t_redir *tokens)
+{
+	while (tokens)
+	{
+		printf("Redir => %s\n", tokens->filename);
+		tokens = tokens->next;
+	}
+}
+
 void	print_tree(t_tree_node	*ast)
 {
-	while(ast)
+	if (ast && ast->token)
 	{
-		printf("its the type here ==> %d\n", ast->token->type);
+		printf("AST ==> (( %s )) and Type => %d\n", ast->token->value, ast->type);
 	}
-	if (ast->right)
+	if (ast && ast->right)
+	{
+		printf("RIGHT =>> ");
 		print_tree(ast->right);
-	if (ast->left)
+	}
+	if (ast && ast->left)
+	{
+		printf("LIFT =>>");
 		print_tree(ast->left);
+	}
+	if (ast->token->cmd_args != NULL)
+		print_args(ast->token->cmd_args);
+	if (ast->redir != NULL)
+		print_redir(ast->redir);
 }
 
 int	main(int ac, char **av, char **env)
 {
 	char		*input;
 	char		**split_input;
-	// t_tree_node	**ast;
+	t_tree_node	*ast;
 	t_token		*tokens;
 	t_lst		*ms_env;
 	t_lst		*ms_export;
@@ -86,9 +113,11 @@ int	main(int ac, char **av, char **env)
 		}
 		else
 		{
+			add_history(input);
 			tokenize(input, &tokens, ms_env);
 			print_tokens(tokens);
-			add_history(input);
+			parsing(&tokens, &ast);
+			print_tree(ast);
 			free_char_arr(split_input, NULL);
 			free(input);
 			free_tokens(tokens);

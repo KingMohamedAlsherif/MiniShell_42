@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/13 18:14:43 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/13 19:07:58 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,7 @@ typedef enum
 	REDIRECT_IN,
 	REDIRECT_OUT,
 	HEREDOC,
-	APPEND_OUT,
-	DOUBLE_Q,
-	SINGLE_Q,
+	APPEND,
 	OR,
 	CD,
 	END
@@ -94,15 +92,28 @@ typedef	struct s_args
 	struct s_args *next;
 } 		t_args;
 
+
 typedef struct s_token
 {
 	token_type	type;
-	char 		*str;
+	char 		*value;
 	char 		*exec_cmd_path;
 	t_args		*cmd_args;
 	char		**cmd_args_arr;
 	struct s_token *next;
 }	t_token;
+
+// (In_file redirection)
+typedef struct s_redir
+{
+	char 			 *filename;
+	int 			 is_heredoc;
+	char 			 *heredoc_delim;   // Delimiter for heredoc
+	int 			 regular_infile;	
+	int 			 is_append;
+	int 			 regular_outfile;	
+	struct s_redir   *next;
+} t_redir;
 
 typedef struct s_tree_node
 {
@@ -110,14 +121,17 @@ typedef struct s_tree_node
 	t_paths				*p;
 	token_type			type;
 	t_args				*args;
+	t_redir 			*redir;
+	int					*in_fds;
+	int					*out_fds;
 	int					in_fd;
 	int					*in_fds; // for in and out files inside the nodes
 	int					*out_fds;
 	int					out_fd;
 	char				*infile; 
 	char				*outfile;
-	int					is_here_doc; // if there is => 1, if not => 0
-	char				*delimiter; // store the delimiter to use it to stop
+	int					is_here_doc;
+	char				*delimiter;
 	// int 				empty_fd;
 	int					**pipefd;
 	struct s_tree_node	*parent;
@@ -158,6 +172,13 @@ char		*get_substr(char **input, char *blocker);
 int 		parsing(t_token **tokens, t_tree_node **AST);
 int 		parse_word(t_token *token, t_tree_node **AST);
 int 		parse_pip(t_token *token, t_tree_node **AST);
+int 		init_cmd(t_token *token, t_tree_node **ast);
+int 		parse_redir(t_token **token, t_tree_node **ast);
+void 		redir_in(t_redir **redir, char *filename);
+void 		redir_out(t_redir **redir, char *filename);
+void 		redir_heredoc(t_redir **redir, char *heredoc_d);
+void 		redir_append(t_redir **redir, char *filename);
+
 
 void		ft_error(int error, char *str, t_tree_node *p, int exit_switch);
 void		free_char_arr(char **twoD, char ***threeD);

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+         #
+#    By: chon <chon@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/10 11:20:21 by chon              #+#    #+#              #
-#    Updated: 2024/09/06 12:55:08 by chon             ###   ########.fr        #
+#    Updated: 2024/09/13 19:01:42 by chon             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,10 +18,11 @@ LIBS = ./libft/libft.a -L$(HOME)/.local/opt/readline/lib -I$(HOME)/.local/opt/re
 # LIBS = ./libft/libft.a -lreadline
 OBJS = $(SRCS:.c=.o)
 SRCS = main.c env_export.c utils_main.c  \
-tokenize/tokenize.c tokenize/utils_tokenize.c ./parse/parse.c ./execute/exec.c \
-./execute/utils_exec.c ./execute/free.c ./builtins/builtins.c ./builtins/export.c \
-./builtins/utils_builtins.c
-# SRCS = parsing/pars_utils.c parsing/parser.c
+tokenize/tokenize.c tokenize/utils_tokenize.c \
+./execute/exec.c ./execute/utils_exec.c ./execute/free.c \
+./builtins/builtins.c ./builtins/export.c ./builtins/utils_builtins.c \
+parsing/parse_utils.c parsing/parser.c parsing/tokenizer.c  parsing/parse_redir.c
+# SRCS = ./parse/parse.c ./execute/exec.c ./execute/utils.c ./execute/free.c
 # OBJS_B = $(SRCS_B:.c=.o)
 # SRCS_B = 
 
