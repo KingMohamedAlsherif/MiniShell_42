@@ -14,137 +14,135 @@
 
 void init_outfile(t_tree_node *n)
 {
+	t_redir	*redir_ptr;
 	// maybe std_input can replace empty_fd
 	// n->empty_fd = open("empty.txt", O_TRUNC | O_CREAT, 0777);
 	// if (n->empty_fd < 0)
 	// 	ft_error(errno, ft_strdup("empty.txt"), n, 1);
-	if (n->outfile)
+
+	n->out_fd_node = NULL;
+	redir_ptr = n->redir;
+	while (redir_ptr->next)
 	{
-		if (!n->is_here_doc)
-			n->out_fd = open(n->outfile, O_WRONLY | O_TRUNC | O_CREAT, 0777);
-		else
-			n->out_fd = open(n->outfile, O_WRONLY | O_APPEND | O_CREAT, 0777);
-		if (n->out_fd < 0)
-			ft_error(errno, ft_strdup(n->outfile), n, 1);
+		if (redir_ptr->regular_outfile || redir_ptr->is_append)
+		{
+			n->out_fd_node = redir_ptr;
+			if (redir_ptr->regular_outfile)
+				redir_ptr->regular_outfile = open(redir_ptr->filename, O_WRONLY | O_TRUNC | O_CREAT, 0777);
+			else
+				redir_ptr->regular_outfile = open(redir_ptr->filename, O_WRONLY | O_APPEND | O_CREAT, 0777);
+			if (redir_ptr->regular_outfile < 0)
+				ft_error(errno, ft_strdup(redir_ptr->filename), n, 1);
+		}
+		redir_ptr = redir_ptr->next;
 	}
 	// printf("%d\n", n->out_fd);
 }
 
 void init_infile_outfile(t_tree_node *n)
 {
-	char *line;
+	t_redir	*redir_ptr;
+	char	*line;
 
-	// if (n->is_here_doc || (!n->infile && n->is_first_node))
-	if (n->is_here_doc)
+	redir_ptr = n->redir;
+	n->in_fd_node = NULL;
+	while (redir_ptr->next)
 	{
-		n->in_fd = open("tmp.txt", O_RDWR | O_TRUNC | O_CREAT, 0777);
-		if (n->in_fd < 0)
+		if (redir_ptr->regular_infile || redir_ptr->is_heredoc)
+			n->in_fd_node = redir_ptr;
+		redir_ptr = redir_ptr->next;
+	}
+	if (n->in_fd_node && n->in_fd_node->is_heredoc)
+	{
+		n->in_fd_node->regular_infile = open("tmp.txt", O_RDWR | O_TRUNC | O_CREAT, 0777);
+		if (n->in_fd_node->regular_infile < 0)
 			ft_error(errno, ft_strdup("tmp.txt"), n, 1);
 		line = get_next_line(0);
-		while (ft_strncmp(n->delimiter, line, ft_strlen(line) - 1))
+		while (ft_strncmp(n->in_fd_node->heredoc_delim, line, ft_strlen(line) - 1))
 		{
-			write(n->in_fd, line, ft_strlen(line));
+			write(n->in_fd_node->regular_infile, line, ft_strlen(line));
 			free(line);
 			line = get_next_line(0);
 		}
 		free(line);
-		close(n->in_fd);
-		n->in_fd = open("tmp.txt", O_RDONLY);
+		close(n->in_fd_node->regular_infile);
+		n->in_fd_node->regular_infile = open("tmp.txt", O_RDONLY);
 	}
-	else if (n->infile)
+	else if (n->in_fd_node && n->in_fd_node->regular_infile)
 	{
-		n->in_fd = open(n->infile, O_RDONLY);
-		if (n->in_fd < 0)
-			ft_error(errno, n->infile, n, 0);
+		n->in_fd_node->regular_infile = open(n->in_fd_node->filename, O_RDONLY);
+		if (n->in_fd_node->regular_infile < 0)
+			ft_error(errno, n->in_fd_node->filename, n, 0);
 	}
-	// printf("%d\n", n->in_fd);
+	// printf("%d\n", n->redir->in_fd);
 	init_outfile(n);
 }
 
-void	get_exec_cmd_paths(t_paths p, t_token *t)
+void	fill_files(t_tree_node *n, t_paths p, int **pipefd)
 {
 	int	i;
 
-	while (t)
+	while (n->token->type != END)
 	{
 		i = -1;
-		if (t->type == CMD)
+		if (n->token->type == CMD)
 		{
 			while (p.split_filepaths[++i])
 			{
 				p.filepath_0 = ft_strjoin(p.split_filepaths[i], "/");
-				p.filepath = ft_strjoin(p.filepath_0, t->value);
+				p.filepath = ft_strjoin(p.filepath_0, n->token->value);
 				free(p.filepath_0);
 				if (access(p.filepath, X_OK) > -1)
 				{
-					t->exec_cmd_path = ft_strdup(p.filepath);
+					n->token->exec_cmd_path = ft_strdup(p.filepath);
 					free(p.filepath);
 					break;
 				}
 				free(p.filepath);
 			}
-			if (!p.split_filepaths[i])
-				t->exec_cmd_path = ft_strdup("invalid");
+			init_infile_outfile(n);
+			n->pipefd = pipefd;
 		}
-		t = t->next;
+		traverse_tree(&n);
 	}
 }
 
-void init_filepaths(t_paths *p, char **env)
+void init_filepaths(t_paths *p, t_lst *ms_env, char **ms_env_arr)
 {
-	p->all_filepaths = NULL;
 	p->split_filepaths = NULL;
 	p->filepath_0 = NULL;
 	p->filepath = NULL;
-	p->all_filepaths = getenv("PATH");
-    // if (!p->all_filepaths)
-	// 	ft_error(errno, ft_strdup("env"), NULL, 1);
-	p->split_filepaths = ft_split(p->all_filepaths, ':');
+	while (ms_env)
+	{
+		if (!ft_strncmp(ms_env->var, "PATH", 5))
+			break ;
+		ms_env = ms_env->fwd;
+	}
+	p->split_filepaths = ft_split(ms_env->val, ':');
 	// if (!p->split_filepaths)
 	// 	ft_error(errno, ft_strdup("split_filepaths"), p, 1);
-	p->env = env;
+	p->env = ms_env_arr;
 }
 
-// int	count_cmds(t_token *t_head)
-// {
-// 	int	cmd_ct;
-
-// 	cmd_ct = 0;
-// 	while (t_head->next)
-// 	{
-// 		if (t_head->type == CMD)
-// 			cmd_ct++;	
-// 	}
-// 	return (cmd_ct);
-// }
-
-void	init_tree_node(t_tree_node *n, t_paths p)
-{
-	n->p = &p;
-	n->in_fd = 0;
-	n->out_fd = 1;
-	n->infile = NULL;
-	n->outfile = NULL;
-	n->is_here_doc = 0;
-	n->delimiter = NULL;
-	n->parent = NULL;
-	n->left = NULL;
-	n->right = NULL;
-	n->is_first_node = 0;
-	n->is_last_node = 0;
-	n->is_read = 0;
-}
-
-int	**create_pipe_arr(int pipe_ct, t_tree_node *n)
+int	**create_pipe_arr(t_tree_node *n, int *pipe_ct)
 {
 	int	**pipefd;
 	int	i;
+	int	j;
 
-	pipefd = malloc(sizeof(int *) * pipe_ct);
+	*pipe_ct = 0;
+	while (n->left)
+	{
+		if (n->token->type == PIPE)
+			(*pipe_ct)++;
+		n = n->left;
+	}
+	pipefd = malloc(sizeof(int *) * *pipe_ct);
 	if (!pipefd)
 		ft_error(errno, ft_strdup("pipe malloc"), n, 1);
 	i = 0;
-	while (--pipe_ct > -1)
+	j = *pipe_ct;
+	while (--j > -1)
 	{
 		pipefd[i] = malloc(sizeof(int) * 2);
 		if (pipe(pipefd[i++]) < 0)
@@ -153,38 +151,18 @@ int	**create_pipe_arr(int pipe_ct, t_tree_node *n)
 	return (pipefd);
 }
 
-// t_tree_node	*parse(t_token *t_head, char **env)
-void	create_fds(t_tree_node **ast, t_lst *ms_env)
+void	create_fds(t_tree_node **ast, t_ms_var *ms)
 {
-	t_token 	*t_head;
-	t_tree_node	*n_head;
-	t_tree_node	*n;
+	t_tree_node	*ast_head;
 	t_paths 	p;
 	int			**pipefd;
 	int			pipe_ct;
 
-	n_head = NULL;
-	t_head = NULL;
-	n = *ast;
-	pipe_ct = 0;
-	while (n->left)
-	{
-		if (n->token->type == PIPE)
-			pipe_ct++;
-		n = n->left;
-	}
-	pipefd = create_pipe_arr(pipe_ct, n_head);
-	init_filepaths(&p, ms_env);
-	create_tokens_tree(&n_head, &t_head, p);
-	get_exec_cmd_paths(p, t_head);
-	while (!n->is_last_node)
-	{
-		init_infile_outfile(n);
-		n->pipefd = pipefd;
-		traverse_tree(&n);
-	}
-	// check_filepaths(start_node(n_head));
-	n = start_node(n_head);
+	ast_head = *ast;
+	pipefd = create_pipe_arr(ast_head, &pipe_ct);
+	init_filepaths(&p, ms->env, ms->env_arr);
+	fill_files(ast_head, p, pipefd);
+	// check_filepaths(start_node(ast_head));
 	// printf("%s\n", n->token->str);
 	// printf("%d\n", n->token->type);
 	// printf("infile:%d\n", n->in_fd);
@@ -192,8 +170,7 @@ void	create_fds(t_tree_node **ast, t_lst *ms_env)
 	// printf("%s\n", n->token->cmd_args_arr[3]);
 	// printf("%d\n", n->is_last_node);
 	// printf("%s: %d %d\n", n->parent->right->token->cmd_args_arr[0], n->pipefd[0], n->pipefd[1]);
-	init_exec(n, pipe_ct);
-	// free_all(start_node(n_head));
-	// return (n_head);
-	return (0);
+	init_exec(ast_head, pipe_ct);
+	// free_all(start_node(ast_head));
+	// return (ast_head);
 }

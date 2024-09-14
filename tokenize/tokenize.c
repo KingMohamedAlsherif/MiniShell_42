@@ -74,7 +74,7 @@ int	get_operator(char **input)
 		if (*(*input - 1) == '<')
 			return (HEREDOC);
 		if (*(*input - 1) == '>')
-			return (APPEND_OUT);
+			return (APPEND);
 		if (*(*input - 1) == '|')
 			return (OR);
 		else

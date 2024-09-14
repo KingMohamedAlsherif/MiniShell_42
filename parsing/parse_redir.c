@@ -38,10 +38,10 @@ void redir_in(t_redir **redir, char *filename)
 
 void redir_out(t_redir **redir, char *filename)
 {
-    t_redir *tmp;
+    // t_redir *tmp;
     t_redir *new_redir;
 
-    tmp = NULL;
+    // tmp = NULL;
     new_redir = NULL;
     new_redir = ft_calloc( 1 , sizeof(t_redir));
     if (!new_redir)

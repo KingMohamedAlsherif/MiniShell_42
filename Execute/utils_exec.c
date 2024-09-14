@@ -116,6 +116,7 @@ int is_empty(char *av)
 void close_fds(t_tree_node *n, int pipe_ct)
 {
 	t_tree_node	*n_0;
+	t_redir		*redir_ptr;
 	int			i;
 
 	n_0 = start_node(n);
@@ -128,10 +129,15 @@ void close_fds(t_tree_node *n, int pipe_ct)
 	}
 	while (!n_0->is_last_node)
 	{
-		if (n_0->in_fd > 2)
-			close(n_0->in_fd);
-		if (n_0->out_fd > 2)
-			close(n_0->out_fd);
+		redir_ptr = n_0->redir;
+		while (redir_ptr)
+		{
+			if (n_0->redir->regular_infile > 2)
+				close(n_0->redir->regular_infile);
+			if (n_0->redir->regular_outfile > 2)
+				close(n_0->redir->regular_outfile);
+			redir_ptr = redir_ptr->next;
+		}
 		traverse_tree(&n_0);
 	}
 	unlink("tmp.txt");

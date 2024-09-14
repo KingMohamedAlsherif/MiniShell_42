@@ -58,9 +58,9 @@ void	free_all(t_tree_node *n)
 {
 	while (!n->is_last_node)
 	{
-		free(n->infile);
-		free(n->outfile);
-		free(n->delimiter);
+		// free(n->infile);
+		// free(n->outfile);
+		// free(n->delimiter);
 		free_char_arr(n->token->cmd_args_arr, NULL);
 		traverse_tree(&n);
 	}

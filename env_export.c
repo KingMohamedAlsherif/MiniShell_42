@@ -12,23 +12,21 @@
 
 #include "minishell.h"
 
-// void	create_ms_env(char ***ms_env, char **env)
-// {
-// 	char	**ms_env_ptr;
-// 	int		str_ct;
+void	create_ms_env_arr(char ***ms_env, char **env)
+{
+	int		str_ct;
 
-// 	str_ct = 0;
-// 	while (env[str_ct])
-// 		str_ct++;
-// 	ms_env_ptr = malloc(sizeof(char *) * (str_ct + 1));
-// 	if (!ms_env_ptr)
-// 		return ;
-// 	str_ct = -1;
-// 	while (env[++str_ct])
-// 		ms_env_ptr[str_ct] = ft_strdup(env[str_ct]);
-// 	ms_env_ptr[str_ct] = NULL;
-// 	*ms_env = ms_env_ptr;
-// }
+	str_ct = 0;
+	while (env[str_ct])
+		str_ct++;
+	*ms_env = malloc(sizeof(char *) * (str_ct + 1));
+	if (!*ms_env)
+		return ;
+	str_ct = -1;
+	while (env[++str_ct])
+		*ms_env[str_ct] = ft_strdup(env[str_ct]);
+	*ms_env[str_ct] = NULL;
+}
 
 char	*export_str(char *str)
 {
@@ -100,30 +98,31 @@ void	update_order(t_lst *head, t_lst *node)
 	node->ascii_order = rank;
 }
 
-void	create_env_export(t_lst **env_head, t_lst **export_head, char **env)
+void	dup_env_exp(t_ms_var **ms, char **env)
 {
 	t_lst	*head_ptr;
 	int		i;
 
-	*env_head = new_node(ft_strdup(env[0]), 0);
-	head_ptr = *env_head;
+	(*ms)->env = new_node(ft_strdup(env[0]), 0);
+	head_ptr = (*ms)->env;
 	i = 0;
 	while (env[++i])
 	{
-		(*env_head)->fwd = new_node(ft_strdup(env[i]), 0);
-		*env_head = (*env_head)->fwd;
-		(*env_head)->bwd = *env_head;
+		(*ms)->env->fwd = new_node(ft_strdup(env[i]), 0);
+		(*ms)->env = (*ms)->env->fwd;
+		(*ms)->env->bwd = (*ms)->env;
 	}
-	(*env_head)->fwd = new_node(ft_strdup("$=4321"), 0);
-	*env_head = (*env_head)->fwd;
-	(*env_head)->bwd = *env_head;
-	*env_head = head_ptr;
+	(*ms)->env->fwd = new_node(ft_strdup("$=4321"), 0);
+	(*ms)->env = (*ms)->env->fwd;
+	(*ms)->env->bwd = (*ms)->env;
+	(*ms)->env = head_ptr;
 	while (head_ptr)
 	{
-		update_order(*env_head, head_ptr);
+		update_order((*ms)->env, head_ptr);
 		head_ptr = head_ptr->fwd;
 	}
-	// printf("%s=%s\n", (*env_head)->fwd->var, (*env_head)->fwd->val);
-	create_ms_export(export_head, *env_head);
-	// printf("%s=%s\n", (*env_head)->var, (*env_head)->val);
+	// printf("%s=%s\n", (*ms)->env->fwd->var, (*ms)->env->fwd->val);
+	create_ms_env_arr(&(*ms)->env_arr, env);
+	create_ms_export(&(*ms)->exp, (*ms)->env);
+	// printf("%s=%s\n", (*ms)->env->var, (*ms)->env->val);
 }
