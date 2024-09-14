@@ -18,76 +18,47 @@ static void add_redir(t_redir **redir, t_redir *new_redir)
     }
 }
 
-void redir_in(t_redir **redir, char *filename)
+t_redir         *init_redir(t_redir  **redir)
 {
+    (void)redir;
     t_redir *new_redir;
 
     new_redir = malloc(sizeof(t_redir));
     if (!new_redir)
-        return;
-
-    new_redir->filename = filename;
-    new_redir->is_heredoc = 0;
-    new_redir->heredoc_delim = NULL;
-    new_redir->is_append = 0;
-    new_redir->regular_infile = 1;
-    new_redir->regular_outfile = 0;
-    new_redir->next = NULL;
-    add_redir(redir, new_redir);
-}
-
-void redir_out(t_redir **redir, char *filename)
-{
-    t_redir *tmp;
-    t_redir *new_redir;
-
-    tmp = NULL;
-    new_redir = NULL;
-    new_redir = ft_calloc( 1 , sizeof(t_redir));
-    if (!new_redir)
-        return;
-    new_redir->filename = filename;
-    new_redir->is_heredoc = 0;
-    new_redir->heredoc_delim = NULL;
-    new_redir->is_append = 0;
-    new_redir->regular_infile = 0;
-    new_redir->regular_outfile = 1;
-    new_redir->next = NULL;
-    add_redir(redir, new_redir);
-}
-
-void redir_heredoc(t_redir **redir, char *heredoc_d)
-{
-    t_redir *new_redir;
-
-    new_redir = malloc(sizeof(t_redir));
-    if (!new_redir)
-        return;
-
+        return (NULL);
     new_redir->filename = NULL;
-    new_redir->is_heredoc = 1;
-    new_redir->heredoc_delim = heredoc_d;
+    new_redir->is_heredoc = 0;
+    new_redir->heredoc_delim = NULL;
     new_redir->is_append = 0;
-    new_redir->regular_infile = 1;
+    new_redir->regular_infile = 0;
     new_redir->regular_outfile = 0;
     new_redir->next = NULL;
-    add_redir(redir, new_redir);
+    return (new_redir);
 }
-
-void redir_append(t_redir **redir, char *filename)
+void        handle_redir(t_redir    **redir, char   *value, token_type   type)
 {
     t_redir *new_redir;
 
-    new_redir = malloc(sizeof(t_redir));
-    if (!new_redir)
-        return;
-
-    new_redir->filename = filename;
-    new_redir->is_heredoc = 0;
-    new_redir->heredoc_delim = NULL;
-    new_redir->is_append = 1;
-    new_redir->regular_infile = 0;
-    new_redir->regular_outfile = 1;
-    new_redir->next = NULL;
+    new_redir = init_redir(redir);
+    if (type == HEREDOC)
+    {
+        new_redir->heredoc_delim = value;
+        new_redir->is_heredoc = 1;
+    }
+    else if (type == APPEND)
+    {
+        new_redir->filename = value;
+        new_redir->is_append = 1;
+    }
+    else if (type == REDIRECT_IN)
+    {
+        new_redir->filename = value;
+        new_redir->regular_infile = 1;
+    }
+    else if (type == REDIRECT_OUT)
+    {
+        new_redir->filename = value;
+        new_redir->regular_outfile = 1;
+    }
     add_redir(redir, new_redir);
 }

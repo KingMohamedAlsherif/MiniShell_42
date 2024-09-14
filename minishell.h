@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/13 19:31:04 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/14 16:09:35 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,8 +125,6 @@ typedef struct s_tree_node
 	int					*in_fds;
 	int					*out_fds;
 	int					in_fd;
-	int					*in_fds; // for in and out files inside the nodes
-	int					*out_fds;
 	int					out_fd;
 	char				*infile; 
 	char				*outfile;
@@ -169,19 +167,17 @@ bool		valid_quote_pairs(char *input);
 char		sngl_or_dbl(char *input);
 char		*get_substr(char **input, char *blocker);
 
-int 		parsing(t_token **tokens, t_tree_node **ast, t_lst *ms_env);
+int 		parsing(t_token **tokens, t_tree_node **ast);
 int 		parse_word(t_token *token, t_tree_node **ast);
 int 		parse_pip(t_token *token, t_tree_node **ast);
 int 		init_cmd(t_token *token, t_tree_node **ast);
 int 		parse_redir(t_token **token, t_tree_node **ast);
-void 		redir_in(t_redir **redir, char *filename);
-void 		redir_out(t_redir **redir, char *filename);
-void 		redir_heredoc(t_redir **redir, char *heredoc_d);
-void 		redir_append(t_redir **redir, char *filename);
 void		create_fds(t_tree_node **ast, t_lst ms_env);
+void handle_redir(t_redir **redir, char *value, token_type type);
+t_redir *init_redir(t_redir **redir);
 
 
-void		ft_error(int error, char *str, t_tree_node *p, int exit_switch);
+void ft_error(int error, char *str, t_tree_node *p, int exit_switch);
 void		free_char_arr(char **twoD, char ***threeD);
 void		free_int_array(int **twoD, int cmd_ct);
 void		free_all(t_tree_node *n);

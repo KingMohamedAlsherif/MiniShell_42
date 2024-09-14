@@ -14,32 +14,32 @@
 
 volatile	sig_atomic_t signal_received;
 
-void	signal_handler(int signum)
-{
-	if (signum == SIGINT)
-	{
-		// printf("\033[12C  ");
-		printf("\n");
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
-	}
-}
+// void	signal_handler(int signum)
+// {
+// 	if (signum == SIGINT)
+// 	{
+// 		// printf("\033[12C  ");
+// 		printf("\n");
+// 		rl_replace_line("", 0);
+// 		rl_on_new_line();
+// 		rl_redisplay();
+// 	}
+// }
 
-int	init_signals(void)
-{
-	struct sigaction sa;
+// int	init_signals(void)
+// {
+// 	struct sigaction sa;
 
-	sa.sa_handler = signal_handler;
-	sa.sa_flags = 0;
-    sigemptyset(&sa.sa_mask);
-	if (sigaction(SIGINT, &sa, NULL) < 0)
-	{
-		perror("sigaction");
-		return (1);
-	}
-	return (0);
-}
+// 	// sa.sa_handler = signal_handler;
+// 	// sa.sa_flags = 0;
+//     // sigemptyset(&sa.sa_mask);
+// 	if (sigaction(SIGINT, &sa, NULL) < 0)
+// 	{
+// 		perror("sigaction");
+// 		return (1);
+// 	}
+// 	return (0);
+// }
 
 void print_args(t_args *tokens)
 {
@@ -92,8 +92,8 @@ int	main(int ac, char **av, char **env)
 	(void)ac;
 	(void)av;
 	// ast = NULL;
-	if (init_signals())
-		return (1);
+	// if (init_signals())
+	// 	return (1);
 	create_env_export(&ms_env, &ms_export, env);
 	while (1)
 	{
@@ -116,7 +116,7 @@ int	main(int ac, char **av, char **env)
 			add_history(input);
 			tokenize(input, &tokens, ms_env);
 			print_tokens(tokens);
-			parsing(&tokens, &ast, ms_env);
+			parsing(&tokens, &ast);
 			print_tree(ast);
 			free_char_arr(split_input, NULL);
 			free(input);

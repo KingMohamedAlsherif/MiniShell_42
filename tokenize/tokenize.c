@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:19 by chon              #+#    #+#             */
-/*   Updated: 2024/09/13 18:22:26 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/14 16:15:05 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ bool	set_vars(t_var *s, char **input, char *quote)
 		if (**input == *(*input - 1))
 		{
 			(*input)++;
-			return (0);
+			return (1);
 		}
 	}
 	return (1);
@@ -74,7 +74,7 @@ int	get_operator(char **input)
 		if (*(*input - 1) == '<')
 			return (HEREDOC);
 		if (*(*input - 1) == '>')
-			return (APPEND_OUT);
+			return (APPEND);
 		if (*(*input - 1) == '|')
 			return (OR);
 		else

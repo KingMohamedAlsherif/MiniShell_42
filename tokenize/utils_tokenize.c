@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_tokenize.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:11 by chon              #+#    #+#             */
-/*   Updated: 2024/09/13 17:08:16 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/14 15:51:41 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ void add_token(t_token **tokens, char *str, token_type type)
 	if (!new_token)
 		exit(1);
 	if (!str)
-		new_token->str = ft_strdup("\0");
+		new_token->value = ft_strdup("\0");
 	else
-		new_token->str = str;
+		new_token->value = str;
 	new_token->type = type;
 	new_token->next = NULL;
 	if (!*tokens)
@@ -46,8 +46,8 @@ void print_tokens(t_token *token)
 	while (token)
 	{
 		printf("Token: ");
-		if (token->str)
-			printf("%s", token->str);
+		if (token->value)
+			printf("%s", token->value);
 		else
 			printf("(null)");
 		printf(", Type: %d\n", token->type);
@@ -63,7 +63,7 @@ void free_tokens(t_token *token)
 	{
 		tmp = token;
 		token = token->next;
-		free(tmp->str);
+		free(tmp->value);
 		free(tmp);
 	}
 }
