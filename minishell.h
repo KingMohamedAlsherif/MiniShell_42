@@ -6,7 +6,7 @@
 /*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/14 16:09:35 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/14 18:31:15 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,9 @@ typedef enum
 	APPEND,
 	OR,
 	CD,
-	END
-}	token_type;
+	END,
+	OPEN_Q
+} token_type;
 
 typedef struct s_var
 {
@@ -173,8 +174,10 @@ int 		parse_pip(t_token *token, t_tree_node **ast);
 int 		init_cmd(t_token *token, t_tree_node **ast);
 int 		parse_redir(t_token **token, t_tree_node **ast);
 void		create_fds(t_tree_node **ast, t_lst ms_env);
-void handle_redir(t_redir **redir, char *value, token_type type);
-t_redir *init_redir(t_redir **redir);
+void 		handle_redir(t_redir **redir, char *value, token_type type);
+t_redir 	*init_redir(t_redir **redir);
+void 		check_syntax(t_token *tokens_list);
+void 		ft_print_error(t_token *tokens, token_type type);
 
 
 void ft_error(int error, char *str, t_tree_node *p, int exit_switch);

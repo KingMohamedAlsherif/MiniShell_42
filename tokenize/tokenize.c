@@ -6,7 +6,7 @@
 /*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:19 by chon              #+#    #+#             */
-/*   Updated: 2024/09/14 16:15:05 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/15 08:05:14 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,8 @@ void    tokenize(char *input, t_token **tokens, t_lst *env)
 	*tokens = NULL;
 
 	if (!valid_quote_pairs(input))
-		printf("must close quotes\n");
+		// ft_print_error(*tokens, OPEN_Q);
+		printf("hi\n");
 	else
 		while (*input)
 		{

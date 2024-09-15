@@ -6,7 +6,7 @@
 /*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:11 by chon              #+#    #+#             */
-/*   Updated: 2024/09/14 15:51:41 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/15 09:12:31 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,4 +124,43 @@ bool valid_quote_pairs(char *input)
 				input++;
 	}
 	return (1);
+}
+void		ft_print_error(t_token	*tokens, token_type	type)
+{
+	if (type == PIPE)
+		write(2, "syntax error near unexpected token `|'\n", 40);
+	else if (type == REDIRECT_IN)
+		write(2, "syntax error near unexpected token `<'\n", 40);
+	else if (type == REDIRECT_OUT)
+		write(2, "syntax error near unexpected token `>'\n", 40);
+	else if (type == HEREDOC)
+		write(2, "syntax error near unexpected token `<<'\n", 41);
+	else if (type == APPEND)
+		write(2, "syntax error near unexpected token `>>'\n", 41);
+	else if (type == OPEN_Q)
+		write(2, "syntax error 'uncloused qouts'\n", 32);
+	free_tokens(tokens);
+}
+
+void check_syntax(t_token *tokens_list)
+{
+	t_token *token;
+	t_token *next;
+
+	if (!tokens_list)
+		return;
+	token = tokens_list;
+	if (token->type == PIPE || token->type == OR || token->type == AND)
+		return (ft_print_error(token, token->type));
+	while (token)
+	{
+		next = token->next; 
+		if ((token->type == REDIRECT_IN || token->type == REDIRECT_OUT ||
+			 token->type == APPEND || token->type == HEREDOC) &&
+			(!next || next->type != WORD))
+			return (ft_print_error(token, token->type));
+		if ((token->type == PIPE || token->type == OR || token->type == AND) && !next)
+			return (ft_print_error(token, token->type));
+		token = token->next;
+	}
 }

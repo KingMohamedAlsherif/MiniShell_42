@@ -91,6 +91,7 @@ int	main(int ac, char **av, char **env)
 
 	(void)ac;
 	(void)av;
+	(void)ast;
 	// ast = NULL;
 	// if (init_signals())
 	// 	return (1);
@@ -115,12 +116,16 @@ int	main(int ac, char **av, char **env)
 		{
 			add_history(input);
 			tokenize(input, &tokens, ms_env);
-			print_tokens(tokens);
-			parsing(&tokens, &ast);
-			print_tree(ast);
-			free_char_arr(split_input, NULL);
+			// print_tokens(tokens);
+			check_syntax(tokens);
+			// if (tokens)
+			// {
+			// 	parsing(&tokens, &ast);
+			// 	print_tree(ast);
+			// 	free_char_arr(split_input, NULL);
+			// 	free_tokens(tokens);
+			// }
 			free(input);
-			free_tokens(tokens);
 		}
 	}
 	return (0);
