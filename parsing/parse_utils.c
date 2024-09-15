@@ -49,3 +49,19 @@ int     init_cmd(t_token    *token, t_tree_node     **ast)
     add_arg(&(new_node->token->cmd_args), new_arg);
     return (0);
 }
+// void append_end_node(t_tree_node *root)
+// {
+//     t_tree_node *current;
+
+//     if (!root)
+//         return;
+
+//     current = root;
+
+//     while (current->parent != NULL)
+//         current = current->parent;
+
+//     // Attach the END node as the right child of the rightmost node
+//     current->right = create_end_node();
+//     current->right = current; // Set parent to maintain tree structure
+// }
