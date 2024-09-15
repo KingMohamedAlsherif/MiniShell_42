@@ -20,14 +20,14 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 	// printf("%s\n", n->token->exec_cmd_path);
 	// printf("%s\n", n->token->cmd_args[0]);
 	// printf("%d\n", pipe_index);
-	if (n->infile)
-		use_in_fd = n->in_fd;
-	else if (n->is_first_node || pipe_index - 1 < 0)
+	if (n->in_fd_node)
+		use_in_fd = n->in_fd_node->regular_infile;
+	else if (pipe_index - 1 < 0)
 		use_in_fd = 0;
 	else
 		use_in_fd = n->pipefd[pipe_index - 1][0];
-	if (n->outfile)
-		use_out_fd = n->out_fd;
+	if (n->out_fd_node)
+		use_out_fd = n->out_fd_node->regular_outfile;
 	else if (n->right && n->right->is_last_node)
 		use_out_fd = 1;
 	else

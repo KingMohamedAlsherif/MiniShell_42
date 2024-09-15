@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-int	parsing(t_token **tokens, t_tree_node **ast)
+int	parsing(t_token **tokens, t_tree_node **ast, t_ms_var *ms)
 {
     t_token *token;
     int     ret;
@@ -12,11 +12,11 @@ int	parsing(t_token **tokens, t_tree_node **ast)
     else if (token && token->type == PIPE)
         ret = parse_pip(token, ast);
     else if (token && (token->type == REDIRECT_IN || token->type == REDIRECT_OUT 
-    || token->type == HEREDOC || token->type == APPEND))
+        || token->type == HEREDOC || token->type == APPEND))
         ret = parse_redir(tokens, ast);
     if (token != NULL)
-        return (parsing(&(*tokens)->next, ast));
-	// create_fds(ast, ms_env);
+		return (parsing(&(*tokens)->next, ast, ms));
+	create_fds(ast, ms);
     return (ret);
 }
 

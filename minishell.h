@@ -6,7 +6,7 @@
 /*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/14 18:31:15 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/15 09:40:39 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ typedef struct s_lst
 
 typedef struct s_paths
 {
-	char 	*all_filepaths;
 	char 	**split_filepaths;
 	char 	*filepath_0;
 	char 	*filepath;
@@ -109,12 +108,19 @@ typedef struct s_redir
 {
 	char 			 *filename;
 	int 			 is_heredoc;
-	char 			 *heredoc_delim;   // Delimiter for heredoc
-	int 			 regular_infile;	
+	char 			 *heredoc_delim;
+	int 			 regular_infile;
 	int 			 is_append;
-	int 			 regular_outfile;	
+	int 			 regular_outfile;
 	struct s_redir   *next;
 } t_redir;
+
+typedef struct s_ms_var
+{
+	t_lst	*env;
+	char	**env_arr;
+	t_lst	*exp;
+}	t_ms_var;
 
 typedef struct s_tree_node
 {
@@ -123,14 +129,8 @@ typedef struct s_tree_node
 	token_type			type;
 	t_args				*args;
 	t_redir 			*redir;
-	int					*in_fds;
-	int					*out_fds;
-	int					in_fd;
-	int					out_fd;
-	char				*infile; 
-	char				*outfile;
-	int					is_here_doc;
-	char				*delimiter;
+	t_redir 			*in_fd_node;
+	t_redir 			*out_fd_node;
 	// int 				empty_fd;
 	int					**pipefd;
 	struct s_tree_node	*parent;
@@ -168,16 +168,16 @@ bool		valid_quote_pairs(char *input);
 char		sngl_or_dbl(char *input);
 char		*get_substr(char **input, char *blocker);
 
-int 		parsing(t_token **tokens, t_tree_node **ast);
+int 		parsing(t_token **tokens, t_tree_node **ast, t_ms_var *ms);
 int 		parse_word(t_token *token, t_tree_node **ast);
 int 		parse_pip(t_token *token, t_tree_node **ast);
 int 		init_cmd(t_token *token, t_tree_node **ast);
 int 		parse_redir(t_token **token, t_tree_node **ast);
-void		create_fds(t_tree_node **ast, t_lst ms_env);
-void 		handle_redir(t_redir **redir, char *value, token_type type);
-t_redir 	*init_redir(t_redir **redir);
-void 		check_syntax(t_token *tokens_list);
-void 		ft_print_error(t_token *tokens, token_type type);
+void 		redir_in(t_redir **redir, char *filename);
+void 		redir_out(t_redir **redir, char *filename);
+void 		redir_heredoc(t_redir **redir, char *heredoc_d);
+void 		redir_append(t_redir **redir, char *filename);
+void		create_fds(t_tree_node **ast, t_ms_var *ms);
 
 
 void ft_error(int error, char *str, t_tree_node *p, int exit_switch);
@@ -195,7 +195,7 @@ void 		rl_clear_history (void);
 void		cd(t_tree_node *n);
 void 		close_fds(t_tree_node *n, int pipe_ct);
 int			count_lst_nodes(t_lst *head);
-void		create_env_export(t_lst **env_head, t_lst **export_head, char **env);
+void		dup_env_exp(t_ms_var **ms, char **env);
 int			is_number(char *str);
 int			has_valid_chars(char *str);
 void		insert_node(t_tree_node *n, char *str);

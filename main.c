@@ -86,16 +86,15 @@ int	main(int ac, char **av, char **env)
 	char		**split_input;
 	t_tree_node	*ast;
 	t_token		*tokens;
-	t_lst		*ms_env;
-	t_lst		*ms_export;
+	t_ms_var	*ms;
 
 	(void)ac;
 	(void)av;
 	(void)ast;
 	// ast = NULL;
-	// if (init_signals())
-	// 	return (1);
-	create_env_export(&ms_env, &ms_export, env);
+	if (init_signals())
+		return (1);
+	dup_env_exp(&ms, env);
 	while (1)
 	{
 		input = readline("Minishell $ ");
@@ -112,19 +111,14 @@ int	main(int ac, char **av, char **env)
 			free_char_arr(split_input, NULL);
 			break ;
 		}
-		else if (env)
+		else if (ms->env)
 		{
 			add_history(input);
-			tokenize(input, &tokens, ms_env);
-			// print_tokens(tokens);
-			check_syntax(tokens);
-			// if (tokens)
-			// {
-			// 	parsing(&tokens, &ast);
-			// 	print_tree(ast);
-			// 	free_char_arr(split_input, NULL);
-			// 	free_tokens(tokens);
-			// }
+			tokenize(input, &tokens, ms->env);
+			print_tokens(tokens);
+			parsing(&tokens, &ast, ms);
+			print_tree(ast);
+			free_char_arr(split_input, NULL);
 			free(input);
 		}
 	}

@@ -6,7 +6,7 @@
 #    By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/10 11:20:21 by chon              #+#    #+#              #
-#    Updated: 2024/09/14 18:32:32 by kingmohamedalshe ###   ########.fr        #
+#    Updated: 2024/09/15 09:34:11 by kingmohamedalshe ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ SRCS = main.c env_export.c utils_main.c  \
 tokenize/tokenize.c tokenize/utils_tokenize.c \
 ./execute/exec.c ./execute/utils_exec.c ./execute/free.c \
 ./builtins/builtins.c ./builtins/export.c ./builtins/utils_builtins.c \
-parsing/parse_utils.c parsing/parser.c  parsing/parse_redir.c
+./parsing/parser.c ./parsing/parser2.c ./parsing/parse_redir.c ./parsing/parse_utils.c
 # SRCS = ./parse/parse.c ./execute/exec.c ./execute/utils.c ./execute/free.c
 # OBJS_B = $(SRCS_B:.c=.o)
 # SRCS_B = 
