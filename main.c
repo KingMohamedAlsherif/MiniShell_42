@@ -92,8 +92,8 @@ int	main(int ac, char **av, char **env)
 	(void)av;
 	(void)ast;
 	// ast = NULL;
-	if (init_signals())
-		return (1);
+	// if (init_signals())
+	// 	return (1);
 	dup_env_exp(&ms, env);
 	while (1)
 	{
