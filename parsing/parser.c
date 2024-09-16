@@ -20,74 +20,86 @@ int	parsing(t_token **tokens, t_tree_node **ast, t_ms_var *ms)
     return (ret);
 }
 
-int      parse_word(t_token  *token, t_tree_node **ast)
+// int      parse_word(t_token  *token, t_tree_node **ast)
+// {
+//     t_tree_node *new_tree;
+//     t_args *new_arg;
+
+//     if ((*ast) && (*ast)->type == CMD)
+//     {
+//         new_arg = create_arg_node(token->value);
+//         if (!new_arg)
+//             return (MALLOC_ERROR);
+//         add_arg(&((*ast)->token->cmd_args), new_arg);
+//         return (0);
+//     }
+//     init_tree_node(new_tree);
+//     new_tree->token = token;
+//     new_tree->type = CMD;
+//     new_arg = create_arg_node(new_tree->token->value);
+//     if (!new_arg)
+//         return (MALLOC_ERROR);
+//     add_arg(&(new_tree->token->cmd_args), new_arg);
+//     if((*ast) && (*ast)->type == PIPE)
+//     {
+//         if ((*ast)->right)
+//          {
+//              new_arg = create_arg_node(token->value);
+//              if (!new_arg)
+//                  return (MALLOC_ERROR);
+//              add_arg(&((*ast)->right->token->cmd_args), new_arg);
+//              return (0);
+//          }
+//         (*ast)->right = new_tree; // cmd to right
+//         new_tree->parent = *ast;  // pipe as the parent
+//     }
+//     else
+//         *ast = new_tree;
+//     return (0);
+// }
+
+int parse_word(t_token *token, t_tree_node **ast)
 {
     t_tree_node *new_tree;
     t_args *new_arg;
 
-    if ((*ast) && (*ast)->type == CMD)
-    {
-        // printf("ast cmd\n");
-        printf("token: %s\n", token->value);
-        new_arg = create_arg_node(token->value);
-        if (!new_arg)
-            return (MALLOC_ERROR);
-        add_arg(&((*ast)->token->cmd_args), new_arg);
-        return (0);
-    }
-    new_tree = malloc(sizeof(t_tree_node));
-    if (!new_tree)
-        return (MALLOC_ERROR);
-    new_tree->type = CMD;
+    new_tree = NULL;
+    init_tree_node(&new_tree);
     new_tree->token = token;
-    new_tree->left = NULL;
-    new_tree->right = NULL;
-    new_tree->redir = NULL;
-    new_arg = create_arg_node(new_tree->token->value);
-    if (!new_arg)
-        return (MALLOC_ERROR);
+    new_arg = create_arg_node(token->value);
     add_arg(&(new_tree->token->cmd_args), new_arg);
-    if((*ast) && (*ast)->type == PIPE)
+    if (*ast && (*ast)->type == PIPE)
     {
         if ((*ast)->right)
-         {
-             new_arg = create_arg_node(token->value);
-             if (!new_arg)
-                 return (MALLOC_ERROR);
-             add_arg(&((*ast)->right->token->cmd_args), new_arg);
-             return (0);
-         }
-        (*ast)->right = new_tree; // cmd to right
-        new_tree->parent = *ast;  // pipe as the parent
+        {
+            new_arg = create_arg_node(token->value);
+            if (!new_arg)
+                return (MALLOC_ERROR);
+            add_arg(&((*ast)->right->token->cmd_args), new_arg);
+        }
+        else
+        {
+            (*ast)->right = new_tree;
+            new_tree->parent = *ast;
+        }
     }
     else
         *ast = new_tree;
     return (0);
 }
 
-
-
 int     parse_pip(t_token  *token, t_tree_node     **ast)
 {
     t_tree_node *new_tree;
 
+    new_tree = NULL;
     if (!(*ast))
-    {
-        printf("SYNTAX_ERROR\n");
-        return (SYNTAX_ERROR);
-    }
-    new_tree = malloc(sizeof(t_tree_node));
-    if (!new_tree)
-    {
-        printf("MALLOC_ERROR\n");
-        return (MALLOC_ERROR);
-    }
+        return (1);
+
+    init_tree_node(&new_tree);
     new_tree->token = token;
     new_tree->type = PIPE;
-    new_tree->parent = NULL;
     new_tree->left = *ast;
-    new_tree->right = NULL;
-    new_tree->redir = NULL;
     if ((*ast)->type == CMD)
         (*ast)->parent = new_tree;
     *ast = new_tree;
@@ -113,4 +125,18 @@ int         parse_redir(t_token     **token, t_tree_node     **ast)
     *token = (*token)->next;
     // printf("Current token value: %s\n", (*token)->value);
     return (0);
+}
+
+void        add_end_node(t_tree_node **ast)
+{
+    t_tree_node     *end_node;
+
+    end_node = NULL;
+    printf("%s\n", (*ast)->value);
+    if ((*ast) && (*ast)->right)
+    {
+        end_node = init_tree_node(&end_node);
+        (*ast)->right->right = end_node;
+        end_node->parent = (*ast)->right;
+    }
 }

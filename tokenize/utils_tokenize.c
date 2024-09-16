@@ -6,7 +6,7 @@
 /*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:11 by chon              #+#    #+#             */
-/*   Updated: 2024/09/15 09:12:31 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/15 10:41:18 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void add_token(t_token **tokens, char *str, token_type type)
 		new_token->value = str;
 	new_token->type = type;
 	new_token->next = NULL;
+	new_token->exec_cmd_path = NULL;
 	if (!*tokens)
 		*tokens = new_token;
 	else

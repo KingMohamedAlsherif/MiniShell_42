@@ -6,7 +6,7 @@
 /*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/15 09:40:39 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/15 16:20:53 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,11 +173,12 @@ int 		parse_word(t_token *token, t_tree_node **ast);
 int 		parse_pip(t_token *token, t_tree_node **ast);
 int 		init_cmd(t_token *token, t_tree_node **ast);
 int 		parse_redir(t_token **token, t_tree_node **ast);
-void 		redir_in(t_redir **redir, char *filename);
-void 		redir_out(t_redir **redir, char *filename);
-void 		redir_heredoc(t_redir **redir, char *heredoc_d);
-void 		redir_append(t_redir **redir, char *filename);
 void		create_fds(t_tree_node **ast, t_ms_var *ms);
+t_tree_node	*init_tree_node(t_tree_node **new_node);
+void 		add_end_node(t_tree_node **ast);
+void 		handle_redir(t_redir **redir, char *value, token_type type);
+
+
 
 
 void ft_error(int error, char *str, t_tree_node *p, int exit_switch);
