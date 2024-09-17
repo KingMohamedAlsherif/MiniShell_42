@@ -133,9 +133,9 @@ void        add_end_node(t_tree_node **ast)
 
     end_node = NULL;
     printf("%s\n", (*ast)->value);
+    init_tree_node(&end_node);
     if ((*ast) && (*ast)->right)
     {
-        end_node = init_tree_node(&end_node);
         (*ast)->right->right = end_node;
         end_node->parent = (*ast)->right;
     }

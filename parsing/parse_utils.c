@@ -49,21 +49,21 @@ int     init_cmd(t_token    *token, t_tree_node     **ast)
     add_arg(&(new_node->token->cmd_args), new_arg);
     return (0);
 }
-void append_end_node(t_tree_node *root)
-{
-    t_tree_node *current;
+// void append_end_node(t_tree_node *root)
+// {
+//     t_tree_node *current;
 
-    if (!root)
-        return;
+//     if (!root)
+//         return;
 
-    current = root;
+//     current = root;
 
-    while (current->parent != NULL)
-        current = current->parent;
+//     while (current->parent != NULL)
+//         current = current->parent;
 
-    current->right = create_end_node();
-    current->parent = current;
-}
+//     current->right = create_end_node();
+//     current->parent = current;
+// }
 void     *init_tree_node(t_tree_node **new_node)
 {
     *new_node = (t_tree_node *)malloc(sizeof(t_tree_node));
