@@ -64,13 +64,13 @@ int     init_cmd(t_token    *token, t_tree_node     **ast)
 //     current->right = create_end_node();
 //     current->parent = current;
 // }
-void     *init_tree_node(t_tree_node **new_node)
+void     init_tree_node(t_tree_node **new_node)
 {
     *new_node = (t_tree_node *)malloc(sizeof(t_tree_node));
     if (!new_node)
         return;
     (*new_node)->token = NULL; 
-    (*new_node)->type = NULL;
+    (*new_node)->type = '\0';
     (*new_node)->args = NULL;
     (*new_node)->redir = NULL;
     (*new_node)->parent = NULL;
