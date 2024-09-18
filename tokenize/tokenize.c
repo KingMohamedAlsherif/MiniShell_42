@@ -92,14 +92,52 @@ int	get_operator(char **input)
 	}
 }
 
+void print_args(t_args *cmd_args)
+{
+	printf("args: ");
+	while (cmd_args)
+	{
+		printf("%s ", cmd_args->arg);
+		cmd_args = cmd_args->next;
+	}
+	printf("\n");
+}
+
+void print_redir(t_redir *redir)
+{
+	printf("redir: "); 
+	while (redir)
+	{
+		printf("%s ", redir->filename);
+		redir = redir->next;
+	}
+	printf("\n");
+}
+
+void	print_tree(t_tree_node	*ast)
+{
+	while (ast->token->type != END)
+	{
+		printf("node type: %d value: %s\n", ast->token->type, ast->token->value);
+		if (ast->token->type != PIPE)
+		{
+			print_args(ast->token->cmd_args);
+			print_redir(ast->redir);
+		}
+		traverse_tree(&ast, 1);
+	}
+}
+
 void    tokenize(char *input, t_token **tokens, t_lst *env) 
 {
-	*tokens = NULL;
+	t_tree_node	*ast;
 
+	*tokens = NULL;
 	if (!valid_quote_pairs(input))
-		// ft_print_error(*tokens, OPEN_Q);
-		printf("hi\n");
+		printf("Must input closing quote\n");
 	else
+	{
+		ast = NULL;
 		while (*input)
 		{
 			while(*input && ft_strchr(" \n\t\f\v\r", *input))
@@ -111,4 +149,15 @@ void    tokenize(char *input, t_token **tokens, t_lst *env)
 			else
 				add_token(tokens, get_str(&input, env, 0), WORD);
 	    }
+		add_token(tokens, "END", END);
+		// print_tokens(*tokens);
+		parse(tokens, &ast);
+		ast = start_node(ast);
+		// printf("%s\n", ast->token->value);
+		// printf("%s\n", ast->parent->right->token->value);
+		// printf("%s\n", ast->parent->parent->right->token->value);
+		// printf("%s\n", ast->parent->parent->right->right->token->value);
+		print_tree(ast);
+		// create_fds(ast, ms);
+	}
 }

@@ -14,33 +14,20 @@
 
 t_tree_node	*start_node(t_tree_node *n)
 {
+	while (n->parent)
+		n = n->parent;
 	while (n->left)
 		n = n->left;
 	return (n);
 }
 
-// void	reset_read_flag(t_tree_node **n)
-// {
-// 	(*n)->is_read = 0;
-// 	if ((*n)->parent && ((!(*n)->left && !(*n)->right)
-// 		|| ((*n)->left && !(*n)->left->is_read && (*n)->right && !(*n)->right->is_read)))
-// 		*n = (*n)->parent;
-// 	else if ((*n)->left && (*n)->left->is_read)
-// 		*n = (*n)->left;
-// 	else
-// 		*n = (*n)->right;
-// }
-
-void	traverse_tree(t_tree_node **n)
+void	traverse_tree(t_tree_node **n, int read_flag)
 {
-	// (*n)->is_read = 1;
 	bool	unread_flag;
-	bool	read_flag;
 
-	unread_flag = (*n)->is_read;
-	read_flag = ((*n)->is_read + 1) % 2;
+	unread_flag = (read_flag + 1) % 2;
 	(*n)->is_read = read_flag;
-	if ((*n)->is_last_node)
+	if ((*n)->token->type == END)
 		return ;
 	if ((*n)->parent && ((!(*n)->left && !(*n)->right)
 		|| ((*n)->left && (*n)->left->is_read == read_flag
@@ -50,6 +37,18 @@ void	traverse_tree(t_tree_node **n)
 		*n = (*n)->left;
 	else
 		*n = (*n)->right;
+}
+
+void	reset_read_flag(t_tree_node **n)
+{
+	(*n)->is_read = 0;
+	while ((*n)->right)
+	{
+		*n = (*n)->right;
+		(*n)->is_read = 0;
+	}
+	while (!(*n)->is_read)
+		*n = (*n)->parent;
 }
 
 int is_empty(char *av)
@@ -94,25 +93,6 @@ int is_empty(char *av)
 // 	}
 // }
 
-// void setup_p_cp_arr(t_exec *p)
-// {
-// 	int i;
-
-// 	i = -1;
-// 	p->fd = ft_calloc(p->pipe_ct, sizeof(int *));
-// 	if (!p->fd)
-// 		ft_error(errno, ft_strdup("fd calloc"), p, 1);
-// 	while (++i < p->pipe_ct)
-// 	{
-// 		p->fd[i] = ft_calloc(2, sizeof(int));
-// 		if (!p->fd)
-// 			ft_error(errno, ft_strdup("fd calloc"), p, 1);
-// 	}
-// 	p->pid = ft_calloc(p->cmd_ct, sizeof(int));
-// 	if (!p->pid)
-// 		ft_error(errno, ft_strdup("pid calloc"), p, 1);
-// }
-
 void close_fds(t_tree_node *n, int pipe_ct)
 {
 	t_tree_node	*n_0;
@@ -138,7 +118,7 @@ void close_fds(t_tree_node *n, int pipe_ct)
 				close(n_0->redir->regular_outfile);
 			redir_ptr = redir_ptr->next;
 		}
-		traverse_tree(&n_0);
+		traverse_tree(&n_0, 1);
 	}
 	unlink("tmp.txt");
 	unlink("empty.txt");

@@ -17,10 +17,6 @@ void add_token(t_token **tokens, char *str, token_type type)
 	t_token *new_token;
 	t_token *last;
 
-	// printf("%s\n", str);
-	// if (type < 0 || (type == WORD && !str))
-	// if (type < 0)
-	// 	return ;
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 		exit(1);
@@ -29,10 +25,10 @@ void add_token(t_token **tokens, char *str, token_type type)
 	else
 		new_token->value = str;
 	new_token->type = type;
-	new_token->next = NULL;
 	new_token->exec_cmd_path = NULL;
 	new_token->cmd_args = NULL;
 	new_token->cmd_args_arr = NULL;
+	new_token->next = NULL;
 	if (!*tokens)
 		*tokens = new_token;
 	else
@@ -140,8 +136,8 @@ void		ft_print_error(t_token	*tokens, token_type	type)
 		write(2, "syntax error near unexpected token `<<'\n", 41);
 	else if (type == APPEND)
 		write(2, "syntax error near unexpected token `>>'\n", 41);
-	else if (type == OPEN_Q)
-		write(2, "syntax error 'uncloused qouts'\n", 32);
+	// else if (type == OPEN_Q)
+	// 	write(2, "syntax error 'uncloused qouts'\n", 32);
 	free_tokens(tokens);
 }
 

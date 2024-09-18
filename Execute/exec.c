@@ -50,12 +50,12 @@ void init_exec(t_tree_node *n, int pipe_ct)
 
 	n_head = n;
 	i = 0;
-	while (!n->is_last_node)
+	while (n->token->type != END)
 	{
 		if ((n->parent && n->parent->token->type == AND
 			&& n->token->type == CD))
 			cd(n);
-		if (n->token->type == CMD)
+		if (n->token->type != PIPE)
 		{
 			// printf("%s\n", n->token->exec_cmd_path);
 			// printf("%s\n", n->token->cmd_args[0]);

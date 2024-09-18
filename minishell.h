@@ -57,8 +57,6 @@ typedef struct s_paths
 typedef enum
 {
 	WORD,
-	CMD,
-	ARG,
 	PIPE,
 	AND,
 	REDIRECT_IN,
@@ -67,8 +65,7 @@ typedef enum
 	APPEND,
 	OR,
 	CD,
-	END,
-	OPEN_Q
+	END
 } token_type;
 
 typedef struct s_var
@@ -155,10 +152,8 @@ typedef struct s_tree_node
 // } t_exec;
 
 // PARSING FUNCS
-t_args 		*create_arg_node(char *value);
 void 		tokenize(char *input, t_token **tokens, t_lst *env);
 void 		print_tokens(t_token *tokens);
-void 		add_arg(t_args **args, t_args *new_arg);
 void		free_tokens(t_token *tokens);
 void    	add_token(t_token **tokens, char *str, token_type type);
 char    	*get_env(char *input, t_lst *env);
@@ -166,11 +161,11 @@ char    	*get_env(char *input, t_lst *env);
 bool		valid_quote_pairs(char *input);
 char		sngl_or_dbl(char *input);
 char		*get_substr(char **input, char *blocker);
+void 		add_cmd_arg(t_args **args_lst, char *value);
 
-int 		parsing(t_token **tokens, t_tree_node **ast, t_ms_var *ms);
-int 		init_cmd(t_token *token, t_tree_node **ast);
+void 		parse(t_token **tokens, t_tree_node **ast);
 void		create_fds(t_tree_node **ast, t_ms_var *ms);
-void		init_tree_node(t_tree_node **new_node, t_token *token);
+t_tree_node	*init_tree_node(t_token *token);
 void 		add_end_node(t_tree_node **ast);
 void 		handle_redir(t_redir **redir, char *value, token_type type);
 
@@ -181,7 +176,7 @@ void		free_all(t_tree_node *n);
 void		check_filepaths(t_tree_node *head);
 int			is_empty(char *av);
 t_tree_node	*start_node(t_tree_node *n);
-void		traverse_tree(t_tree_node **n);
+void		traverse_tree(t_tree_node **n, int read_flag);
 void		init_exec(t_tree_node *n, int pipe_ct);
 void		reset_read_flag(t_tree_node **n);
 void 		rl_replace_line(const char *text, int clear_undo);
@@ -199,6 +194,5 @@ char		*remove_quotes(char *str);
 char		*export_str(char *str);
 void		del_node(t_lst *n, int rank);
 void		free_lst_node(t_lst *node);
-int			parse(int ac, char **av, char **env);
 
 #endif
