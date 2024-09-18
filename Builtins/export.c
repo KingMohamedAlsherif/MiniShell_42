@@ -22,14 +22,14 @@ void	insert_node(t_tree_node *n, char *str)
 	env_node = n->ms_env;
 	while (env_node->fwd)
 		env_node = env_node->fwd;
-	env_node->fwd = new_node(ft_strdup(str), 0);
+	env_node->fwd = create_new_node(ft_strdup(str), 0);
 	update_order(n->ms_env, env_node);
 	rank = env_node->ascii_order;
 	export_node = n->ms_export;
 	while (export_node->ascii_order < rank - 1)
 		export_node = export_node->fwd;
 	tmp_node = export_node->fwd;
-	export_node->fwd = new_node(export_str(str), rank);
+	export_node->fwd = create_new_node(export_str(str), rank);
 	export_node->fwd->fwd = tmp_node;
 	export_node = tmp_node;
 	while (export_node)

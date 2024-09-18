@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-t_lst	*new_node(char *str, int ascii_order)
+t_lst	*create_new_node(char *str, int ascii_order)
 {
 	t_lst	*node;
 	char	**split_str;

@@ -31,6 +31,8 @@ void add_token(t_token **tokens, char *str, token_type type)
 	new_token->type = type;
 	new_token->next = NULL;
 	new_token->exec_cmd_path = NULL;
+	new_token->cmd_args = NULL;
+	new_token->cmd_args_arr = NULL;
 	if (!*tokens)
 		*tokens = new_token;
 	else

@@ -126,7 +126,6 @@ typedef struct s_tree_node
 {
 	t_token				*token;
 	t_paths				*p;
-	token_type			type;
 	t_args				*args;
 	t_redir 			*redir;
 	t_redir 			*in_fd_node;
@@ -169,19 +168,13 @@ char		sngl_or_dbl(char *input);
 char		*get_substr(char **input, char *blocker);
 
 int 		parsing(t_token **tokens, t_tree_node **ast, t_ms_var *ms);
-int 		parse_word(t_token *token, t_tree_node **ast);
-int 		parse_pip(t_token *token, t_tree_node **ast);
 int 		init_cmd(t_token *token, t_tree_node **ast);
-int 		parse_redir(t_token **token, t_tree_node **ast);
 void		create_fds(t_tree_node **ast, t_ms_var *ms);
-void		init_tree_node(t_tree_node **new_node);
+void		init_tree_node(t_tree_node **new_node, t_token *token);
 void 		add_end_node(t_tree_node **ast);
 void 		handle_redir(t_redir **redir, char *value, token_type type);
 
-
-
-
-void ft_error(int error, char *str, t_tree_node *p, int exit_switch);
+void 		ft_error(int error, char *str, t_tree_node *p, int exit_switch);
 void		free_char_arr(char **twoD, char ***threeD);
 void		free_int_array(int **twoD, int cmd_ct);
 void		free_all(t_tree_node *n);
@@ -200,7 +193,7 @@ void		dup_env_exp(t_ms_var **ms, char **env);
 int			is_number(char *str);
 int			has_valid_chars(char *str);
 void		insert_node(t_tree_node *n, char *str);
-t_lst		*new_node(char *str, int ascii_order);
+t_lst		*create_new_node(char *str, int ascii_order);
 void		update_order(t_lst *head, t_lst *node);
 char		*remove_quotes(char *str);
 char		*export_str(char *str);

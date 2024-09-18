@@ -14,32 +14,32 @@
 
 volatile	sig_atomic_t signal_received;
 
-// void	signal_handler(int signum)
-// {
-// 	if (signum == SIGINT)
-// 	{
-// 		// printf("\033[12C  ");
-// 		printf("\n");
-// 		rl_replace_line("", 0);
-// 		rl_on_new_line();
-// 		rl_redisplay();
-// 	}
-// }
+void	signal_handler(int signum)
+{
+	if (signum == SIGINT)
+	{
+		// printf("\033[12C  ");
+		printf("\n");
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+	}
+}
 
-// int	init_signals(void)
-// {
-// 	struct sigaction sa;
+int	init_signals(void)
+{
+	struct sigaction sa;
 
-// 	// sa.sa_handler = signal_handler;
-// 	// sa.sa_flags = 0;
-//     // sigemptyset(&sa.sa_mask);
-// 	if (sigaction(SIGINT, &sa, NULL) < 0)
-// 	{
-// 		perror("sigaction");
-// 		return (1);
-// 	}
-// 	return (0);
-// }
+	sa.sa_handler = signal_handler;
+	sa.sa_flags = 0;
+    sigemptyset(&sa.sa_mask);
+	if (sigaction(SIGINT, &sa, NULL) < 0)
+	{
+		perror("sigaction");
+		return (1);
+	}
+	return (0);
+}
 
 void print_args(t_args *tokens)
 {
@@ -61,9 +61,7 @@ void print_redir(t_redir *tokens)
 void	print_tree(t_tree_node	*ast)
 {
 	if (ast && ast->token)
-	{
 		printf("AST ==> (( %s )) and Type => %d\n", ast->token->value, ast->type);
-	}
 	if (ast && ast->right)
 	{
 		printf("RIGHT =>> ");
@@ -92,15 +90,17 @@ int	main(int ac, char **av, char **env)
 	(void)av;
 	(void)ast;
 	// ast = NULL;
-	// if (init_signals())
-	// 	return (1);
+	if (init_signals())
+		return (1);
+	ms = NULL;
 	dup_env_exp(&ms, env);
+	// printf("%s\n", ms->exp->var_n_val);
 	while (1)
 	{
 		input = readline("Minishell $ ");
 		split_input = ft_split(input, ' ');
-		// if (!ft_strncmp(split_input[0], "clear", 6) && !split_input[1])
-		// 	rl_clear_history();
+		if (!ft_strncmp(split_input[0], "clear", 6) && !split_input[1])
+			rl_clear_history();
 		if (!input || !env || (split_input[0] && !ft_strncmp(split_input[0], "exit", 5)))
 		{
 			if (input && split_input[1] && !is_number(split_input[1]))

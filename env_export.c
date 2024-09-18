@@ -12,22 +12,6 @@
 
 #include "minishell.h"
 
-void	create_ms_env_arr(char ***ms_env, char **env)
-{
-	int		str_ct;
-
-	str_ct = 0;
-	while (env[str_ct])
-		str_ct++;
-	*ms_env = malloc(sizeof(char *) * (str_ct + 1));
-	if (!*ms_env)
-		return ;
-	str_ct = -1;
-	while (env[++str_ct])
-		*ms_env[str_ct] = ft_strdup(env[str_ct]);
-	*ms_env[str_ct] = NULL;
-}
-
 char	*export_str(char *str)
 {
 	char	**split_str;
@@ -52,30 +36,48 @@ char	*export_str(char *str)
 	return (export_str);
 }
 
-void	create_ms_export(t_lst **export_head, t_lst *ms_env)
+void	create_ms_export(t_lst **exp_head, t_lst *env)
 {
-	t_lst	*export_head_ptr;
+	t_lst	*exp_head_ptr;
 	int		i;
 	t_lst	*env_head;
 	int		node_ct;
 
-	env_head = ms_env;
-	node_ct = count_lst_nodes(ms_env);
-	while (ms_env->ascii_order)
-		ms_env = ms_env->fwd;
-	*export_head = new_node(export_str(ms_env->var_n_val), ms_env->ascii_order);
-	export_head_ptr = *export_head;
-	ms_env = env_head;
+	env_head = env;
+	node_ct = count_lst_nodes(env);
+	while (env->ascii_order)
+		env = env->fwd;
+	*exp_head = create_new_node(export_str(env->var_n_val), env->ascii_order);
+	exp_head_ptr = *exp_head;
+	env = env_head;
 	i = 0;
 	while (++i < node_ct)
 	{
-		while (ms_env->ascii_order != i)
-			ms_env = ms_env->fwd;
-		export_head_ptr->fwd = new_node(export_str(ms_env->var_n_val), ms_env->ascii_order);
-		export_head_ptr = export_head_ptr->fwd;
-		export_head_ptr->bwd = export_head_ptr;
-		ms_env = env_head;
+		while (env->ascii_order != i)
+			env = env->fwd;
+		exp_head_ptr->fwd = create_new_node(export_str(env->var_n_val), env->ascii_order);
+		exp_head_ptr = exp_head_ptr->fwd;
+		exp_head_ptr->bwd = exp_head_ptr;
+		env = env_head;
 	}
+}
+
+void	create_ms_env_arr(char ***ms_env, char **env)
+{
+	int		str_ct;
+
+	str_ct = 0;
+	while (env[str_ct])
+		str_ct++;
+	*ms_env = malloc((sizeof(char *) + 1) * str_ct);
+	str_ct = -1;
+	while (env[++str_ct])
+	{
+		(*ms_env)[str_ct] = ft_strdup(env[str_ct]);
+		if (!(*ms_env)[str_ct])
+			exit (1);
+	}
+	(*ms_env)[str_ct] = NULL;
 }
 
 void	update_order(t_lst *head, t_lst *node)
@@ -101,28 +103,34 @@ void	update_order(t_lst *head, t_lst *node)
 void	dup_env_exp(t_ms_var **ms, char **env)
 {
 	t_lst	*head_ptr;
+	t_lst	*new_node;
 	int		i;
 
-	(*ms)->env = new_node(ft_strdup(env[0]), 0);
+	*ms = malloc(sizeof(t_ms_var));
+	if (!*ms)
+		exit (1);
+	(*ms)->env = create_new_node(env[0], 0);
 	head_ptr = (*ms)->env;
 	i = 0;
 	while (env[++i])
 	{
-		(*ms)->env->fwd = new_node(ft_strdup(env[i]), 0);
+		new_node = create_new_node(env[i], 0);
+		new_node->bwd = (*ms)->env;
+		(*ms)->env->fwd = new_node;
 		(*ms)->env = (*ms)->env->fwd;
-		(*ms)->env->bwd = (*ms)->env;
 	}
-	(*ms)->env->fwd = new_node(ft_strdup("$=4321"), 0);
-	(*ms)->env = (*ms)->env->fwd;
-	(*ms)->env->bwd = (*ms)->env;
+	new_node = create_new_node(ft_strdup("$=4321"), 0);
+	new_node->bwd = (*ms)->env;
+	(*ms)->env->fwd = new_node;
 	(*ms)->env = head_ptr;
 	while (head_ptr)
 	{
 		update_order((*ms)->env, head_ptr);
 		head_ptr = head_ptr->fwd;
 	}
-	// printf("%s=%s\n", (*ms)->env->fwd->var, (*ms)->env->fwd->val);
+	// printf("%s=%s\n", (*ms)->env->var, (*ms)->env->val);
 	create_ms_env_arr(&(*ms)->env_arr, env);
 	create_ms_export(&(*ms)->exp, (*ms)->env);
-	// printf("%s=%s\n", (*ms)->env->var, (*ms)->env->val);
+	// printf("char**: %s\n", (*ms)->env_arr[0]);
+	// printf("%s=%s\n", (*ms)->exp->var, (*ms)->exp->val);
 }

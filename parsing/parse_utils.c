@@ -9,17 +9,15 @@ t_args *create_arg_node(char *value)
         return NULL;
     new_arg->arg = ft_strdup(value);
     new_arg->next = NULL;
-    return new_arg;
+    return (new_arg);
 }
 
 void add_arg(t_args **args, t_args *new_arg)
 {
     t_args *current;
    
-    if (*args == NULL)
-    {
+    if (!*args)
         *args = new_arg;
-    }
     else
     {
         current = *args;
@@ -64,12 +62,12 @@ int     init_cmd(t_token    *token, t_tree_node     **ast)
 //     current->right = create_end_node();
 //     current->parent = current;
 // }
-void     init_tree_node(t_tree_node **new_node)
+void     init_tree_node(t_tree_node **new_node, t_token *token)
 {
     *new_node = (t_tree_node *)malloc(sizeof(t_tree_node));
     if (!new_node)
         return;
-    (*new_node)->token = NULL; 
+    (*new_node)->token = token; 
     (*new_node)->type = '\0';
     (*new_node)->args = NULL;
     (*new_node)->redir = NULL;
