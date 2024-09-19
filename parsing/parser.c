@@ -1,11 +1,31 @@
 #include "../minishell.h"
 
-void	parse_redir(t_token **token, t_tree_node **ast)
+void	parse_redir(t_token **tokens, t_tree_node **ast)
 {
-    if (!token || !*token || !ast || !*ast || !(*token)->next) // ensure that next token is word
+	t_redir *new_redir;
+	t_redir *current;
+
+	new_redir = malloc(sizeof(t_redir));
+    if (!new_redir)
         exit (1);
-    handle_redir(&((*ast)->redir), (*token)->next->value, (*token)->type);
-    *token = (*token)->next;
+    new_redir->filename = NULL;
+    new_redir->is_heredoc = 0;
+    new_redir->heredoc_delim = NULL;
+    new_redir->is_append = 0;
+    new_redir->regular_infile = 0;
+    new_redir->regular_outfile = 0;
+    new_redir->next = NULL;
+    if (!(*ast)->redir)
+        (*ast)->redir = new_redir;
+    else
+    {
+        current = (*ast)->redir;
+        while (current->next)
+            current = current->next;
+        current->next = new_redir;
+    }
+	update_node(new_redir, (*tokens)->next->value, (*tokens)->type);
+	*tokens = (*tokens)->next;
     // printf("Current token value: %s\n", (*token)->value);
 }
 
@@ -44,17 +64,12 @@ void	parse_word(t_token *token, t_tree_node **ast)
 
 void	parse(t_token **tokens, t_tree_node **ast)
 {
-    t_token		*token;
-
-    token = *tokens;
-	printf("token: %s\n", token->value);
-    if (token && token->type == PIPE)
-		parse_pipe(token, ast);
-    else if (token && (token->type == REDIRECT_IN || token->type == REDIRECT_OUT 
-		|| token->type == HEREDOC || token->type == APPEND))
-        parse_redir(tokens, ast);
-    else if (token)
-		parse_word(token, ast);
-	if (token->next)
-		parse(&token->next, ast);
+    if ((*tokens)->type == PIPE)
+		parse_pipe(*tokens, ast);
+    else if ((*tokens)->type >= REDIRECT_IN && (*tokens)->type <= APPEND)
+        parse_redir((tokens), ast);
+    else if (*tokens)
+		parse_word(*tokens, ast);
+	if ((*tokens)->next)
+		parse(&(*tokens)->next, ast);
 }

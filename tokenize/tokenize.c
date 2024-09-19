@@ -153,11 +153,7 @@ void    tokenize(char *input, t_token **tokens, t_lst *env)
 		// print_tokens(*tokens);
 		parse(tokens, &ast);
 		ast = start_node(ast);
-		// printf("%s\n", ast->token->value);
-		// printf("%s\n", ast->parent->right->token->value);
-		// printf("%s\n", ast->parent->parent->right->token->value);
-		// printf("%s\n", ast->parent->parent->right->right->token->value);
-		print_tree(ast);
+		// print_tree(ast);
 		// create_fds(ast, ms);
 	}
 }

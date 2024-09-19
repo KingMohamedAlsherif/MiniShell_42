@@ -166,8 +166,7 @@ void 		add_cmd_arg(t_args **args_lst, char *value);
 void 		parse(t_token **tokens, t_tree_node **ast);
 void		create_fds(t_tree_node **ast, t_ms_var *ms);
 t_tree_node	*init_tree_node(t_token *token);
-void 		add_end_node(t_tree_node **ast);
-void 		handle_redir(t_redir **redir, char *value, token_type type);
+void		update_node(t_redir *new_redir, char *value, token_type type);
 
 void 		ft_error(int error, char *str, t_tree_node *p, int exit_switch);
 void		free_char_arr(char **twoD, char ***threeD);
