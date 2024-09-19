@@ -21,7 +21,7 @@ void add_cmd_arg(t_args **args_lst, char *value)
     }
 }
 
-t_tree_node *init_tree_node(t_token *token)
+t_tree_node *init_tree_node(t_token *token, t_ms_var *ms)
 {
     t_tree_node *new_node;
 
@@ -29,12 +29,11 @@ t_tree_node *init_tree_node(t_token *token)
     if (!new_node)
         exit (1);
     new_node->token = token; 
-    new_node->args = NULL;
     new_node->redir = NULL;
     new_node->parent = NULL;
     new_node->left = NULL;
     new_node->right = NULL;
     new_node->is_read = 0;
-    new_node->value = NULL;
+	new_node->ms = ms;
     return (new_node);
 }

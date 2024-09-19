@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-bool	set_vars(t_var *s, char **input, char *quote)
+void	set_vars(t_var *s, char **input, char *quote)
 {
 	s->str = NULL;
 	s->std_blockers = "\'\" \n\t\f\v\r<>|&$";
@@ -32,20 +32,15 @@ bool	set_vars(t_var *s, char **input, char *quote)
 		*quote = **input;
 		(*input)++;
 		if (**input == *(*input - 1))
-		{
 			(*input)++;
-			return (1);
-		}
 	}
-	return (1);
 }
 
 char    *get_str(char **input, t_lst *env, char quote)
 {
 	t_var	s;
 
-	if (!set_vars(&s, input, &quote))
-		return (NULL);
+	set_vars(&s, input, &quote);
 	if (**input == '$' && quote != '\'')
 	{
 		(*input)++;
@@ -92,52 +87,13 @@ int	get_operator(char **input)
 	}
 }
 
-void print_args(t_args *cmd_args)
-{
-	printf("args: ");
-	while (cmd_args)
-	{
-		printf("%s ", cmd_args->arg);
-		cmd_args = cmd_args->next;
-	}
-	printf("\n");
-}
-
-void print_redir(t_redir *redir)
-{
-	printf("redir: "); 
-	while (redir)
-	{
-		printf("%s ", redir->filename);
-		redir = redir->next;
-	}
-	printf("\n");
-}
-
-void	print_tree(t_tree_node	*ast)
-{
-	while (ast->token->type != END)
-	{
-		printf("node type: %d value: %s\n", ast->token->type, ast->token->value);
-		if (ast->token->type != PIPE)
-		{
-			print_args(ast->token->cmd_args);
-			print_redir(ast->redir);
-		}
-		traverse_tree(&ast, 1);
-	}
-}
-
 void    tokenize(char *input, t_token **tokens, t_lst *env) 
 {
-	t_tree_node	*ast;
-
 	*tokens = NULL;
 	if (!valid_quote_pairs(input))
 		printf("Must input closing quote\n");
 	else
 	{
-		ast = NULL;
 		while (*input)
 		{
 			while(*input && ft_strchr(" \n\t\f\v\r", *input))
@@ -150,10 +106,5 @@ void    tokenize(char *input, t_token **tokens, t_lst *env)
 				add_token(tokens, get_str(&input, env, 0), WORD);
 	    }
 		add_token(tokens, "END", END);
-		// print_tokens(*tokens);
-		parse(tokens, &ast);
-		ast = start_node(ast);
-		// print_tree(ast);
-		// create_fds(ast, ms);
 	}
 }

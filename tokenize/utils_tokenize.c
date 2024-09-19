@@ -124,6 +124,7 @@ bool valid_quote_pairs(char *input)
 	}
 	return (1);
 }
+
 void		ft_print_error(t_token	*tokens, token_type	type)
 {
 	if (type == PIPE)

@@ -12,6 +12,26 @@
 
 #include "../minishell.h"
 
+int	last_redir_fd(t_redir *redir, char type)
+{
+	while (redir->fwd)
+		redir = redir->fwd;
+	if (type == 'i')
+	{
+		while (redir->bwd
+		&& (!redir->in_fd || !redir->heredoc_delim))
+			redir = redir->bwd;
+		return (redir->in_fd);
+	}
+	else
+	{
+		while (redir->bwd
+		&& (!redir->out_fd || !redir->is_append))
+			redir = redir->bwd;
+		return (redir->out_fd);
+	}
+}
+
 t_tree_node	*start_node(t_tree_node *n)
 {
 	while (n->parent)
@@ -93,10 +113,23 @@ int is_empty(char *av)
 // 	}
 // }
 
-void close_fds(t_tree_node *n, int pipe_ct)
+void	close_redir_fds(t_redir *redir)
+{
+	while (redir)
+	{
+		if (redir->in_fd > 2)
+			close(redir->in_fd);
+		if (redir->out_fd > 2)
+			close(redir->out_fd);
+		if (redir->heredoc_delim)
+			unlink(redir->filename);
+		redir = redir->fwd;
+	}
+}
+
+void	close_fds(t_tree_node *n, int pipe_ct)
 {
 	t_tree_node	*n_0;
-	t_redir		*redir_ptr;
 	int			i;
 
 	n_0 = start_node(n);
@@ -109,19 +142,9 @@ void close_fds(t_tree_node *n, int pipe_ct)
 	}
 	while (!n_0->is_last_node)
 	{
-		redir_ptr = n_0->redir;
-		while (redir_ptr)
-		{
-			if (n_0->redir->regular_infile > 2)
-				close(n_0->redir->regular_infile);
-			if (n_0->redir->regular_outfile > 2)
-				close(n_0->redir->regular_outfile);
-			redir_ptr = redir_ptr->next;
-		}
-		traverse_tree(&n_0, 1);
+		close_redir_fds(n_0->redir);
+		traverse_tree(&n_0, 0);
 	}
-	unlink("tmp.txt");
-	unlink("empty.txt");
 }
 
 void ft_error(int error, char *str, t_tree_node *n, int exit_switch)

@@ -57,12 +57,12 @@ typedef struct s_paths
 typedef enum
 {
 	WORD,
-	PIPE,
-	AND,
 	REDIRECT_IN,
 	REDIRECT_OUT,
 	HEREDOC,
 	APPEND,
+	PIPE,
+	AND,
 	OR,
 	CD,
 	END
@@ -104,12 +104,12 @@ typedef struct s_token
 typedef struct s_redir
 {
 	char 			 *filename;
-	int 			 is_heredoc;
 	char 			 *heredoc_delim;
-	int 			 regular_infile;
+	int 			 in_fd;
 	int 			 is_append;
-	int 			 regular_outfile;
-	struct s_redir   *next;
+	int 			 out_fd;
+	struct s_redir   *fwd;
+	struct s_redir   *bwd;
 } t_redir;
 
 typedef struct s_ms_var
@@ -123,10 +123,7 @@ typedef struct s_tree_node
 {
 	t_token				*token;
 	t_paths				*p;
-	t_args				*args;
 	t_redir 			*redir;
-	t_redir 			*in_fd_node;
-	t_redir 			*out_fd_node;
 	// int 				empty_fd;
 	int					**pipefd;
 	struct s_tree_node	*parent;
@@ -135,9 +132,7 @@ typedef struct s_tree_node
 	int					is_first_node;
 	int					is_last_node;
 	bool				is_read;
-	char				*value;
-	t_lst				*ms_env;
-	t_lst				*ms_export;
+	t_ms_var			*ms;
 } t_tree_node;
 
 // typedef struct s_exec
@@ -164,7 +159,7 @@ char		*get_substr(char **input, char *blocker);
 void 		add_cmd_arg(t_args **args_lst, char *value);
 
 void 		parse(t_token **tokens, t_tree_node **ast);
-void		create_fds(t_tree_node **ast, t_ms_var *ms);
+void		pipes_n_exec_path(t_tree_node *head, t_ms_var *ms, int *pipe_ct);
 t_tree_node	*init_tree_node(t_token *token);
 void		update_node(t_redir *new_redir, char *value, token_type type);
 
@@ -193,5 +188,6 @@ char		*remove_quotes(char *str);
 char		*export_str(char *str);
 void		del_node(t_lst *n, int rank);
 void		free_lst_node(t_lst *node);
+int			last_redir_fd(t_redir *redir, char type);
 
 #endif
