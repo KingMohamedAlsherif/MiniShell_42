@@ -30,12 +30,6 @@
 # include <signal.h>
 # include <sys/wait.h>
 
-// note: tokenize cmd and args as one token; 
-	// create program breakers for syntax errors such as 
-	// i)	redirection immediately followed by |
-	// ii)	unclosed quotes
-	// iii)	() without && or ||
-
 typedef struct s_lst
 {
 	char			*var_n_val;
@@ -152,7 +146,7 @@ void 		ft_error(int error, char *str, t_tree_node *p, int exit_switch);
 void		check_filepaths(t_tree_node *head);
 int			is_empty(char *av);
 t_tree_node	*start_node(t_tree_node *n);
-void		traverse_tree(t_tree_node **n, int read_flag);
+void		traverse_tree(t_tree_node **n);
 void		init_exec(t_tree_node *n, int pipe_ct);
 void		reset_read_flag(t_tree_node **n);
 void 		rl_replace_line(const char *text, int clear_undo);

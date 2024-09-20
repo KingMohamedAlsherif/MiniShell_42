@@ -61,7 +61,7 @@ void	exec_path_args_arr(t_tree_node *n, t_paths p, int **pipefd)
 			n->pipefd = pipefd;
 			create_cmd_args_arr(n);
 		}
-		traverse_tree(&n, 1);
+		traverse_tree(&n);
 	}
 }
 

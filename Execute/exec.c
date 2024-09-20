@@ -74,11 +74,11 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 		last_redir_fd(n->redir, 'i', &use_in_fd);
 		last_redir_fd(n->redir, 'o', &use_out_fd);
 	}
-	if (pipe_index > 0 && pipe_ct)
+	if (pipe_index > 0)
 		use_in_fd = n->pipefd[pipe_index - 1][0];
 	if (pipe_ct && !n->right)
 		use_out_fd = n->pipefd[pipe_index][1];
-	// printf("in:%d out:%d\n", use_in_fd, use_out_fd);
+	printf("in:%d out:%d\n", use_in_fd, use_out_fd);
 	if (dup2(use_in_fd, STDIN_FILENO) < 0)
 		ft_error(errno, ft_strdup("dup infile"), n, 1);
 	if (dup2(use_out_fd, STDOUT_FILENO) < 0)
@@ -90,8 +90,9 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 
 void init_exec(t_tree_node *n, int pipe_ct)
 {
-	int			pid;
-	int			i;
+	int	pid;
+	int	i;
+	int	status;
 
 	i = 0;
 	while (n->type != END)
@@ -108,10 +109,10 @@ void init_exec(t_tree_node *n, int pipe_ct)
 				ft_error(errno, ft_strdup("fork"), n, 1);
 			if (!pid)
 				execute(n, i, pipe_ct);
-			waitpid(pid, NULL, 0);
+			waitpid(pid, &status, 0);
 			i++;
 		}
-		traverse_tree(&n, 0);
+		traverse_tree(&n);
 	}
 	close_fds(n, pipe_ct);
 }

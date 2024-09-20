@@ -97,7 +97,7 @@ void	free_tree(t_tree_node *n)
 	}
 	free_char_arr(n->cmd_args_arr, NULL);
 	free(n->exec_cmd_path);
-	traverse_tree(&n, 0);
+	traverse_tree(&n);
 }
 
 void	free_all(t_tree_node *n)
@@ -109,7 +109,7 @@ void	free_all(t_tree_node *n)
 		// free(n->outfile);
 		// free(n->delimiter);
 		free_char_arr(n->cmd_args_arr, NULL);
-		traverse_tree(&n, 1);
+		traverse_tree(&n);
 	}
 	// free(p->filepaths);
 	// free(p->pid);

@@ -51,7 +51,7 @@ void	print_tree(t_tree_node	*ast)
 			printf("redir out: "); 
 			print_redir(ast->redir, 'o');
 		}
-		traverse_tree(&ast, 1);
+		traverse_tree(&ast);
 	}
 }
 
@@ -64,7 +64,6 @@ void	init_ms(char *input, t_ms_var *ms)
 
 	add_history(input);
 	tokenize(input, &tokens, ms->env);
-	;
 	// print_tokens(tokens);
 	if (tokens && !check_syntax(tokens))
 	{
@@ -76,10 +75,10 @@ void	init_ms(char *input, t_ms_var *ms)
 		pipes_n_exec_path(start_node(ast), ms, &pipe_ct);
 		init_exec(start_node(ast), pipe_ct);
 		free(input);
-		ast = start_node(ast);
-		while (ast->type != END)
-			free_tree(ast);
-		free_tree(ast);
+		// ast = start_node(ast);
+		// while (ast->type != END)
+		// 	free_tree(ast);
+		// free_tree(ast);
 	}
 }
 
