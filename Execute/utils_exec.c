@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-int	last_redir_fd(t_redir *redir, char type)
+void	last_redir_fd(t_redir *redir, char type, int *fd)
 {
 	while (redir->fwd)
 		redir = redir->fwd;
@@ -21,14 +21,16 @@ int	last_redir_fd(t_redir *redir, char type)
 		while (redir->bwd
 		&& (!redir->in_fd || !redir->heredoc_delim))
 			redir = redir->bwd;
-		return (redir->in_fd);
+		if (redir->in_fd)
+			*fd = redir->in_fd;
 	}
 	else
 	{
 		while (redir->bwd
 		&& (!redir->out_fd || !redir->is_append))
 			redir = redir->bwd;
-		return (redir->out_fd);
+		if (redir->out_fd)
+			*fd = redir->out_fd;
 	}
 }
 
@@ -149,6 +151,7 @@ void	close_fds(t_tree_node *n, int pipe_ct)
 
 void ft_error(int error, char *str, t_tree_node *n, int exit_switch)
 {
+	printf("error #: %d\n", error);
 	if (!error)
 		ft_printf("%s\n", str);
 	else

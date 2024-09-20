@@ -112,7 +112,7 @@ bool valid_quote_pairs(char *input)
 	return (1);
 }
 
-void		print_syntax_error(t_token	*tokens, token_type	type)
+bool	print_syntax_error(t_token	*tokens, token_type	type)
 {
 	if (type == PIPE)
 		write(2, "syntax error near unexpected token `|'\n", 40);
@@ -124,30 +124,28 @@ void		print_syntax_error(t_token	*tokens, token_type	type)
 		write(2, "syntax error near unexpected token `<<'\n", 41);
 	else if (type == APPEND)
 		write(2, "syntax error near unexpected token `>>'\n", 41);
-	// else if (type == OPEN_Q)
-	// 	write(2, "syntax error 'uncloused qouts'\n", 32);
 	free_tokens(tokens);
+	return (1);
 }
 
-void check_syntax(t_token *tokens_list)
+bool	check_syntax(t_token *tokens_list)
 {
 	t_token *token;
 	t_token *next;
 
-	if (!tokens_list)
-		return;
 	token = tokens_list;
 	if (token->type == PIPE || token->type == OR || token->type == AND)
-		return (print_syntax_error(token, token->type));
+		return (print_syntax_error(token, token->type), 1);
 	while (token)
 	{
 		next = token->next; 
 		if ((token->type == REDIRECT_IN || token->type == REDIRECT_OUT ||
 			 token->type == APPEND || token->type == HEREDOC) &&
 			(!next || next->type != WORD))
-			return (print_syntax_error(token, token->type));
+			return (print_syntax_error(token, token->type), 1);
 		if ((token->type == PIPE || token->type == OR || token->type == AND) && !next)
-			return (print_syntax_error(token, token->type));
+			return (print_syntax_error(token, token->type), 1);
 		token = token->next;
 	}
+	return (0);
 }

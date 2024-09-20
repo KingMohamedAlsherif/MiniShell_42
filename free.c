@@ -14,10 +14,10 @@
 
 void	free_lst_node(t_lst *node)
 {
-	free (node->var_n_val);
-	free (node->var);
-	free (node->val);
-	free (node);
+	free(node->var_n_val);
+	free(node->var);
+	free(node->val);
+	free(node);
 }
 
 void	free_int_array(int **two_d, int pipe_ct)
@@ -88,6 +88,11 @@ void	free_lst(t_lst *lst)
 	free(lst->var);
 	free(lst->val);
 	free(lst);
+}
+
+void	free_tree(t_tree_node *n)
+{
+	traverse_tree(&n, 1);
 }
 
 void	free_all(t_tree_node *n)

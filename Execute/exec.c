@@ -71,8 +71,8 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 	use_out_fd = 1;
 	if (n->redir)
 	{
-		use_in_fd = last_redir_fd(n->redir, 'i');
-		use_out_fd = last_redir_fd(n->redir, 'o');
+		last_redir_fd(n->redir, 'i', &use_in_fd);
+		last_redir_fd(n->redir, 'o', &use_out_fd);
 	}
 	if (pipe_index > 0 && pipe_ct)
 		use_in_fd = n->pipefd[pipe_index - 1][0];

@@ -147,9 +147,7 @@ bool		valid_quote_pairs(char *input);
 char		sngl_or_dbl(char *input);
 char		*get_substr(char **input, char *blocker);
 void 		add_cmd_arg(t_args **args_lst, char *value);
-void 		check_syntax(t_token *tokens_list);
-void		print_syntax_error(t_token	*tokens, token_type	type);
-
+bool 		check_syntax(t_token *tokens_list);
 
 void 		parse(t_token **tokens, t_tree_node **ast, t_ms_var *ms);
 void		pipes_n_exec_path(t_tree_node *head, t_ms_var *ms, int *pipe_ct);
@@ -177,7 +175,7 @@ void		update_order(t_lst *head, t_lst *node);
 char		*remove_quotes(char *str);
 char		*export_str(char *str);
 void		del_node(t_lst *n, int rank);
-int			last_redir_fd(t_redir *redir, char type);
+void		last_redir_fd(t_redir *redir, char type, int *fd);
 
 void		free_char_arr(char **two_d, char ***three_d);
 void		free_int_array(int **two_d, int cmd_ct);

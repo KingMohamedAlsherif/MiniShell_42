@@ -64,9 +64,9 @@ void	init_ms(char *input, t_ms_var *ms)
 
 	add_history(input);
 	tokenize(input, &tokens, ms->env);
-	check_syntax(tokens);
+	;
 	// print_tokens(tokens);
-	if (tokens)
+	if (tokens && !check_syntax(tokens))
 	{
 		ast = init_tree_node(tokens, ms);
 		tokens_ptr = tokens;
