@@ -46,13 +46,12 @@ typedef struct s_lst
 	struct s_lst	*fwd;
 }	t_lst;
 
-typedef struct s_paths
+typedef struct s_ms_var
 {
-	char 	**split_filepaths;
-	char 	*filepath_0;
-	char 	*filepath;
-	char	**env;
-}	t_paths;
+	t_lst	*env;
+	char	**env_arr;
+	t_lst	*exp;
+}	t_ms_var;
 
 typedef enum
 {
@@ -83,12 +82,18 @@ typedef struct s_var
 	bool	convert;
 }	t_var;
 
+typedef struct s_paths
+{
+	char 	**split_filepaths;
+	char 	*filepath_0;
+	char 	*filepath;
+}	t_paths;
+
 typedef	struct s_args
 {
 	char	*arg;
 	struct s_args *next;
 } 		t_args;
-
 
 typedef struct s_token
 {
@@ -97,7 +102,6 @@ typedef struct s_token
 	struct s_token *next;
 }	t_token;
 
-// (In_file redirection)
 typedef struct s_redir
 {
 	char 			 *filename;
@@ -109,13 +113,6 @@ typedef struct s_redir
 	struct s_redir   *bwd;
 } t_redir;
 
-typedef struct s_ms_var
-{
-	t_lst	*env;
-	char	**env_arr;
-	t_lst	*exp;
-}	t_ms_var;
-
 typedef struct s_tree_node
 {
 	token_type			type;
@@ -125,13 +122,10 @@ typedef struct s_tree_node
 	char 				*exec_cmd_path;
 	t_paths				*p;
 	t_redir 			*redir;
-	// int 				empty_fd;
 	int					**pipefd;
 	struct s_tree_node	*parent;
 	struct s_tree_node	*left;
 	struct s_tree_node	*right;
-	int					is_first_node;
-	int					is_last_node;
 	bool				is_read;
 	t_ms_var			*ms;
 } t_tree_node;
@@ -182,5 +176,6 @@ void		free_int_array(int **two_d, int cmd_ct);
 void		free_all(t_tree_node *n);
 void		free_lst_node(t_lst *node);
 void		free_lst(t_lst *lst);
+void		free_tree(t_tree_node *n);
 
 #endif

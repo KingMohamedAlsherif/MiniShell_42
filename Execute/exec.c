@@ -90,11 +90,9 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 
 void init_exec(t_tree_node *n, int pipe_ct)
 {
-	t_tree_node *n_head;
 	int			pid;
 	int			i;
 
-	n_head = n;
 	i = 0;
 	while (n->type != END)
 	{
@@ -110,10 +108,10 @@ void init_exec(t_tree_node *n, int pipe_ct)
 				ft_error(errno, ft_strdup("fork"), n, 1);
 			if (!pid)
 				execute(n, i, pipe_ct);
-			waitpid(pid, NULL, WNOHANG);
+			waitpid(pid, NULL, 0);
 			i++;
 		}
-		traverse_tree(&n, 1);
+		traverse_tree(&n, 0);
 	}
-	close_fds(n_head, pipe_ct);
+	close_fds(n, pipe_ct);
 }

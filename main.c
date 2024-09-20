@@ -76,6 +76,10 @@ void	init_ms(char *input, t_ms_var *ms)
 		pipes_n_exec_path(start_node(ast), ms, &pipe_ct);
 		init_exec(start_node(ast), pipe_ct);
 		free(input);
+		ast = start_node(ast);
+		while (ast->type != END)
+			free_tree(ast);
+		free_tree(ast);
 	}
 }
 

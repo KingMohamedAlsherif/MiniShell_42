@@ -43,10 +43,33 @@ t_tree_node	*start_node(t_tree_node *n)
 	return (n);
 }
 
-void	traverse_tree(t_tree_node **n, int read_flag)
+// void	traverse_tree(t_tree_node **n, int read_flag)
+// {
+// 	bool	unread_flag;
+
+// 	unread_flag = (read_flag + 1) % 2;
+// 	(*n)->is_read = read_flag;
+// 	if ((*n)->type == END)
+// 		return ;
+// 	if ((*n)->parent && ((!(*n)->left && !(*n)->right)
+// 		|| ((*n)->left && (*n)->left->is_read == read_flag
+// 			&& (*n)->right && (*n)->right->is_read == read_flag)))
+// 		*n = (*n)->parent;
+// 	else if ((*n)->left && (*n)->left->is_read == unread_flag)
+// 		*n = (*n)->left;
+// 	else
+// 		*n = (*n)->right;
+// }
+
+void	traverse_tree(t_tree_node **n)
 {
+	bool	read_flag;
 	bool	unread_flag;
 
+	if (&start_node(*n) == n)
+		read_flag = ((*n)->read_flag + 1) % 2;
+	else
+		read_flag = start_node(*n)->read_flag;
 	unread_flag = (read_flag + 1) % 2;
 	(*n)->is_read = read_flag;
 	if ((*n)->type == END)
@@ -135,17 +158,16 @@ void	close_fds(t_tree_node *n, int pipe_ct)
 	int			i;
 
 	n_0 = start_node(n);
-	// printf("%s: %d %d\n", n_0->token->cmd_args[0], n_0->pipefd[0], n_0->pipefd[1]);
 	i = -1;
 	while (++i < pipe_ct)
 	{
 		close(n_0->pipefd[i][0]);
 		close(n_0->pipefd[i][1]);
 	}
-	while (!n_0->is_last_node)
+	while (n_0->type != END)
 	{
 		close_redir_fds(n_0->redir);
-		traverse_tree(&n_0, 0);
+		traverse_tree(&n_0, 1);
 	}
 }
 

@@ -57,19 +57,12 @@ void	free_char_arr(char **two_d, char ***three_d)
 void free_tokens(t_token *token)
 {
 	t_token	*tmp_token;
-	// t_args	*tmp_arg;
 
 	while (token)
 	{
 		tmp_token = token;
 		token = token->next;
 		free(tmp_token->value);
-		// while(tmp_token->cmd_args)
-		// {
-		// 	tmp_arg = tmp_token->cmd_args;
-		// 	tmp_token->cmd_args = tmp_token->cmd_args->next;
-		// 	free(tmp_arg->arg);
-		// }
 		free(tmp_token);
 	}
 }
@@ -92,12 +85,25 @@ void	free_lst(t_lst *lst)
 
 void	free_tree(t_tree_node *n)
 {
-	traverse_tree(&n, 1);
+	t_args	*tmp_args_ptr;
+	// printf("%s\n", n->value);
+	free(n->value);
+	while (n->cmd_args)
+	{
+		tmp_args_ptr = n->cmd_args;
+		free(tmp_args_ptr->arg);
+		free(tmp_args_ptr);
+		n->cmd_args = n->cmd_args->next;
+	}
+	free_char_arr(n->cmd_args_arr, NULL);
+	free(n->exec_cmd_path);
+	traverse_tree(&n, 0);
 }
 
 void	free_all(t_tree_node *n)
 {
-	while (!n->is_last_node)
+	printf("hits\n");
+	while (n->type != END)
 	{
 		// free(n->infile);
 		// free(n->outfile);
