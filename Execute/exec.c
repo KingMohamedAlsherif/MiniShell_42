@@ -65,7 +65,7 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 	// printf("%s\n", n->exec_cmd_path);
 	// printf("%s\n", n->cmd_args_arr[0]);
 	// printf("%s\n", n->ms->env_arr[0]);
-	// printf("%d\n", pipe_index);
+	// printf("pipe idx: %d pipe ct: %d\n", pipe_index, pipe_ct);
 	init_infiles_outfiles(n->redir, n);
 	use_in_fd = 0;
 	use_out_fd = 1;
@@ -74,11 +74,9 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 		use_in_fd = last_redir_fd(n->redir, 'i');
 		use_out_fd = last_redir_fd(n->redir, 'o');
 	}
-	if (pipe_index > 0 && !use_in_fd)
+	if (pipe_index > 0 && pipe_ct)
 		use_in_fd = n->pipefd[pipe_index - 1][0];
-	if (n->right && n->right->type == END && !use_out_fd)
-		use_out_fd = 1;
-	else if (pipe_index > 0)
+	if (pipe_ct && !n->right)
 		use_out_fd = n->pipefd[pipe_index][1];
 	// printf("in:%d out:%d\n", use_in_fd, use_out_fd);
 	if (dup2(use_in_fd, STDIN_FILENO) < 0)

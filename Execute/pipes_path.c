@@ -88,12 +88,14 @@ int	**create_pipe_arr(t_tree_node *n, int *pipe_ct)
 	int	j;
 
 	*pipe_ct = 0;
-	while (n->parent)
+	while (n)
 	{
+		// printf("%s\n", n->value);
 		if (n->type == PIPE)
 			(*pipe_ct)++;
 		n = n->parent;
 	}
+	// printf("%d\n", *pipe_ct);
 	pipefd = malloc(sizeof(int *) * *pipe_ct);
 	if (!pipefd)
 		ft_error(errno, ft_strdup("pipe malloc"), n, 1);

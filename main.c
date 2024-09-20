@@ -62,6 +62,7 @@ void	init_ms(char *input, t_ms_var *ms)
 	t_tree_node	*ast;
 	int			pipe_ct;
 
+	add_history(input);
 	tokenize(input, &tokens, ms->env);
 	// print_tokens(tokens);
 	if (tokens)
@@ -73,7 +74,6 @@ void	init_ms(char *input, t_ms_var *ms)
 		free_tokens(tokens_ptr);
 		pipes_n_exec_path(start_node(ast), ms, &pipe_ct);
 		init_exec(start_node(ast), pipe_ct);
-		add_history(input);
 		free(input);
 	}
 }
