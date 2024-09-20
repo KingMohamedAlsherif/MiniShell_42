@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "minishell.h"
 
 void	free_lst_node(t_lst *node)
 {
@@ -20,38 +20,74 @@ void	free_lst_node(t_lst *node)
 	free (node);
 }
 
-void	free_int_array(int **twoD, int pipe_ct)
+void	free_int_array(int **two_d, int pipe_ct)
 {
 	int i;
 
 	i = -1;
-	if (twoD)
+	if (two_d)
 	{
 		while (++i < pipe_ct)
-			free(twoD[i]);
-		free(twoD);
+			free(two_d[i]);
+		free(two_d);
 	}
 }
 
-void	free_char_arr(char **twoD, char ***threeD)
+void	free_char_arr(char **two_d, char ***three_d)
 {
 	int i;
 	int j;
 
 	i = -1;
 	j = -1;
-	if (twoD)
+	if (two_d)
 	{
-		while (twoD[++i])
-			free(twoD[i]);
-		free(twoD);
+		while (two_d[++i])
+			free(two_d[i]);
+		free(two_d);
 	}
-	if (threeD)
+	if (three_d)
 	{
-		while (threeD[++j])
-			free_char_arr(threeD[j], NULL);
-		free(threeD);
+		while (three_d[++j])
+			free_char_arr(three_d[j], NULL);
+		free(three_d);
 	}
+}
+
+void free_tokens(t_token *token)
+{
+	t_token	*tmp_token;
+	// t_args	*tmp_arg;
+
+	while (token)
+	{
+		tmp_token = token;
+		token = token->next;
+		free(tmp_token->value);
+		// while(tmp_token->cmd_args)
+		// {
+		// 	tmp_arg = tmp_token->cmd_args;
+		// 	tmp_token->cmd_args = tmp_token->cmd_args->next;
+		// 	free(tmp_arg->arg);
+		// }
+		free(tmp_token);
+	}
+}
+
+void	free_lst(t_lst *lst)
+{
+	while (lst->fwd)
+	{
+		lst = lst->fwd;
+		free(lst->bwd->var_n_val);
+		free(lst->bwd->var);
+		free(lst->bwd->val);
+		free(lst->bwd);
+	}
+	free(lst->var_n_val);
+	free(lst->var);
+	free(lst->val);
+	free(lst);
 }
 
 void	free_all(t_tree_node *n)
@@ -61,8 +97,8 @@ void	free_all(t_tree_node *n)
 		// free(n->infile);
 		// free(n->outfile);
 		// free(n->delimiter);
-		free_char_arr(n->token->cmd_args_arr, NULL);
-		traverse_tree(&n);
+		free_char_arr(n->cmd_args_arr, NULL);
+		traverse_tree(&n, 1);
 	}
 	// free(p->filepaths);
 	// free(p->pid);

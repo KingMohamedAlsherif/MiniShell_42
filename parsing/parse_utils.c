@@ -9,7 +9,7 @@ void add_cmd_arg(t_args **args_lst, char *value)
     if (!new_arg)
         exit (1);
     new_arg->arg = ft_strdup(value);
-    new_arg->next = NULL;   
+    new_arg->next = NULL;
     if (!*args_lst)
         *args_lst = new_arg;
     else
@@ -28,7 +28,12 @@ t_tree_node *init_tree_node(t_token *token, t_ms_var *ms)
     new_node = malloc(sizeof(t_tree_node));
     if (!new_node)
         exit (1);
-    new_node->token = token; 
+    new_node->type = token->type;
+	new_node->value = ft_strdup(token->value);
+	new_node->cmd_args = NULL;
+	new_node->cmd_args_arr = NULL; 
+	new_node->exec_cmd_path = NULL;
+	new_node->p = NULL;
     new_node->redir = NULL;
     new_node->parent = NULL;
     new_node->left = NULL;

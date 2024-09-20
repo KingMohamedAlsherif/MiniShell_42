@@ -47,7 +47,7 @@ void	traverse_tree(t_tree_node **n, int read_flag)
 
 	unread_flag = (read_flag + 1) % 2;
 	(*n)->is_read = read_flag;
-	if ((*n)->token->type == END)
+	if ((*n)->type == END)
 		return ;
 	if ((*n)->parent && ((!(*n)->left && !(*n)->right)
 		|| ((*n)->left && (*n)->left->is_read == read_flag

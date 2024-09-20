@@ -25,9 +25,6 @@ void add_token(t_token **tokens, char *str, token_type type)
 	else
 		new_token->value = str;
 	new_token->type = type;
-	new_token->exec_cmd_path = NULL;
-	new_token->cmd_args = NULL;
-	new_token->cmd_args_arr = NULL;
 	new_token->next = NULL;
 	if (!*tokens)
 		*tokens = new_token;
@@ -54,26 +51,16 @@ void print_tokens(t_token *token)
 	}
 }
 
-void free_tokens(t_token *token)
-{
-	t_token *tmp;
-
-	while (token)
-	{
-		tmp = token;
-		token = token->next;
-		free(tmp->value);
-		free(tmp);
-	}
-}
-
 char *get_env(char *str, t_lst *env)
 {
 	size_t	str_len;
 
 	str_len = ft_strlen(str);
 	if (!str || !str_len)
+	{
+		free(str);
 		return (ft_strdup("$"));
+	}
 	while (env)
 	{
 		if (ft_strlen(env->var) > str_len)

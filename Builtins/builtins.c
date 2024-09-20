@@ -14,8 +14,8 @@
 
 void	cd(t_tree_node *n)
 {
-	if (chdir(n->token->cmd_args_arr[0]) < 0)
-		ft_error(errno, ft_strjoin("cd: ", n->token->cmd_args_arr[0]), n, 1);
+	if (chdir(n->cmd_args_arr[0]) < 0)
+		ft_error(errno, ft_strjoin("cd: ", n->cmd_args_arr[0]), n, 1);
 	// update pwd
 }
 
@@ -36,16 +36,16 @@ void	unset(t_tree_node *n)
 	t_lst	*env_node;
 
 	i = -1;
-	while (n->token->cmd_args_arr[++i])
+	while (n->cmd_args_arr[++i])
 	{
-		env_node = n->ms_env;
-		new_str = remove_quotes(n->token->cmd_args_arr[i]);
+		env_node = n->ms->env;
+		new_str = remove_quotes(n->cmd_args_arr[i]);
 		while (env_node)
 		{
 			if (!ft_strncmp(env_node->var, new_str, ft_strlen(new_str) + 1))
 			{
-				del_node(n->ms_env, env_node->ascii_order);
-				del_node(n->ms_export, env_node->ascii_order);
+				del_node(n->ms->env, env_node->ascii_order);
+				del_node(n->ms->exp, env_node->ascii_order);
 				break ;
 			}
 			env_node = env_node->fwd;
@@ -55,13 +55,13 @@ void	unset(t_tree_node *n)
 
 void	env(t_tree_node *n)
 {
-	if (!n->token->cmd_args_arr)
+	if (!n->cmd_args_arr)
 	{
-		while (n->ms_env)
+		while (n->ms->env)
 		{
-			if (ft_strchr(n->ms_env->var, '='))
-				printf("%s", n->ms_env->var_n_val);
-			n->ms_env = n->ms_env->fwd;
+			if (ft_strchr(n->ms->env->var, '='))
+				printf("%s", n->ms->env->var_n_val);
+			n->ms->env = n->ms->env->fwd;
 		}
 	}
 }

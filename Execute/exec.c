@@ -62,15 +62,21 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 	int	use_in_fd;
 	int	use_out_fd;
 
-	// printf("%s\n", n->token->exec_cmd_path);
-	// printf("%s\n", n->token->cmd_args[0]);
+	// printf("%s\n", n->exec_cmd_path);
+	// printf("%s\n", n->cmd_args_arr[0]);
+	// printf("%s\n", n->ms->env_arr[0]);
 	// printf("%d\n", pipe_index);
 	init_infiles_outfiles(n->redir, n);
-	use_in_fd = last_redir_fd(n->redir, 'i');
-	use_out_fd = last_redir_fd(n->redir, 'o');
+	use_in_fd = 0;
+	use_out_fd = 1;
+	if (n->redir)
+	{
+		use_in_fd = last_redir_fd(n->redir, 'i');
+		use_out_fd = last_redir_fd(n->redir, 'o');
+	}
 	if (pipe_index > 0 && !use_in_fd)
 		use_in_fd = n->pipefd[pipe_index - 1][0];
-	if (n->right && n->right->token->type == END && !use_out_fd)
+	if (n->right && n->right->type == END && !use_out_fd)
 		use_out_fd = 1;
 	else if (pipe_index > 0)
 		use_out_fd = n->pipefd[pipe_index][1];
@@ -80,7 +86,7 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 	if (dup2(use_out_fd, STDOUT_FILENO) < 0)
 		ft_error(errno, ft_strdup("dup outfile"), n, 1);
 	close_fds(n, pipe_ct);
-	if (execve(n->token->exec_cmd_path, n->token->cmd_args_arr, n->p->env) < 0)
+	if (execve(n->exec_cmd_path, n->cmd_args_arr, n->ms->env_arr) < 0)
 		ft_error(errno, ft_strdup("execve"), n, 1);
 }
 
@@ -92,15 +98,15 @@ void init_exec(t_tree_node *n, int pipe_ct)
 
 	n_head = n;
 	i = 0;
-	while (n->token->type != END)
+	while (n->type != END)
 	{
-		if ((n->parent && n->parent->token->type == AND
-			&& n->token->type == CD))
+		if ((n->parent && n->parent->type == AND
+			&& n->type == CD))
 			cd(n);
-		if (n->token->type != PIPE)
+		if (n->type != PIPE)
 		{
-			// printf("%s\n", n->token->exec_cmd_path);
-			// printf("%s\n", n->token->cmd_args[0]);
+			// printf("%s\n", n->exec_cmd_path);
+			// printf("%s\n", n->cmd_args[0]);
 			pid = fork();
 			if (pid < 0)
 				ft_error(errno, ft_strdup("fork"), n, 1);

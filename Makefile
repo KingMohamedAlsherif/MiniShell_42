@@ -17,11 +17,11 @@ LIBFT_DIR = ./libft
 LIBS = ./libft/libft.a -L$(HOME)/.local/opt/readline/lib -I$(HOME)/.local/opt/readline/include -lreadline
 # LIBS = ./libft/libft.a -lreadline
 OBJS = $(SRCS:.c=.o)
-SRCS = main.c env_export.c utils_main.c  \
+SRCS = main.c env_export.c utils_main.c free.c \
 tokenize/tokenize.c tokenize/utils_tokenize.c \
-./execute/exec.c ./execute/utils_exec.c ./execute/free.c \
+./execute/pipes_path.c ./execute/exec.c ./execute/utils_exec.c \
 ./builtins/builtins.c ./builtins/export.c ./builtins/utils_builtins.c \
-./parsing/parser.c ./parsing/parser2.c ./parsing/parse_utils.c
+./parsing/parser.c ./parsing/parse_utils.c
 # SRCS = ./parse/parse.c ./execute/exec.c ./execute/utils.c ./execute/free.c
 # OBJS_B = $(SRCS_B:.c=.o)
 # SRCS_B = 

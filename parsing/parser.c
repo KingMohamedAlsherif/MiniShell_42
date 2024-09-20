@@ -13,7 +13,7 @@ void	update_node(t_redir *new_redir, char *value, token_type type)
         new_redir->out_fd = 1;
 }
 
-void	parse_redir(t_token **tokens, t_redir *redir)
+void	parse_redir(t_token **tokens, t_redir **redir)
 {
 	t_redir *new_redir;
 
@@ -27,61 +27,53 @@ void	parse_redir(t_token **tokens, t_redir *redir)
     new_redir->out_fd = 0;
     new_redir->fwd = NULL;
     new_redir->bwd = NULL;
-    if (!redir)
-        redir = new_redir;
+    if (!*redir)
+        *redir = new_redir;
     else
     {
-        while (redir->fwd)
-            redir = redir->fwd;
-        redir->fwd = new_redir;
-		new_redir->bwd = redir;
+        while ((*redir)->fwd)
+            *redir = (*redir)->fwd;
+        (*redir)->fwd = new_redir;
+		new_redir->bwd = *redir;
     }
 	update_node(new_redir, (*tokens)->next->value, (*tokens)->type);
 	*tokens = (*tokens)->next;
 }
 
-void	parse_pipe(t_token  *token, t_tree_node     **ast)
+void	parse_pipe(t_token **tokens, t_tree_node **ast, t_ms_var *ms)
 {
-    t_tree_node *new_t_node;
-
 	while ((*ast)->parent)
 		*ast = (*ast)->parent;
-	new_t_node = init_tree_node(token);
-    new_t_node->left = *ast;
-	(*ast)->parent = new_t_node;
-    *ast = new_t_node;
+	(*ast)->parent = init_tree_node(*tokens, NULL);
+    (*ast)->parent->left = *ast;
+    *ast = (*ast)->parent;
+	*tokens = (*tokens)->next;
+	(*ast)->right = init_tree_node(*tokens, ms);
+	(*ast)->right->parent = *ast;
+	*ast = (*ast)->right;
+	if ((*tokens)->type == WORD)
+		add_cmd_arg(&((*ast)->cmd_args), (*tokens)->value);
 }
 
-void	parse_word(t_token *token, t_tree_node **ast)
+void	parse_word(t_token *token, t_tree_node **ast, t_ms_var *ms)
 {
-	if ((*ast)->token->type == PIPE || token->type == END)
+	if (token->type == END)
 	{
-		if ((*ast)->token->type == PIPE && token->type == END)
-			(*ast) = (*ast)->right;
-		(*ast)->right = init_tree_node(token);
+		(*ast)->right = init_tree_node(token, ms);
 		(*ast)->right->parent = *ast;
-		*ast = new_t_node;
+		*ast = (*ast)->right;
 	}
-	else
-	{
-		if ((*ast)->token->type != WORD)
-		{
-			(*ast)->token = token;
-			add_cmd_arg(&new_t_node->token->cmd_args, token->value);
-		}
-		else
-			add_cmd_arg(&((*ast)->token->cmd_args), token->value);
-	}
+	add_cmd_arg(&((*ast)->cmd_args), token->value);
 }
 
 void	parse(t_token **tokens, t_tree_node **ast, t_ms_var *ms)
 {
 	if ((*tokens)->type == PIPE)
-		parse_pipe(*tokens, ast);
+		parse_pipe(tokens, ast, ms);
     else if ((*tokens)->type >= REDIRECT_IN && (*tokens)->type <= APPEND)
-        parse_redir(tokens, (*ast)->redir);
+        parse_redir(tokens, &(*ast)->redir);
     else if (*tokens)
-		parse_word(*tokens, ast);
+		parse_word(*tokens, ast, ms);
 	if ((*tokens)->next)
-		parse(&(*tokens)->next, ast);
+		parse(&(*tokens)->next, ast, ms);
 }

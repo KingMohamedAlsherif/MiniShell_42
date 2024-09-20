@@ -22,6 +22,7 @@ t_lst	*create_new_node(char *str, int ascii_order)
 		exit (1);
 	node->var_n_val = ft_strdup(str);
 	split_str = ft_split(str, '=');
+	free(str);
 	node->var = ft_strdup(split_str[0]);
 	if (split_str[1])
 		node->val = ft_strdup(split_str[1]);

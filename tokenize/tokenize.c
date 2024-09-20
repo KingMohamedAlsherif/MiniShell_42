@@ -105,6 +105,6 @@ void    tokenize(char *input, t_token **tokens, t_lst *env)
 			else
 				add_token(tokens, get_str(&input, env, 0), WORD);
 	    }
-		add_token(tokens, "END", END);
+		add_token(tokens, ft_strdup("END"), END);
 	}
 }

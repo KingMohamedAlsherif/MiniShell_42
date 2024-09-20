@@ -40,12 +40,12 @@ void print_redir(t_redir *redir, char type)
 
 void	print_tree(t_tree_node	*ast)
 {
-	while (ast->token->type != END)
+	while (ast->type != END)
 	{
-		printf("node type: %d value: %s\n", ast->token->type, ast->token->value);
-		if (ast->token->type != PIPE)
+		printf("node type: %d value: %s\n", ast->type, ast->value);
+		if (ast->type != PIPE)
 		{
-			print_args(ast->token->cmd_args);
+			print_args(ast->cmd_args);
 			printf("redir in: "); 
 			print_redir(ast->redir, 'i');
 			printf("redir out: "); 
@@ -58,21 +58,27 @@ void	print_tree(t_tree_node	*ast)
 void	init_ms(char *input, t_ms_var *ms)
 {
 	t_token		*tokens;
+	t_token		*tokens_ptr;
 	t_tree_node	*ast;
-	// int			pipe_ct;
+	int			pipe_ct;
 
-	add_history(input);
 	tokenize(input, &tokens, ms->env);
 	// print_tokens(tokens);
-	ast = init_tree_node(token, ms);
-	parse(&tokens, &ast, ms);
-	print_tree(start_node(ast));
-	// pipes_n_exec_path(start_node(ast), ms, &pipe_ct);
-	// init_exec(start_node(ast), pipe_ct);
-	free(input);
+	if (tokens)
+	{
+		ast = init_tree_node(tokens, ms);
+		tokens_ptr = tokens;
+		parse(&tokens, &ast, ms);
+		// print_tree(start_node(ast));
+		free_tokens(tokens_ptr);
+		pipes_n_exec_path(start_node(ast), ms, &pipe_ct);
+		init_exec(start_node(ast), pipe_ct);
+		add_history(input);
+		free(input);
+	}
 }
 
-bool	exit_ms(char *input)
+bool	exit_ms(char *input, t_ms_var *ms)
 {
 	char		**split_input;
 
@@ -89,6 +95,10 @@ bool	exit_ms(char *input)
 			printf("exit\n");
 		free_char_arr(split_input, NULL);
 		free(input);
+		free_lst(ms->env);
+		free_lst(ms->exp);
+		free_char_arr(ms->env_arr, NULL);
+		free(ms);
 		return (1);
 	}
 	free_char_arr(split_input, NULL);
@@ -138,7 +148,7 @@ int	main(int ac, char **av, char **env)
 		while (1)
 		{
 			input = readline("Minishell $ ");
-			if (exit_ms(input))
+			if (exit_ms(input, ms))
 				break ;
 			if (ms->env)
 				init_ms(input, ms);

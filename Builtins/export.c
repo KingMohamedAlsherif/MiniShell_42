@@ -19,13 +19,13 @@ void	insert_node(t_tree_node *n, char *str)
 	t_lst	*tmp_node;
 	int		rank;
 
-	env_node = n->ms_env;
+	env_node = n->ms->env;
 	while (env_node->fwd)
 		env_node = env_node->fwd;
 	env_node->fwd = create_new_node(ft_strdup(str), 0);
-	update_order(n->ms_env, env_node);
+	update_order(n->ms->env, env_node);
 	rank = env_node->ascii_order;
-	export_node = n->ms_export;
+	export_node = n->ms->exp;
 	while (export_node->ascii_order < rank - 1)
 		export_node = export_node->fwd;
 	tmp_node = export_node->fwd;
@@ -49,7 +49,7 @@ void	export_update(t_tree_node *n, char *str)
 
 	new_str = remove_quotes(str);
 	s_new_str = ft_split(new_str, '=');
-	env_node = n->ms_env;
+	env_node = n->ms->env;
 	while (env_node)
 	{
 		if (!ft_strncmp(env_node->var, s_new_str[0], ft_strlen(s_new_str[0])))
@@ -58,7 +58,7 @@ void	export_update(t_tree_node *n, char *str)
 			free(env_node->val);
 			env_node->var_n_val = ft_strdup(new_str);
 			env_node->val = ft_strdup(s_new_str[1]);
-			export_node = n->ms_export;
+			export_node = n->ms->exp;
 			while (export_node->ascii_order != env_node->ascii_order)
 				export_node = export_node->fwd;
 			free(export_node->var_n_val);
@@ -77,9 +77,9 @@ void	export(t_tree_node *n)
 	t_lst	*export_node;
 	int		i;
 
-	if (!n->token->cmd_args_arr)
+	if (!n->cmd_args_arr)
 	{
-		export_node = n->ms_export;
+		export_node = n->ms->exp;
 		while (export_node)
 		{
 			printf("%s", export_node->var_n_val);
@@ -89,13 +89,13 @@ void	export(t_tree_node *n)
 	else
 	{
 		i = -1;
-		while (n->token->cmd_args_arr[++i])
+		while (n->cmd_args_arr[++i])
 		{
-			if (!has_valid_chars(n->token->cmd_args_arr[i]))
+			if (!has_valid_chars(n->cmd_args_arr[i]))
 				printf("bash: export: `%s': not a valid identifier\n"
-					, n->token->cmd_args_arr[i]);
+					, n->cmd_args_arr[i]);
 			else
-				export_update(n, n->token->cmd_args_arr[i]);
+				export_update(n, n->cmd_args_arr[i]);
 		}
 	}
 }
