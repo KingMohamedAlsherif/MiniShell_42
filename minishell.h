@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
+/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/17 15:41:09 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/20 17:40:38 by malsheri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,9 @@ bool		valid_quote_pairs(char *input);
 char		sngl_or_dbl(char *input);
 char		*get_substr(char **input, char *blocker);
 void 		add_cmd_arg(t_args **args_lst, char *value);
+void 		check_syntax(t_token *tokens_list);
+void		print_syntax_error(t_token	*tokens, token_type	type);
+
 
 void 		parse(t_token **tokens, t_tree_node **ast, t_ms_var *ms);
 void		pipes_n_exec_path(t_tree_node *head, t_ms_var *ms, int *pipe_ct);

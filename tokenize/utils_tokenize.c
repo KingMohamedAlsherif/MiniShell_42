@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_tokenize.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
+/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:11 by chon              #+#    #+#             */
-/*   Updated: 2024/09/15 10:41:18 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/20 17:40:13 by malsheri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ bool valid_quote_pairs(char *input)
 	return (1);
 }
 
-void		ft_print_error(t_token	*tokens, token_type	type)
+void		print_syntax_error(t_token	*tokens, token_type	type)
 {
 	if (type == PIPE)
 		write(2, "syntax error near unexpected token `|'\n", 40);
@@ -138,16 +138,16 @@ void check_syntax(t_token *tokens_list)
 		return;
 	token = tokens_list;
 	if (token->type == PIPE || token->type == OR || token->type == AND)
-		return (ft_print_error(token, token->type));
+		return (print_syntax_error(token, token->type));
 	while (token)
 	{
 		next = token->next; 
 		if ((token->type == REDIRECT_IN || token->type == REDIRECT_OUT ||
 			 token->type == APPEND || token->type == HEREDOC) &&
 			(!next || next->type != WORD))
-			return (ft_print_error(token, token->type));
+			return (print_syntax_error(token, token->type));
 		if ((token->type == PIPE || token->type == OR || token->type == AND) && !next)
-			return (ft_print_error(token, token->type));
+			return (print_syntax_error(token, token->type));
 		token = token->next;
 	}
 }
