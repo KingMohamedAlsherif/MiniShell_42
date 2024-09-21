@@ -64,7 +64,11 @@ void	parse_word(t_token *token, t_tree_node **ast, t_ms_var *ms)
 		*ast = (*ast)->right;
 	}
 	if (token->type != END)
+    {
+        if (!(*ast)->value)
+            (*ast)->value = ft_strdup(token->value);
 		add_cmd_arg(&((*ast)->cmd_args), token->value);
+    }
 }
 
 void	parse(t_token **tokens, t_tree_node **ast, t_ms_var *ms)

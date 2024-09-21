@@ -28,8 +28,13 @@ t_tree_node	*init_tree_node(t_token *token, t_ms_var *ms)
     new_node = malloc(sizeof(t_tree_node));
     if (!new_node)
         exit (1);
-    new_node->type = token->type;
-	new_node->value = ft_strdup(token->value);
+    if (token->type == PIPE || token->type == END)
+        new_node->type = token->type;
+    else
+        new_node->type = WORD;
+    new_node->value = NULL;
+    if (token->type == WORD)
+	    new_node->value = ft_strdup(token->value);
 	new_node->cmd_args = NULL;
 	new_node->cmd_args_arr = NULL; 
 	new_node->exec_cmd_path = NULL;

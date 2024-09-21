@@ -87,14 +87,13 @@ void	free_tree(t_tree_node *n)
 {
 	bool		is_read_flag;
 	t_redir		*redir_ptr;
-	t_tree_node	*tree_ptr;
 
 	is_read_flag = (n->is_read + 1) % 2;
 	while (n)
 	{
 		if (n->is_read != is_read_flag)
 		{
-			// printf("cmd: %s\n", n->value);
+			printf("cmd: %s\n", n->value);
 			free(n->value);
 			while (n->redir)
 			{
@@ -107,14 +106,18 @@ void	free_tree(t_tree_node *n)
 			free_char_arr(n->cmd_args_arr, NULL);
 			free(n->exec_cmd_path);
 		}
-		tree_ptr = n;
 		if (n->type == END)
 			break ;
 		traverse_tree(&n);
-		if (!tree_ptr->left && !tree_ptr->right)
-			free(tree_ptr);
+		if (n->left && n->left->is_read == is_read_flag)
+			free(n->left);
+		if (n->right && n->right->is_read == is_read_flag)
+			free(n->right);
+		if (n->parent && !n->parent->parent
+			&& n->parent->is_read == is_read_flag)
+			free(n->parent);
 	}
-	free(tree_ptr);
+	free(n);
 }
 
 void	free_all(t_tree_node *n)
