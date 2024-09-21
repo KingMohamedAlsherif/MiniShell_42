@@ -1,13 +1,13 @@
 #include "../minishell.h"
 
-void add_cmd_arg(t_args **args_lst, char *value)
+void	add_cmd_arg(t_args **args_lst, char *value)
 {
-    t_args *new_arg;
-    t_args *current;
+    t_args	*new_arg;
+    t_args	*current;
 
-    new_arg = malloc(sizeof(t_args));
-    if (!new_arg)
-        exit (1);
+	new_arg = malloc(sizeof(t_args));
+	if (!new_arg)
+		exit (1);
     new_arg->arg = ft_strdup(value);
     new_arg->next = NULL;
     if (!*args_lst)
@@ -21,9 +21,9 @@ void add_cmd_arg(t_args **args_lst, char *value)
     }
 }
 
-t_tree_node *init_tree_node(t_token *token, t_ms_var *ms)
+t_tree_node	*init_tree_node(t_token *token, t_ms_var *ms)
 {
-    t_tree_node *new_node;
+    t_tree_node	*new_node;
 
     new_node = malloc(sizeof(t_tree_node));
     if (!new_node)

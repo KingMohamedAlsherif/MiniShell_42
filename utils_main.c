@@ -58,3 +58,21 @@ int	count_lst_nodes(t_lst *head)
 	}
 	return (node_ct);
 }
+
+void ft_error(int error, char *str, t_tree_node *n, int exit_switch)
+{
+	printf("error #: %d\n", error);
+	if (!error)
+		ft_printf("%s\n", str);
+	if (error == 14)
+		ft_printf("%s: command not found\n", str);
+	else
+		ft_printf("%s: %s\n", str, strerror(error));
+	free(str);
+	(void)n;
+	if (exit_switch)
+	{
+		// free_all(n);
+		exit(EXIT_FAILURE);
+	}
+}

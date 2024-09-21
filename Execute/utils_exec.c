@@ -12,28 +12,6 @@
 
 #include "../minishell.h"
 
-void	last_redir_fd(t_redir *redir, char type, int *fd)
-{
-	while (redir->fwd)
-		redir = redir->fwd;
-	if (type == 'i')
-	{
-		while (redir->bwd
-		&& (!redir->in_fd || !redir->heredoc_delim))
-			redir = redir->bwd;
-		if (redir->in_fd)
-			*fd = redir->in_fd;
-	}
-	else
-	{
-		while (redir->bwd
-		&& (!redir->out_fd || !redir->is_append))
-			redir = redir->bwd;
-		if (redir->out_fd)
-			*fd = redir->out_fd;
-	}
-}
-
 t_tree_node	*start_node(t_tree_node *n)
 {
 	while (n->parent)
@@ -66,18 +44,6 @@ void	traverse_tree(t_tree_node **n)
 		*n = (*n)->right;
 }
 
-void	reset_read_flag(t_tree_node **n)
-{
-	(*n)->is_read = 0;
-	while ((*n)->right)
-	{
-		*n = (*n)->right;
-		(*n)->is_read = 0;
-	}
-	while (!(*n)->is_read)
-		*n = (*n)->parent;
-}
-
 int is_empty(char *av)
 {
 	int i;
@@ -95,76 +61,29 @@ int is_empty(char *av)
 	return (1);
 }
 
-// void check_infile_cmdpaths(t_tree_node *n)
-// {
-// 	char	*err_msg;
-
-// 	while (!n->is_last_node)
-// 	{
-// 		if (n->in_fd < 0)
-// 		{
-// 			err_msg = ft_strjoin("command not found", p->cmd_args[i][0]);
-// 			ft_error(errno, err_msg, p, exit_switch);
-// 		}
-// 		if (!ft_strncmp(p->exec_cmd_path[i], "invalid", 7)
-// 			&& ft_strlen(av[i + 2 + p->hd_shift]))
-// 		{
-// 			err_msg = ft_strjoin("command not found", p->cmd_args[i][0]);
-// 			ft_error(errno, err_msg, p, exit_switch);
-// 		}
-// 		else if (!ft_strlen(av[i + 2 + p->hd_shift]))
-// 		{
-// 			close_fds(p);
-// 			ft_error(errno, ft_strdup("permission denied:"), p, exit_switch);
-// 		}
-// 	}
-// }
-
-void	close_redir_fds(t_redir *redir)
-{
-	while (redir)
-	{
-		if (redir->in_fd > 2)
-			close(redir->in_fd);
-		if (redir->out_fd > 2)
-			close(redir->out_fd);
-		if (redir->heredoc_delim)
-			unlink(redir->filename);
-		redir = redir->fwd;
-	}
-}
-
 void	close_fds(t_tree_node *n, int pipe_ct)
 {
-	t_tree_node	*n_0;
 	int			i;
 
-	n_0 = start_node(n);
 	i = -1;
+	if (n->type != END)
+		while (n->redir)
+		{
+			if (n->redir->in_fd > 2)
+				close(n->redir->in_fd);
+			if (n->redir->out_fd > 2)
+				close(n->redir->out_fd);
+			if (n->redir->heredoc_delim)
+				unlink(n->redir->filename);
+			n->redir = n->redir->fwd;
+		}
+	if (n->type == END)
+		n = start_node(n);
 	while (++i < pipe_ct)
 	{
-		close(n_0->pipefd[i][0]);
-		close(n_0->pipefd[i][1]);
+		close(n->pipefd[i][0]);
+		close(n->pipefd[i][1]);
+		free(n->pipefd[i]);
 	}
-	while (n_0->type != END)
-	{
-		close_redir_fds(n_0->redir);
-		traverse_tree(&n_0);
-	}
-}
-
-void ft_error(int error, char *str, t_tree_node *n, int exit_switch)
-{
-	printf("error #: %d\n", error);
-	if (!error)
-		ft_printf("%s\n", str);
-	else
-		ft_printf("%s: %s\n", str, strerror(error));
-	free(str);
-	(void)n;
-	if (exit_switch)
-	{
-		// free_all(n);
-		exit(EXIT_FAILURE);
-	}
+	free(n->pipefd);
 }

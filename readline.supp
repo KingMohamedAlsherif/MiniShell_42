@@ -1,0 +1,6 @@
+{
+   readline-leak
+   Memcheck:Leak
+   obj:/path/to/readline.so
+   fun:rl_initialize
+}

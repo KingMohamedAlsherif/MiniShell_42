@@ -87,7 +87,7 @@ typedef	struct s_args
 {
 	char	*arg;
 	struct s_args *next;
-} 		t_args;
+}	t_args;
 
 typedef struct s_token
 {

@@ -22,6 +22,7 @@ void	create_cmd_args_arr(t_tree_node *n)
 	args_ptr = n->cmd_args;
 	while (args_ptr)
 	{
+		// printf("cmd args: %s\n", args_ptr->arg);
 		str_ct++;
 		args_ptr = args_ptr->next;
 	}
@@ -29,9 +30,11 @@ void	create_cmd_args_arr(t_tree_node *n)
 	i = -1;
 	while (++i < str_ct)
 	{
-		// printf("%d: %s\n", i, n->cmd_args->arg);
 		n->cmd_args_arr[i] = ft_strdup(n->cmd_args->arg);
+		args_ptr = n->cmd_args;
 		n->cmd_args = n->cmd_args->next;
+		free(args_ptr->arg);
+		free(args_ptr);
 	}
 	n->cmd_args_arr[i] = NULL;
 }
@@ -58,11 +61,13 @@ void	exec_path_args_arr(t_tree_node *n, t_paths p, int **pipefd)
 				}
 				free(p.filepath);
 			}
+			// printf("%s\n", p.split_filepaths[0]);
 			n->pipefd = pipefd;
 			create_cmd_args_arr(n);
 		}
 		traverse_tree(&n);
 	}
+	free_char_arr(p.split_filepaths, NULL);
 }
 
 void init_filepaths(t_paths *p, t_lst *ms_env)
@@ -81,41 +86,31 @@ void init_filepaths(t_paths *p, t_lst *ms_env)
 		exit (1);
 }
 
-int	**create_pipe_arr(t_tree_node *n, int *pipe_ct)
+void	pipes_n_exec_path(t_tree_node *head, t_ms_var *ms, int *pipe_ct)
 {
-	int	**pipefd;
-	int	i;
-	int	j;
+	t_paths	p;
+	int		**pipefd;
+	int		i;
+	int		j;
 
 	*pipe_ct = 0;
-	while (n)
+	while (head->parent)
 	{
-		// printf("%s\n", n->value);
-		if (n->type == PIPE)
+		if (head->parent->type == PIPE)
 			(*pipe_ct)++;
-		n = n->parent;
+		head = head->parent;
 	}
-	// printf("%d\n", *pipe_ct);
 	pipefd = malloc(sizeof(int *) * *pipe_ct);
 	if (!pipefd)
-		ft_error(errno, ft_strdup("pipe malloc"), n, 1);
+		ft_error(errno, ft_strdup("pipe malloc"), head, 1);
 	i = 0;
 	j = *pipe_ct;
 	while (--j > -1)
 	{
 		pipefd[i] = malloc(sizeof(int) * 2);
 		if (pipe(pipefd[i++]) < 0)
-			ft_error(errno, ft_strdup("pipe"), n, 1);
+			ft_error(errno, ft_strdup("pipe"), head, 1);
 	}
-	return (pipefd);
-}
-
-void	pipes_n_exec_path(t_tree_node *head, t_ms_var *ms, int *pipe_ct)
-{
-	t_paths 	p;
-	int			**pipefd;
-
-	pipefd = create_pipe_arr(head, pipe_ct);
 	init_filepaths(&p, ms->env);
-	exec_path_args_arr(head, p, pipefd);
+	exec_path_args_arr(start_node(head), p, pipefd);
 }

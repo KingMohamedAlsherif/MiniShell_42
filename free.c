@@ -85,19 +85,36 @@ void	free_lst(t_lst *lst)
 
 void	free_tree(t_tree_node *n)
 {
-	t_args	*tmp_args_ptr;
-	// printf("%s\n", n->value);
-	free(n->value);
-	while (n->cmd_args)
+	bool		is_read_flag;
+	t_redir		*redir_ptr;
+	t_tree_node	*tree_ptr;
+
+	is_read_flag = (n->is_read + 1) % 2;
+	while (n)
 	{
-		tmp_args_ptr = n->cmd_args;
-		free(tmp_args_ptr->arg);
-		free(tmp_args_ptr);
-		n->cmd_args = n->cmd_args->next;
+		if (n->is_read != is_read_flag)
+		{
+			// printf("cmd: %s\n", n->value);
+			free(n->value);
+			while (n->redir)
+			{
+				redir_ptr = n->redir;
+				n->redir = n->redir->fwd;
+				free(redir_ptr->filename);
+				free(redir_ptr->heredoc_delim);
+				free(redir_ptr);
+			}
+			free_char_arr(n->cmd_args_arr, NULL);
+			free(n->exec_cmd_path);
+		}
+		tree_ptr = n;
+		if (n->type == END)
+			break ;
+		traverse_tree(&n);
+		if (!tree_ptr->left && !tree_ptr->right)
+			free(tree_ptr);
 	}
-	free_char_arr(n->cmd_args_arr, NULL);
-	free(n->exec_cmd_path);
-	traverse_tree(&n);
+	free(tree_ptr);
 }
 
 void	free_all(t_tree_node *n)

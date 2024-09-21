@@ -63,7 +63,8 @@ void	parse_word(t_token *token, t_tree_node **ast, t_ms_var *ms)
 		(*ast)->right->parent = *ast;
 		*ast = (*ast)->right;
 	}
-	add_cmd_arg(&((*ast)->cmd_args), token->value);
+	if (token->type != END)
+		add_cmd_arg(&((*ast)->cmd_args), token->value);
 }
 
 void	parse(t_token **tokens, t_tree_node **ast, t_ms_var *ms)

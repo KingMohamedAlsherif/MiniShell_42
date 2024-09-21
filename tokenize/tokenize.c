@@ -23,17 +23,16 @@ void	set_vars(t_var *s, char **input, char *quote)
 	s->blockers = s->std_blockers;
 	s->len = 0;
 	s->convert = 0;
-	if (**input == '\'')
+	if (**input == '\'' && !*quote)
 		s->blockers = s->sgl_quote_block;
 	else if (**input == '\"' || *quote == '\"')
 		s->blockers = s->dbl_quote_block;
 	if (**input == '\'' || **input == '\"')
-	{
-		*quote = **input;
-		(*input)++;
-		if (**input == *(*input - 1))
+		if (!*quote)
+		{
+			*quote = **input;
 			(*input)++;
-	}
+		}
 }
 
 char    *get_str(char **input, t_lst *env, char quote)

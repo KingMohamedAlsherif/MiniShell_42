@@ -15,9 +15,14 @@
 void	init_heredoc(t_redir *redir, t_tree_node *n)
 {
 	char	*line;
+	char	*new_file_name;
 
 	if (!access(redir->filename, F_OK))
-		redir->filename = ft_strjoin(redir->filename, ft_strdup("_tmp"));
+	{
+		new_file_name = ft_strjoin(redir->filename, "_tmp");
+		free(redir->filename);
+		redir->filename = new_file_name;
+	}
 	redir->in_fd = open(redir->filename, O_RDWR | O_TRUNC | O_CREAT, 0777);
 	if (redir->in_fd < 0)
 		ft_error(errno, ft_strdup(redir->filename), n, 1);
@@ -31,7 +36,6 @@ void	init_heredoc(t_redir *redir, t_tree_node *n)
 	free(line);
 	close(redir->in_fd);
 	redir->in_fd = open(redir->filename, O_RDONLY);
-	// printf("%d\n", n->out_fd);
 }
 
 void	init_infiles_outfiles(t_redir *redir, t_tree_node *n)
@@ -54,7 +58,28 @@ void	init_infiles_outfiles(t_redir *redir, t_tree_node *n)
 			ft_error(errno, ft_strdup(redir->filename), n, 1);
 		redir = redir->fwd;
 	}
-	// printf("%d\n", n->redir->in_fd);
+}
+
+void	last_redir_fd(t_redir *redir, char type, int *fd)
+{
+	while (redir->fwd)
+		redir = redir->fwd;
+	if (type == 'i')
+	{
+		while (redir->bwd
+		&& !redir->in_fd && !redir->heredoc_delim)
+			redir = redir->bwd;
+		if (redir->in_fd)
+			*fd = redir->in_fd;
+	}
+	else
+	{
+		while (redir->bwd
+		&& !redir->out_fd && !redir->is_append)
+			redir = redir->bwd;
+		if (redir->out_fd)
+			*fd = redir->out_fd;
+	}
 }
 
 void execute(t_tree_node *n, int pipe_index, int pipe_ct)
@@ -63,7 +88,7 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 	int	use_out_fd;
 
 	// printf("%s\n", n->exec_cmd_path);
-	// printf("%s\n", n->cmd_args_arr[0]);
+	// printf("arg: %s\n", n->cmd_args_arr[1]);
 	// printf("%s\n", n->ms->env_arr[0]);
 	// printf("pipe idx: %d pipe ct: %d\n", pipe_index, pipe_ct);
 	init_infiles_outfiles(n->redir, n);
@@ -74,11 +99,11 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 		last_redir_fd(n->redir, 'i', &use_in_fd);
 		last_redir_fd(n->redir, 'o', &use_out_fd);
 	}
-	if (pipe_index > 0)
+	if (use_in_fd < 2 && pipe_index)
 		use_in_fd = n->pipefd[pipe_index - 1][0];
-	if (pipe_ct && !n->right)
+	if (use_out_fd < 2 && pipe_ct && !n->right)
 		use_out_fd = n->pipefd[pipe_index][1];
-	printf("in:%d out:%d\n", use_in_fd, use_out_fd);
+	// printf("in:%d out:%d\n", use_in_fd, use_out_fd);
 	if (dup2(use_in_fd, STDIN_FILENO) < 0)
 		ft_error(errno, ft_strdup("dup infile"), n, 1);
 	if (dup2(use_out_fd, STDOUT_FILENO) < 0)
