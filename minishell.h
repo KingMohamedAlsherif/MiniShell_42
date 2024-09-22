@@ -135,9 +135,9 @@ bool		valid_quote_pairs(char *input);
 char		sngl_or_dbl(char *input);
 char		*get_substr(char **input, char *blocker);
 void 		add_cmd_arg(t_args **args_lst, char *value);
-bool 		check_syntax(t_token *tokens_list);
+bool 		syntax_errors(t_token *tokens_list);
 
-void 		parse(t_token **tokens, t_tree_node **ast, t_ms_var *ms);
+void 		parse(t_token *token, t_tree_node **ast, t_ms_var *ms);
 void		pipes_n_exec_path(t_tree_node *head, t_ms_var *ms, int *pipe_ct);
 t_tree_node	*init_tree_node(t_token *token, t_ms_var *ms);
 void		update_node(t_redir *new_redir, char *value, token_type type);

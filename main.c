@@ -51,7 +51,34 @@ void	print_tree(t_tree_node	*ast)
 			printf("redir out: "); 
 			print_redir(ast->redir, 'o');
 		}
+		if (ast->parent)
+			printf("parent: %s\n", ast->parent->value);
+		else
+			printf("parent: none\n");
+		if (ast->left)
+			printf("left: %s\n", ast->left->value);
+		else
+			printf("left: none\n");
+		if (ast->right)
+			printf("right: %s\n", ast->right->value);
+		else
+			printf("right: none\n");
+		printf("\n");
 		traverse_tree(&ast);
+	}
+}
+
+void print_tokens(t_token *token)
+{
+	while (token)
+	{
+		printf("Token: ");
+		if (token->value)
+			printf("%s", token->value);
+		else
+			printf("(null)");
+		printf(", Type: %d\n", token->type);
+		token = token->next;
 	}
 }
 
@@ -65,11 +92,11 @@ void	init_ms(char *input, t_ms_var *ms)
 	add_history(input);
 	tokenize(input, &tokens, ms->env);
 	// print_tokens(tokens);
-	if (tokens && !check_syntax(tokens))
+	if (tokens && !syntax_errors(tokens))
 	{
 		ast = init_tree_node(tokens, ms);
 		tokens_ptr = tokens;
-		parse(&tokens, &ast, ms);
+		parse(tokens, &ast, ms);
 		// print_tree(start_node(ast));
 		free_tokens(tokens_ptr);
 		pipes_n_exec_path(start_node(ast), ms, &pipe_ct);

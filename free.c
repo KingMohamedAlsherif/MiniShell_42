@@ -61,6 +61,7 @@ void free_tokens(t_token *token)
 	while (token)
 	{
 		tmp_token = token;
+		// printf("%d: %s\n", tmp_token->type, tmp_token->value);
 		token = token->next;
 		free(tmp_token->value);
 		free(tmp_token);
@@ -93,7 +94,7 @@ void	free_tree(t_tree_node *n)
 	{
 		if (n->is_read != is_read_flag)
 		{
-			printf("cmd: %s\n", n->value);
+			// printf("cmd: %s\n", n->value);
 			free(n->value);
 			while (n->redir)
 			{
@@ -109,13 +110,25 @@ void	free_tree(t_tree_node *n)
 		if (n->type == END)
 			break ;
 		traverse_tree(&n);
-		if (n->left && n->left->is_read == is_read_flag)
-			free(n->left);
-		if (n->right && n->right->is_read == is_read_flag)
-			free(n->right);
-		if (n->parent && !n->parent->parent
-			&& n->parent->is_read == is_read_flag)
-			free(n->parent);
+		if (n)
+		{
+			if (n->left && n->left->is_read == is_read_flag)
+			{
+				free(n->left);
+				n->left = NULL;
+			}
+			if (n->right && n->right->is_read == is_read_flag)
+			{
+				free(n->right);
+				n->right = NULL;
+			}
+			if (n->parent && !n->parent->parent
+				&& n->parent->is_read == is_read_flag)
+			{
+				free(n->parent);
+				n->parent = NULL;	
+			}
+		}
 	}
 	free(n);
 }
