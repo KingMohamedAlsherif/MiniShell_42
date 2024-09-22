@@ -46,6 +46,11 @@ void	print_tree(t_tree_node	*ast)
 		if (ast->type != PIPE)
 		{
 			print_args(ast->cmd_args);
+			if (ast->redir)
+			{
+				while(ast->redir->bwd)
+					ast->redir = ast->redir->bwd;
+			}
 			printf("redir in: "); 
 			print_redir(ast->redir, 'i');
 			printf("redir out: "); 
@@ -85,7 +90,6 @@ void print_tokens(t_token *token)
 void	init_ms(char *input, t_ms_var *ms)
 {
 	t_token		*tokens;
-	t_token		*tokens_ptr;
 	t_tree_node	*ast;
 	int			pipe_ct;
 
@@ -94,11 +98,10 @@ void	init_ms(char *input, t_ms_var *ms)
 	// print_tokens(tokens);
 	if (tokens && !syntax_errors(tokens))
 	{
-		ast = init_tree_node(tokens, ms);
-		tokens_ptr = tokens;
+		ast = NULL;
 		parse(tokens, &ast, ms);
 		// print_tree(start_node(ast));
-		free_tokens(tokens_ptr);
+		free_tokens(tokens);
 		pipes_n_exec_path(start_node(ast), ms, &pipe_ct);
 		init_exec(start_node(ast), pipe_ct);
 		free(input);

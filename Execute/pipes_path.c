@@ -22,7 +22,6 @@ void	create_cmd_args_arr(t_tree_node *n)
 	args_ptr = n->cmd_args;
 	while (args_ptr)
 	{
-		// printf("cmd args: %s\n", args_ptr->arg);
 		str_ct++;
 		args_ptr = args_ptr->next;
 	}
@@ -32,6 +31,7 @@ void	create_cmd_args_arr(t_tree_node *n)
 	{
 		n->cmd_args_arr[i] = ft_strdup(n->cmd_args->arg);
 		args_ptr = n->cmd_args;
+		printf("cmd args: %s\n", args_ptr->arg);
 		n->cmd_args = n->cmd_args->next;
 		free(args_ptr->arg);
 		free(args_ptr);

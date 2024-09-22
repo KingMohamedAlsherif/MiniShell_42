@@ -20,10 +20,7 @@ void add_token(t_token **tokens, char *str, token_type type)
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 		exit(1);
-	if (!str)
-		new_token->value = ft_strdup("\0");
-	else
-		new_token->value = str;
+	new_token->value = str;
 	new_token->type = type;
 	new_token->next = NULL;
 	if (!*tokens)
