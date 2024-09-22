@@ -31,7 +31,10 @@ void	del_node(t_lst *node, int rank)
 		node_ptr->bwd->fwd = node_ptr->fwd;
 		node_ptr->fwd->bwd = node_ptr->bwd;
 	}
-	free_lst_node(node_ptr);
+	free(node->var_n_val);
+	free(node->var);
+	free(node->val);
+	free(node);
 }
 
 char	*remove_quotes(char *str)

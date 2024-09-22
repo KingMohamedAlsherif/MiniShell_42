@@ -116,6 +116,7 @@ typedef struct s_tree_node
 	char 				*exec_cmd_path;
 	t_paths				*p;
 	t_redir 			*redir;
+	int					pipe_ct;
 	int					**pipefd;
 	struct s_tree_node	*parent;
 	struct s_tree_node	*left;
@@ -124,15 +125,18 @@ typedef struct s_tree_node
 	t_ms_var			*ms;
 } t_tree_node;
 
+void 		rl_replace_line(const char *text, int clear_undo);
+void 		rl_clear_history (void);
+void		dup_env_exp(t_ms_var **ms, char **env);
+char		*export_str(char *str);
+
 // PARSING FUNCS
 void 		tokenize(char *input, t_token **tokens, t_lst *env);
 void 		print_tokens(t_token *tokens);
 void		free_tokens(t_token *tokens);
 void    	add_token(t_token **tokens, char *str, token_type type);
 char    	*get_env(char *input, t_lst *env);
-// void    	mv_ptr_incr_len(char **input, int *len);
 bool		valid_quote_pairs(char *input);
-char		sngl_or_dbl(char *input);
 char		*get_substr(char **input, char *blocker);
 void 		add_cmd_arg(t_args **args_lst, char *value);
 bool 		syntax_errors(t_token *tokens_list);
@@ -144,31 +148,22 @@ void		update_node(t_redir *new_redir, char *value, token_type type);
 
 void 		ft_error(int error, char *str, t_tree_node *p, int exit_switch);
 void		check_filepaths(t_tree_node *head);
-int			is_empty(char *av);
 t_tree_node	*start_node(t_tree_node *n);
 void		traverse_tree(t_tree_node **n);
 void		init_exec(t_tree_node *n, int pipe_ct);
-void		reset_read_flag(t_tree_node **n);
-void 		rl_replace_line(const char *text, int clear_undo);
-void 		rl_clear_history (void);
 void		cd(t_tree_node *n);
 void 		close_fds(t_tree_node *n, int pipe_ct);
-int			count_lst_nodes(t_lst *head);
-void		dup_env_exp(t_ms_var **ms, char **env);
 int			is_number(char *str);
+int			count_lst_nodes(t_lst *head);
 int			has_valid_chars(char *str);
 void		insert_node(t_tree_node *n, char *str);
 t_lst		*create_new_node(char *str, int ascii_order);
 void		update_order(t_lst *head, t_lst *node);
 char		*remove_quotes(char *str);
-char		*export_str(char *str);
 void		del_node(t_lst *n, int rank);
 void		last_redir_fd(t_redir *redir, char type, int *fd);
 
 void		free_char_arr(char **two_d, char ***three_d);
-void		free_int_array(int **two_d, int cmd_ct);
-void		free_all(t_tree_node *n);
-void		free_lst_node(t_lst *node);
 void		free_lst(t_lst *lst);
 void		free_tree(t_tree_node *n);
 

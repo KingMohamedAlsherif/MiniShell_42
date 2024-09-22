@@ -16,7 +16,7 @@ void	set_vars(t_var *s, char **input, char *quote)
 {
 	s->str = NULL;
 	s->std_blockers = "\'\" \n\t\f\v\r<>|&$";
-	s->std_block_ex_quotes = " \n\t\f\v\r<>|&$";
+	s->std_block_ex_quotes = " \n\t\f\v\r<>|&";
 	s->sgl_quote_block = "\'";
 	s->dbl_quote_block = "\"$";
 	s->usd_blockers = "\'\" \n\t\f\v\r<>|&$";
@@ -84,6 +84,26 @@ int	get_operator(char **input)
 			exit (1);
 		return (PIPE);
 	}
+}
+
+bool valid_quote_pairs(char *input)
+{
+	while (*input)
+	{
+		if (*input == '\'' || *input == '\"')
+		{
+			if (!*(input + 1))
+				return (0);
+			input = ft_strchr(input + 1, *input);
+			if (!input)
+				return (0);
+			input++;
+		}
+		else
+			while (*input && !(*input == '\'' || *input == '\"'))
+				input++;
+	}
+	return (1);
 }
 
 void    tokenize(char *input, t_token **tokens, t_lst *env) 

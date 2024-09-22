@@ -26,7 +26,7 @@ void	get_cwd(t_tree_node *n)
 	if (getcwd(cwd, sizeof(cwd)))
 		printf("Current working directory: %s\n", cwd);
 	else
-		ft_error(errno, "cwd", n, 1);
+		ft_error(errno, ft_strdup("cwd"), n, 1);
 }
 
 void	unset(t_tree_node *n)

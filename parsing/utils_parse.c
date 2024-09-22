@@ -40,6 +40,8 @@ t_tree_node	*init_tree_node(t_token *token, t_ms_var *ms)
 	new_node->exec_cmd_path = NULL;
 	new_node->p = NULL;
     new_node->redir = NULL;
+    new_node->pipe_ct = 0;
+    new_node->pipefd = NULL;
     new_node->parent = NULL;
     new_node->left = NULL;
     new_node->right = NULL;

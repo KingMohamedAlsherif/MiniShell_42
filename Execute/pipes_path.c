@@ -18,6 +18,8 @@ void	create_cmd_args_arr(t_tree_node *n)
 	t_args	*args_ptr;
 	int		i;
 
+	if (!n->exec_cmd_path)
+		n->exec_cmd_path = ft_strdup("\0");
 	str_ct = 0;
 	args_ptr = n->cmd_args;
 	while (args_ptr)
@@ -31,7 +33,6 @@ void	create_cmd_args_arr(t_tree_node *n)
 	{
 		n->cmd_args_arr[i] = ft_strdup(n->cmd_args->arg);
 		args_ptr = n->cmd_args;
-		printf("cmd args: %s\n", args_ptr->arg);
 		n->cmd_args = n->cmd_args->next;
 		free(args_ptr->arg);
 		free(args_ptr);
@@ -61,7 +62,6 @@ void	exec_path_args_arr(t_tree_node *n, t_paths p, int **pipefd)
 				}
 				free(p.filepath);
 			}
-			// printf("%s\n", p.split_filepaths[0]);
 			n->pipefd = pipefd;
 			create_cmd_args_arr(n);
 		}
@@ -102,7 +102,7 @@ void	pipes_n_exec_path(t_tree_node *head, t_ms_var *ms, int *pipe_ct)
 	}
 	pipefd = malloc(sizeof(int *) * *pipe_ct);
 	if (!pipefd)
-		ft_error(errno, ft_strdup("pipe malloc"), head, 1);
+		ft_error(errno, ft_strdup("pipe malloc"), start_node(head), 1);
 	i = 0;
 	j = *pipe_ct;
 	while (--j > -1)

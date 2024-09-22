@@ -71,6 +71,33 @@ void	print_tree(t_tree_node	*ast)
 		printf("\n");
 		traverse_tree(&ast);
 	}
+	printf("node type: %d value: %s\n", ast->type, ast->value);
+	if (ast->type != PIPE)
+	{
+		print_args(ast->cmd_args);
+		if (ast->redir)
+		{
+			while(ast->redir->bwd)
+				ast->redir = ast->redir->bwd;
+		}
+		printf("redir in: "); 
+		print_redir(ast->redir, 'i');
+		printf("redir out: "); 
+		print_redir(ast->redir, 'o');
+	}
+	if (ast->parent)
+		printf("parent: %s\n", ast->parent->value);
+	else
+		printf("parent: none\n");
+	if (ast->left)
+		printf("left: %s\n", ast->left->value);
+	else
+		printf("left: none\n");
+	if (ast->right)
+		printf("right: %s\n", ast->right->value);
+	else
+		printf("right: none\n");
+	printf("\n");
 }
 
 void print_tokens(t_token *token)
@@ -91,20 +118,28 @@ void	init_ms(char *input, t_ms_var *ms)
 {
 	t_token		*tokens;
 	t_tree_node	*ast;
+	t_token		*tmp_token;
 	int			pipe_ct;
 
 	add_history(input);
 	tokenize(input, &tokens, ms->env);
+	free(input);
 	// print_tokens(tokens);
 	if (tokens && !syntax_errors(tokens))
 	{
 		ast = NULL;
 		parse(tokens, &ast, ms);
 		// print_tree(start_node(ast));
-		free_tokens(tokens);
+		while (tokens)
+		{
+			tmp_token = tokens;
+			// printf("%d: %s\n", tmp_token->type, tmp_token->value);
+			tokens = tokens->next;
+			free(tmp_token->value);
+			free(tmp_token);
+		}
 		pipes_n_exec_path(start_node(ast), ms, &pipe_ct);
 		init_exec(start_node(ast), pipe_ct);
-		free(input);
 		free_tree(start_node(ast));
 	}
 }

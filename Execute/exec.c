@@ -48,7 +48,7 @@ void	init_infiles_outfiles(t_redir *redir, t_tree_node *n)
 		{
 			redir->in_fd = open(redir->filename, O_RDONLY);
 			if (redir->in_fd < 0)
-				ft_error(errno, redir->filename, n, 0);
+				ft_error(666, ft_strdup(redir->filename), n, 1);
 		}
 		else if (redir->is_append)
 			redir->out_fd = open(redir->filename, O_WRONLY | O_APPEND | O_CREAT, 0777);
@@ -88,7 +88,7 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 	int	use_out_fd;
 
 	// printf("%s\n", n->exec_cmd_path);
-	// printf("arg: %s\n", n->cmd_args_arr[1]);
+	// printf("arg: %s\n", n->cmd_args_arr[0]);
 	// printf("%s\n", n->ms->env_arr[0]);
 	// printf("pipe idx: %d pipe ct: %d\n", pipe_index, pipe_ct);
 	init_infiles_outfiles(n->redir, n);
@@ -110,7 +110,7 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 		ft_error(errno, ft_strdup("dup outfile"), n, 1);
 	close_fds(n, pipe_ct);
 	if (execve(n->exec_cmd_path, n->cmd_args_arr, n->ms->env_arr) < 0)
-		ft_error(errno, ft_strdup("execve"), n, 1);
+		ft_error(errno, ft_strdup(n->cmd_args_arr[0]), n, 1);
 }
 
 void init_exec(t_tree_node *n, int pipe_ct)
@@ -122,6 +122,7 @@ void init_exec(t_tree_node *n, int pipe_ct)
 	i = 0;
 	while (n->type != END)
 	{
+		n->pipe_ct = pipe_ct;
 		if ((n->parent && n->parent->type == AND
 			&& n->type == CD))
 			cd(n);
@@ -134,7 +135,7 @@ void init_exec(t_tree_node *n, int pipe_ct)
 				ft_error(errno, ft_strdup("fork"), n, 1);
 			if (!pid)
 				execute(n, i, pipe_ct);
-			waitpid(pid, &status, 0);
+			waitpid(pid, &status, WNOHANG);
 			i++;
 		}
 		traverse_tree(&n);

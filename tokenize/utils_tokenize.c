@@ -54,7 +54,7 @@ char *get_env(char *str, t_lst *env)
 	}
 	free(str);
 	if (!env)
-		return (NULL);
+		return (ft_strdup("\0"));
 	return (ft_strdup(env->val));
 }
 
@@ -75,28 +75,10 @@ char *get_substr(char **input, char *blocker)
 	return (ft_substr(start, 0, len));
 }
 
-bool valid_quote_pairs(char *input)
+void	print_syntax_error(t_token *tokens, token_type type)
 {
-	while (*input)
-	{
-		if (*input == '\'' || *input == '\"')
-		{
-			if (!*(input + 1))
-				return (0);
-			input = ft_strchr(input + 1, *input);
-			if (!input)
-				return (0);
-			input++;
-		}
-		else
-			while (*input && !(*input == '\'' || *input == '\"'))
-				input++;
-	}
-	return (1);
-}
+	t_token	*tmp_token;
 
-void	print_syntax_error(t_token	*tokens, token_type	type)
-{
 	if (type == PIPE)
 		write(2, "syntax error near unexpected token `|'\n", 40);
 	else if (type == REDIRECT_IN)
@@ -107,25 +89,32 @@ void	print_syntax_error(t_token	*tokens, token_type	type)
 		write(2, "syntax error near unexpected token `<<'\n", 41);
 	else if (type == APPEND)
 		write(2, "syntax error near unexpected token `>>'\n", 41);
-	free_tokens(tokens);
+	while (tokens)
+	{
+		tmp_token = tokens;
+		// printf("%d: %s\n", tmp_token->type, tmp_token->value);
+		tokens = tokens->next;
+		free(tmp_token->value);
+		free(tmp_token);
+	}
 }
 
-bool	syntax_errors(t_token *tokens_list)
+bool	syntax_errors(t_token *tokens)
 {
-	t_token *token;
+	t_token *tokens_ptr;
 
-	token = tokens_list;
-	if (token->type == PIPE || token->type == OR || token->type == AND)
-		return (print_syntax_error(token, token->type), 1);
-	while (token)
+	tokens_ptr = tokens;
+	if (tokens->type == PIPE || tokens->type == OR || tokens->type == AND)
+		return (print_syntax_error(tokens_ptr, tokens->type), 1);
+	while (tokens)
 	{
-		if ((token->type == REDIRECT_IN || token->type == REDIRECT_OUT ||
-			 token->type == APPEND || token->type == HEREDOC) &&
-			(!token->next || token->next->type != WORD))
-			return (print_syntax_error(token, token->type), 1);
-		if ((token->type == PIPE || token->type == OR || token->type == AND) && !token->next)
-			return (print_syntax_error(token, token->type), 1);
-		token = token->next;
+		if ((tokens->type == REDIRECT_IN || tokens->type == REDIRECT_OUT ||
+			 tokens->type == APPEND || tokens->type == HEREDOC) &&
+			(!tokens->next || tokens->next->type != WORD))
+			return (print_syntax_error(tokens_ptr, tokens->type), 1);
+		if ((tokens->type == PIPE || tokens->type == OR || tokens->type == AND) && !tokens->next)
+			return (print_syntax_error(tokens_ptr, tokens->type), 1);
+		tokens = tokens->next;
 	}
 	return (0);
 }

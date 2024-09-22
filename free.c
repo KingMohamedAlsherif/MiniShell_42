@@ -12,27 +12,6 @@
 
 #include "minishell.h"
 
-void	free_lst_node(t_lst *node)
-{
-	free(node->var_n_val);
-	free(node->var);
-	free(node->val);
-	free(node);
-}
-
-void	free_int_array(int **two_d, int pipe_ct)
-{
-	int i;
-
-	i = -1;
-	if (two_d)
-	{
-		while (++i < pipe_ct)
-			free(two_d[i]);
-		free(two_d);
-	}
-}
-
 void	free_char_arr(char **two_d, char ***three_d)
 {
 	int i;
@@ -54,20 +33,6 @@ void	free_char_arr(char **two_d, char ***three_d)
 	}
 }
 
-void free_tokens(t_token *token)
-{
-	t_token	*tmp_token;
-
-	while (token)
-	{
-		tmp_token = token;
-		// printf("%d: %s\n", tmp_token->type, tmp_token->value);
-		token = token->next;
-		free(tmp_token->value);
-		free(tmp_token);
-	}
-}
-
 void	free_lst(t_lst *lst)
 {
 	while (lst->fwd)
@@ -84,69 +49,66 @@ void	free_lst(t_lst *lst)
 	free(lst);
 }
 
+void	free_tree_node(t_tree_node *n, bool is_read_flag)
+{
+	if (n->left && n->left->is_read == is_read_flag)
+	{
+		free(n->left);
+		n->left = NULL;
+	}
+	if (n->right && n->right->is_read == is_read_flag)
+	{
+		free(n->right);
+		n->right = NULL;
+	}
+	if (n->parent && !n->parent->parent
+		&& n->parent->is_read == is_read_flag)
+	{
+		free(n->parent);
+		n->parent = NULL;	
+	}
+}
+
+void	free_redir(t_tree_node *n)
+{
+	t_redir	*redir_ptr;
+
+	while (n->redir)
+	{
+		redir_ptr = n->redir;
+		n->redir = n->redir->fwd;
+		free(redir_ptr->filename);
+		free(redir_ptr->heredoc_delim);
+		free(redir_ptr);
+	}
+
+}
+
 void	free_tree(t_tree_node *n)
 {
-	bool		is_read_flag;
-	t_redir		*redir_ptr;
+	bool	is_read_flag;
+	int		i;
 
 	is_read_flag = (n->is_read + 1) % 2;
-	while (n)
+	i = 0;
+	while (i < n->pipe_ct--)
+		free(n->pipefd[i++]);
+	free(n->pipefd);
+	while (n->type != END)
 	{
 		if (n->is_read != is_read_flag)
 		{
-			// printf("cmd: %s\n", n->value);
 			free(n->value);
-			while (n->redir)
-			{
-				redir_ptr = n->redir;
-				n->redir = n->redir->fwd;
-				free(redir_ptr->filename);
-				free(redir_ptr->heredoc_delim);
-				free(redir_ptr);
-			}
+			free_redir(n);
 			free_char_arr(n->cmd_args_arr, NULL);
 			free(n->exec_cmd_path);
 		}
-		if (n->type == END)
-			break ;
 		traverse_tree(&n);
 		if (n)
-		{
-			if (n->left && n->left->is_read == is_read_flag)
-			{
-				free(n->left);
-				n->left = NULL;
-			}
-			if (n->right && n->right->is_read == is_read_flag)
-			{
-				free(n->right);
-				n->right = NULL;
-			}
-			if (n->parent && !n->parent->parent
-				&& n->parent->is_read == is_read_flag)
-			{
-				free(n->parent);
-				n->parent = NULL;	
-			}
-		}
+			free_tree_node(n, is_read_flag);
 	}
+	free(n->value);
+	free(n->cmd_args->arg);
+	free(n->cmd_args);
 	free(n);
-}
-
-void	free_all(t_tree_node *n)
-{
-	printf("hits\n");
-	while (n->type != END)
-	{
-		// free(n->infile);
-		// free(n->outfile);
-		// free(n->delimiter);
-		free_char_arr(n->cmd_args_arr, NULL);
-		traverse_tree(&n);
-	}
-	// free(p->filepaths);
-	// free(p->pid);
-	// free_int_array(p->fd, p->pipe_ct);
-	// free_char_arr(p->cmd_filepaths, p->cmd_args);
-	// free_char_arr(p->exec_cmd_path, NULL);
 }

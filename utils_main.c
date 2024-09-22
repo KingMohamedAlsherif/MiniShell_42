@@ -64,15 +64,14 @@ void ft_error(int error, char *str, t_tree_node *n, int exit_switch)
 	printf("error #: %d\n", error);
 	if (!error)
 		ft_printf("%s\n", str);
-	if (error == 14)
+	if (error == 14 || error == 2)
 		ft_printf("%s: command not found\n", str);
+	else if (error == 666)
+		ft_printf("-Minishell: %s: No such file or directory\n", str);
 	else
 		ft_printf("%s: %s\n", str, strerror(error));
 	free(str);
-	(void)n;
+	free_tree(start_node(n));
 	if (exit_switch)
-	{
-		// free_all(n);
 		exit(EXIT_FAILURE);
-	}
 }

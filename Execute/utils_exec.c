@@ -44,23 +44,6 @@ void	traverse_tree(t_tree_node **n)
 		*n = (*n)->right;
 }
 
-int is_empty(char *av)
-{
-	int i;
-	size_t sp_ct;
-
-	i = -1;
-	sp_ct = 0;
-	while (av[++i])
-	{
-		if (av[i] == ' ')
-			sp_ct++;
-	}
-	if (sp_ct == ft_strlen(av))
-		return (0);
-	return (1);
-}
-
 void	close_fds(t_tree_node *n, int pipe_ct)
 {
 	int			i;
@@ -83,7 +66,5 @@ void	close_fds(t_tree_node *n, int pipe_ct)
 	{
 		close(n->pipefd[i][0]);
 		close(n->pipefd[i][1]);
-		free(n->pipefd[i]);
 	}
-	free(n->pipefd);
 }
