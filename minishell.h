@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/20 17:40:38 by malsheri         ###   ########.fr       */
+/*   Updated: 2024/09/23 14:43:04 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,5 +166,6 @@ void		last_redir_fd(t_redir *redir, char type, int *fd);
 void		free_char_arr(char **two_d, char ***three_d);
 void		free_lst(t_lst *lst);
 void		free_tree(t_tree_node *n);
+void		traverse_tree_to_free(t_tree_node **n, int is_read_flag);
 
 #endif

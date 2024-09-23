@@ -16,7 +16,7 @@ void	cd(t_tree_node *n)
 {
 	if (chdir(n->cmd_args_arr[0]) < 0)
 		ft_error(errno, ft_strjoin("cd: ", n->cmd_args_arr[0]), n, 1);
-	// update pwd
+	// update pwd and oldpwd
 }
 
 void	get_cwd(t_tree_node *n)
@@ -53,15 +53,15 @@ void	unset(t_tree_node *n)
 	}
 }
 
-void	env(t_tree_node *n)
-{
-	if (!n->cmd_args_arr)
-	{
-		while (n->ms->env)
-		{
-			if (ft_strchr(n->ms->env->var, '='))
-				printf("%s", n->ms->env->var_n_val);
-			n->ms->env = n->ms->env->fwd;
-		}
-	}
-}
+// void	env(t_tree_node *n)
+// {
+// 	if (!n->cmd_args_arr)
+// 	{
+// 		while (n->ms->env)
+// 		{
+// 			if (ft_strchr(n->ms->env->var, '='))
+// 				printf("%s", n->ms->env->var_n_val);
+// 			n->ms->env = n->ms->env->fwd;
+// 		}
+// 	}
+// }

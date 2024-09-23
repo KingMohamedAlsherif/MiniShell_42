@@ -6,13 +6,13 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:18:37 by chon              #+#    #+#             */
-/*   Updated: 2024/09/06 13:14:09 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/23 14:44:59 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	free_char_arr(char **two_d, char ***three_d)
+void free_char_arr(char **two_d, char ***three_d)
 {
 	int i;
 	int j;
@@ -33,7 +33,7 @@ void	free_char_arr(char **two_d, char ***three_d)
 	}
 }
 
-void	free_lst(t_lst *lst)
+void free_lst(t_lst *lst)
 {
 	while (lst->fwd)
 	{
@@ -49,29 +49,32 @@ void	free_lst(t_lst *lst)
 	free(lst);
 }
 
-void	free_tree_node(t_tree_node *n, bool is_read_flag)
+void free_tree_node(t_tree_node *n, bool is_read_flag)
 {
+	// printf("node: %s\n", n->value);
 	if (n->left && n->left->is_read == is_read_flag)
 	{
+		// printf("freeing left\n");
 		free(n->left);
 		n->left = NULL;
 	}
 	if (n->right && n->right->is_read == is_read_flag)
 	{
+		// printf("freeing right\n");
 		free(n->right);
 		n->right = NULL;
 	}
-	if (n->parent && !n->parent->parent
-		&& n->parent->is_read == is_read_flag)
+	if (n->parent && !n->parent->parent && n->parent->is_read == is_read_flag)
 	{
+		// printf("freeing parent\n");
 		free(n->parent);
-		n->parent = NULL;	
+		n->parent = NULL;
 	}
 }
 
-void	free_redir(t_tree_node *n)
+void free_redir(t_tree_node *n)
 {
-	t_redir	*redir_ptr;
+	t_redir *redir_ptr;
 
 	while (n->redir)
 	{
@@ -81,17 +84,16 @@ void	free_redir(t_tree_node *n)
 		free(redir_ptr->heredoc_delim);
 		free(redir_ptr);
 	}
-
 }
 
-void	free_tree(t_tree_node *n)
+void free_tree(t_tree_node *n)
 {
-	bool	is_read_flag;
-	int		i;
+	bool is_read_flag;
+	int i;
 
 	is_read_flag = (n->is_read + 1) % 2;
 	i = 0;
-	while (i < n->pipe_ct--)
+	while (i < n->pipe_ct)
 		free(n->pipefd[i++]);
 	free(n->pipefd);
 	while (n->type != END)
@@ -103,7 +105,7 @@ void	free_tree(t_tree_node *n)
 			free_char_arr(n->cmd_args_arr, NULL);
 			free(n->exec_cmd_path);
 		}
-		traverse_tree(&n);
+		traverse_tree_to_free(&n, is_read_flag);
 		if (n)
 			free_tree_node(n, is_read_flag);
 	}

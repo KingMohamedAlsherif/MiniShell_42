@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:19:14 by chon              #+#    #+#             */
-/*   Updated: 2024/09/09 16:43:31 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/23 14:50:10 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,24 @@ int	count_lst_nodes(t_lst *head)
 	return (node_ct);
 }
 
+void	traverse_tree_to_free(t_tree_node **n, int is_read_flag)
+{
+	bool	unread_flag;
+
+	unread_flag = (is_read_flag + 1) % 2;
+	(*n)->is_read = is_read_flag;
+	if ((*n)->type == END)
+		return ;
+	if ((*n)->parent && ((!(*n)->left && !(*n)->right)
+		|| ((*n)->left && (*n)->left->is_read == is_read_flag
+			&& (*n)->right && (*n)->right->is_read == is_read_flag)))
+		*n = (*n)->parent;
+	else if ((*n)->left && (*n)->left->is_read == unread_flag)
+		*n = (*n)->left;
+	else
+		*n = (*n)->right;
+}
+
 void ft_error(int error, char *str, t_tree_node *n, int exit_switch)
 {
 	printf("error #: %d\n", error);
@@ -71,7 +89,8 @@ void ft_error(int error, char *str, t_tree_node *n, int exit_switch)
 	else
 		ft_printf("%s: %s\n", str, strerror(error));
 	free(str);
-	free_tree(start_node(n));
+	if (n->right->type != END)
+		free_tree(start_node(n));
 	if (exit_switch)
 		exit(EXIT_FAILURE);
 }

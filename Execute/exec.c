@@ -12,6 +12,28 @@
 
 #include "../minishell.h"
 
+void	last_redir_fd(t_redir *redir, char type, int *fd)
+{
+	while (redir->fwd)
+		redir = redir->fwd;
+	if (type == 'i')
+	{
+		while (redir->bwd
+		&& !redir->in_fd && !redir->heredoc_delim)
+			redir = redir->bwd;
+		if (redir->in_fd)
+			*fd = redir->in_fd;
+	}
+	else
+	{
+		while (redir->bwd
+		&& !redir->out_fd && !redir->is_append)
+			redir = redir->bwd;
+		if (redir->out_fd)
+			*fd = redir->out_fd;
+	}
+}
+
 void	init_heredoc(t_redir *redir, t_tree_node *n)
 {
 	char	*line;
@@ -57,28 +79,6 @@ void	init_infiles_outfiles(t_redir *redir, t_tree_node *n)
 		if (redir->out_fd < 0)
 			ft_error(errno, ft_strdup(redir->filename), n, 1);
 		redir = redir->fwd;
-	}
-}
-
-void	last_redir_fd(t_redir *redir, char type, int *fd)
-{
-	while (redir->fwd)
-		redir = redir->fwd;
-	if (type == 'i')
-	{
-		while (redir->bwd
-		&& !redir->in_fd && !redir->heredoc_delim)
-			redir = redir->bwd;
-		if (redir->in_fd)
-			*fd = redir->in_fd;
-	}
-	else
-	{
-		while (redir->bwd
-		&& !redir->out_fd && !redir->is_append)
-			redir = redir->bwd;
-		if (redir->out_fd)
-			*fd = redir->out_fd;
 	}
 }
 
@@ -135,7 +135,7 @@ void init_exec(t_tree_node *n, int pipe_ct)
 				ft_error(errno, ft_strdup("fork"), n, 1);
 			if (!pid)
 				execute(n, i, pipe_ct);
-			waitpid(pid, &status, WNOHANG);
+			waitpid(pid, &status, 0);
 			i++;
 		}
 		traverse_tree(&n);

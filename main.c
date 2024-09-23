@@ -149,9 +149,6 @@ bool	exit_ms(char *input, t_ms_var *ms)
 	char		**split_input;
 
 	split_input = ft_split(input, ' ');
-	// if (!ft_strncmp(split_input[0], "clear", 6) && !split_input[1])
-	// printf("\033[F\033[K");  // Move up and clear
-	// 	rl_clear_history();
 	if (!input || (split_input[0] && !ft_strncmp(split_input[0], "exit", 5)))
 	{
 		if (input && split_input[1] && !is_number(split_input[1]))
@@ -216,7 +213,10 @@ int	main(int ac, char **av, char **env)
 			input = readline("Minishell $ ");
 			if (exit_ms(input, ms))
 				break ;
-			if (ms->env)
+			if ((ft_strlen(input) > 5 && !ft_strncmp(input, "clear ", 6))
+				|| (ft_strlen(input) < 6 && !ft_strncmp(input, "clear", 5)))
+				printf("\033[2J\033[H");
+			else if (ms->env)
 				init_ms(input, ms);
 		}
 	}

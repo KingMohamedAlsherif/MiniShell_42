@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+         #
+#    By: chon <chon@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/10 11:20:21 by chon              #+#    #+#              #
-#    Updated: 2024/09/15 09:34:11 by kingmohamedalshe ###   ########.fr        #
+#    Updated: 2024/09/23 13:40:08 by chon             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
