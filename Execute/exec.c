@@ -123,10 +123,10 @@ void init_exec(t_tree_node *n, int pipe_ct)
 	while (n->type != END)
 	{
 		n->pipe_ct = pipe_ct;
-		if ((n->parent && n->parent->type == AND
-			&& n->type == CD))
-			cd(n);
-		if (n->type != PIPE)
+		// if ((n->parent && n->parent->type == AND
+		// 	&& n->type == CD))
+		// 	cd(n);
+		if (!is_builtin(n, n->value) && n->type != PIPE)
 		{
 			// printf("%s\n", n->exec_cmd_path);
 			// printf("%s\n", n->cmd_args[0]);
@@ -135,7 +135,7 @@ void init_exec(t_tree_node *n, int pipe_ct)
 				ft_error(errno, ft_strdup("fork"), n, 1);
 			if (!pid)
 				execute(n, i, pipe_ct);
-			waitpid(pid, &status, 0);
+			waitpid(pid, &status, WNOHANG);
 			i++;
 		}
 		traverse_tree(&n);

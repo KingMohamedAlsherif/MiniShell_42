@@ -50,18 +50,34 @@ void	unset(t_tree_node *n)
 			}
 			env_node = env_node->fwd;
 		}
+		free(new_str);
 	}
 }
 
-// void	env(t_tree_node *n)
-// {
-// 	if (!n->cmd_args_arr)
-// 	{
-// 		while (n->ms->env)
-// 		{
-// 			if (ft_strchr(n->ms->env->var, '='))
-// 				printf("%s", n->ms->env->var_n_val);
-// 			n->ms->env = n->ms->env->fwd;
-// 		}
-// 	}
-// }
+void	env(t_tree_node *n)
+{
+	if (!n->cmd_args_arr[1])
+	{
+		while (n->ms->env)
+		{
+			if (ft_strchr(n->ms->env->var_n_val, '='))
+				printf("%s", n->ms->env->var_n_val);
+			n->ms->env = n->ms->env->fwd;
+		}
+	}
+	else
+		printf("env: '%s': No such file or directory\n", n->cmd_args_arr[1]);
+}
+
+bool	is_builtin(t_tree_node *n, char *cmd)
+{
+	if (ft_strlen(cmd) == 6 && !ft_strncmp(cmd, "export", 7))
+		return (export(n), 1);
+	else if (ft_strlen(cmd) == 2 && !ft_strncmp(cmd, "cd", 3))
+		return (cd(n), 1);
+	else if (ft_strlen(cmd) == 3 && !ft_strncmp(cmd, "env", 4))
+		return (env(n), 1);
+	else if (ft_strlen(cmd) == 5 && !ft_strncmp(cmd, "unset", 6))
+		return (unset(n), 1);
+	return (0);
+}

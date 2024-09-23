@@ -77,7 +77,7 @@ void	export(t_tree_node *n)
 	t_lst	*export_node;
 	int		i;
 
-	if (!n->cmd_args_arr)
+	if (!n->cmd_args_arr[1])
 	{
 		export_node = n->ms->exp;
 		while (export_node)

@@ -20,7 +20,7 @@ t_lst	*create_new_node(char *str, int ascii_order)
 	node = malloc(sizeof(t_lst));
 	if (!node)
 		exit (1);
-	node->var_n_val = ft_strdup(str);
+	node->var_n_val = ft_strjoin(str, "\n");
 	split_str = ft_split(str, '=');
 	free(str);
 	node->var = ft_strdup(split_str[0]);

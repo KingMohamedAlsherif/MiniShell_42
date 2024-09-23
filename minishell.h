@@ -163,6 +163,9 @@ char		*remove_quotes(char *str);
 void		del_node(t_lst *n, int rank);
 void		last_redir_fd(t_redir *redir, char type, int *fd);
 
+bool		is_builtin(t_tree_node *n, char *cmd);
+void		export(t_tree_node *n);
+
 void		free_char_arr(char **two_d, char ***three_d);
 void		free_lst(t_lst *lst);
 void		free_tree(t_tree_node *n);

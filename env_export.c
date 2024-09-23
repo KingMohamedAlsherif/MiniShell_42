@@ -122,18 +122,15 @@ void	dup_env_exp(t_ms_var **ms, char **env)
 		(*ms)->env->fwd = new_node;
 		(*ms)->env = (*ms)->env->fwd;
 	}
-	new_node = create_new_node(ft_strdup("$=4321"), 0);
-	new_node->bwd = (*ms)->env;
-	(*ms)->env->fwd = new_node;
+	// new_node = create_new_node(ft_strdup("$=4321"), 0);
+	// new_node->bwd = (*ms)->env;
+	// (*ms)->env->fwd = new_node;
 	(*ms)->env = head_ptr;
 	while (head_ptr)
 	{
 		update_order((*ms)->env, head_ptr);
 		head_ptr = head_ptr->fwd;
 	}
-	// printf("%s=%s\n", (*ms)->env->var, (*ms)->env->val);
 	create_ms_env_arr(&(*ms)->env_arr, env);
 	create_ms_export(&(*ms)->exp, (*ms)->env);
-	// printf("char**: %s\n", (*ms)->env_arr[0]);
-	// printf("%s=%s\n", (*ms)->exp->var, (*ms)->exp->val);
 }

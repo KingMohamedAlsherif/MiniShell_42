@@ -58,7 +58,7 @@ char	*remove_quotes(char *str)
 	{
 		while (str[i] == '\"' || str[i] == '\'')
 			i++;
-		while (str[i] != '\"' && str[i] != '\'')
+		while (str[i] && str[i] != '\"' && str[i] != '\'')
 			str_ex_quotes[++j] = str[i++];
 	}
 	str_ex_quotes[i] = '\0';
