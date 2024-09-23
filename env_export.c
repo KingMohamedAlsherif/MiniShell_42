@@ -20,17 +20,17 @@ char	*export_str(char *str)
 	char	*tmp_str_3;
 	char	*export_str;
 
-	export_str = ft_strjoin("declare -x ", str);
+	export_str = ft_strjoin("declare -x ", str, 0, 0);
 	if (ft_strchr(str, '='))
 	{
 		split_str = ft_split(str, '=');
-		tmp_str = ft_strjoin("declare -x ", split_str[0]);
-		tmp_str_2 = ft_strjoin("=\"", split_str[1]);
-		tmp_str_3 = ft_strjoin(tmp_str_2, "\"");
+		tmp_str = ft_strjoin("declare -x ", split_str[0], 0, 0);
+		tmp_str_2 = ft_strjoin("=\"", split_str[1], 0, 0);
+		tmp_str_3 = ft_strjoin(tmp_str_2, "\"", 0, 0);
 		free(tmp_str_2);
 		free_char_arr(split_str, NULL);
 		free(export_str);
-		export_str = ft_strjoin(tmp_str, tmp_str_3);
+		export_str = ft_strjoin(tmp_str, tmp_str_3, 0, 0);
 		free(tmp_str);
 		free(tmp_str_3);
 	}

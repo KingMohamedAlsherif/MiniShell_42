@@ -48,7 +48,6 @@ void	close_fds(t_tree_node *n, int pipe_ct)
 {
 	int			i;
 
-	i = -1;
 	if (n->type != END)
 		while (n->redir)
 		{
@@ -62,6 +61,7 @@ void	close_fds(t_tree_node *n, int pipe_ct)
 		}
 	if (n->type == END)
 		n = start_node(n);
+	i = -1;
 	while (++i < pipe_ct)
 	{
 		close(n->pipefd[i][0]);

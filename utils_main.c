@@ -20,7 +20,7 @@ t_lst	*create_new_node(char *str, int ascii_order)
 	node = malloc(sizeof(t_lst));
 	if (!node)
 		exit (1);
-	node->var_n_val = ft_strjoin(str, "\n");
+	node->var_n_val = ft_strjoin(str, "\n", 0, 0);
 	split_str = ft_split(str, '=');
 	free(str);
 	node->var = ft_strdup(split_str[0]);
@@ -89,8 +89,13 @@ void ft_error(int error, char *str, t_tree_node *n, int exit_switch)
 	else
 		ft_printf("%s: %s\n", str, strerror(error));
 	free(str);
-	if (n->right->type != END)
-		free_tree(start_node(n));
 	if (exit_switch)
+	{
+		free_lst(n->ms->env);
+		free_lst(n->ms->exp);
+		free_char_arr(n->ms->env_arr, NULL);
+		free(n->ms);
+		free_tree(start_node(n));
 		exit(EXIT_FAILURE);
+	}
 }

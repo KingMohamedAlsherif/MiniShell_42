@@ -24,7 +24,6 @@
 # include <stdlib.h>
 # include <errno.h>
 # include <ctype.h>
-# include <stdbool.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>

@@ -22,6 +22,7 @@
 # include <stdarg.h>
 # include <math.h>
 # include <string.h>
+# include <stdbool.h>
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 1000
@@ -64,7 +65,7 @@ char		**ft_split(char const *s, char c);
 char		*ft_strchr(const char *s, int c);
 char		*ft_strdup(const char *s);
 void		ft_striteri(char *s, void (*f)(unsigned int, char*));
-char		*ft_strjoin(char *s1, char *s2);
+char		*ft_strjoin(char *s1, char *s2, bool free_s1, bool free_s2);
 size_t		ft_strlen(const char *s);
 size_t		ft_strlcat(char *dest, const char *src, size_t size);
 size_t		ft_strlcpy(char *dest, const char *src, size_t size);

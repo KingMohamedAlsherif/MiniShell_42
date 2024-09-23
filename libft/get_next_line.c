@@ -90,7 +90,7 @@ char	*pull_text(char *buffer, int fd)
 			return (free_and_return_null(text));
 		}
 		text[bytes_read] = '\0';
-		buffer = ft_strjoin(buffer, text);
+		buffer = ft_strjoin(buffer, text, 0, 0);
 	}
 	free(text);
 	return (buffer);

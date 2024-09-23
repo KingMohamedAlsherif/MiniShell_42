@@ -41,7 +41,7 @@ void	init_heredoc(t_redir *redir, t_tree_node *n)
 
 	if (!access(redir->filename, F_OK))
 	{
-		new_file_name = ft_strjoin(redir->filename, "_tmp");
+		new_file_name = ft_strjoin(redir->filename, "_tmp", 0, 0);
 		free(redir->filename);
 		redir->filename = new_file_name;
 	}
@@ -135,10 +135,11 @@ void init_exec(t_tree_node *n, int pipe_ct)
 				ft_error(errno, ft_strdup("fork"), n, 1);
 			if (!pid)
 				execute(n, i, pipe_ct);
-			waitpid(pid, &status, WNOHANG);
 			i++;
 		}
 		traverse_tree(&n);
 	}
 	close_fds(n, pipe_ct);
+	while (i-- > 0)
+		waitpid(-1, &status, 0);
 }

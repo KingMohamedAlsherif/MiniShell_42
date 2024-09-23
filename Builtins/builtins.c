@@ -15,7 +15,7 @@
 void	cd(t_tree_node *n)
 {
 	if (chdir(n->cmd_args_arr[0]) < 0)
-		ft_error(errno, ft_strjoin("cd: ", n->cmd_args_arr[0]), n, 1);
+		ft_error(errno, ft_strjoin("cd: ", n->cmd_args_arr[0], 0, 0), n, 1);
 	// update pwd and oldpwd
 }
 

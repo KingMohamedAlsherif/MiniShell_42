@@ -51,9 +51,9 @@ void	exec_path_args_arr(t_tree_node *n, t_paths p, int **pipefd)
 		{
 			while (p.split_filepaths[++i])
 			{
-				p.filepath_0 = ft_strjoin(p.split_filepaths[i], "/");
-				p.filepath = ft_strjoin(p.filepath_0, n->value);
-				free(p.filepath_0);
+				p.filepath_0 = ft_strjoin(p.split_filepaths[i], "/", 0, 0);
+				p.filepath = ft_strjoin(p.filepath_0, n->value, 1, 0);
+				// free(p.filepath_0);
 				if (access(p.filepath, X_OK) > -1)
 				{
 					n->exec_cmd_path = ft_strdup(p.filepath);

@@ -38,6 +38,7 @@ void	set_vars(t_var *s, char **input, char *quote)
 char    *get_str(char **input, t_lst *env, char quote)
 {
 	t_var	s;
+	// char	*new_str;
 
 	set_vars(&s, input, &quote);
 	if (**input == '$' && quote != '\'')
@@ -56,7 +57,10 @@ char    *get_str(char **input, t_lst *env, char quote)
 	}
 	if (!**input || (!quote && ft_strchr(s.std_block_ex_quotes, **input)))
 		return (s.str);
-	return (ft_strjoin(s.str, get_str(input, env, quote)));
+	// new_str = ft_strjoin(s.str, get_str(input, env, quote));
+	// free(s.str);
+	// return (new_str);
+	return (ft_strjoin(s.str, get_str(input, env, quote), 1, 1));
 }
 
 int	get_operator(char **input)
