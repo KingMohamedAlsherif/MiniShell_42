@@ -134,10 +134,12 @@ void	init_ms(char *input, t_ms_var *ms)
 		ast = start_node(ast);
 		while (ast->type != END)
 		{
-			if (!ast->exec_cmd_path && ast->type == WORD)
+			if (!ast->exec_cmd_path && ast->type == WORD
+				&& !is_builtin(ast->value))
 				printf("%s: command not found\n", ast->value);
 			traverse_tree(&ast);
 		}
+		// printf("%d\n", ast->type);
 		ast->is_read = (ast->is_read + 1) % 2;
 		// printf("%d: read? %d\n", ast->type, ast->is_read);
 		// printf("parent of %d: read? %d\n", ast->parent->type, ast->parent->is_read);

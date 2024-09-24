@@ -53,10 +53,12 @@ void free_redir(t_tree_node *n)
 {
 	t_redir *redir_ptr;
 
+	// printf("%s\n", n->value);
 	while (n->redir)
 	{
 		redir_ptr = n->redir;
 		n->redir = n->redir->fwd;
+		// printf("%s\n", redir_ptr->filename);
 		free(redir_ptr->filename);
 		free(redir_ptr->heredoc_delim);
 		free(redir_ptr);

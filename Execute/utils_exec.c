@@ -34,7 +34,7 @@ void	create_err_file(t_tree_node *n)
 	{
 		unlink(err_filename);
 		free(err_filename);
-		ft_error(errno, ft_strdup("err file"), n, 1);
+		ft_exit(errno, ft_strdup("err file"), n, 1);
 	}
 	dup2(err_fd, STDERR_FILENO);
 	close(err_fd);
@@ -44,9 +44,8 @@ void	create_err_file(t_tree_node *n)
 
 void	close_fds(t_tree_node *n, int pipe_ct)
 {
-	int			i;
+	int	i;
 
-	n = start_node(n);
 	if (n->type != END)
 		while (n->redir)
 		{

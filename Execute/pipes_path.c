@@ -99,14 +99,14 @@ void	pipes_n_exec_path(t_tree_node *head, t_ms_var *ms, int *pipe_ct)
 	}
 	pipefd = malloc(sizeof(int *) * *pipe_ct);
 	if (!pipefd)
-		ft_error(errno, ft_strdup("pipe malloc"), start_node(head), 1);
+		ft_exit(errno, ft_strdup("pipe malloc"), start_node(head), 1);
 	i = 0;
 	j = *pipe_ct;
 	while (--j > -1)
 	{
 		pipefd[i] = malloc(sizeof(int) * 2);
 		if (pipe(pipefd[i++]) < 0)
-			ft_error(errno, ft_strdup("pipe"), head, 1);
+			ft_exit(errno, ft_strdup("pipe"), head, 1);
 	}
 	init_filepaths(&p, ms->env);
 	exec_path_args_arr(start_node(head), p, pipefd);

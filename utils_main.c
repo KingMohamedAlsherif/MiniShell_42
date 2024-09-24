@@ -77,7 +77,7 @@ void	traverse_tree_to_free(t_tree_node **n, int is_read_flag)
 		*n = (*n)->right;
 }
 
-void ft_error(int error, char *str, t_tree_node *n, int exit_switch)
+void ft_exit(int error, char *str, t_tree_node *n, int exit_switch)
 {
 	// printf("error #: %d\n", error);
 	if (error == 666)
@@ -93,6 +93,6 @@ void ft_error(int error, char *str, t_tree_node *n, int exit_switch)
 		while (n->type != END)
 			traverse_tree(&n);
 		free_tree(start_node(n));
-		exit(EXIT_FAILURE);
+		exit(1);
 	}
 }

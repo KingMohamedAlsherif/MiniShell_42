@@ -18,26 +18,21 @@ char	*export_str(char *str)
 	char	*tmp_str;
 	char	*tmp_str_2;
 	char	*tmp_str_3;
-	char	*export_str;
 
-	tmp_str = ft_strtrim(str, "\n");
-	export_str = ft_strjoin("declare -x ", tmp_str, 0, 1);
 	if (ft_strchr(str, '='))
 	{
-		split_str = ft_split(export_str, '=');
-		free(export_str);
+		tmp_str = ft_strtrim(str, "\n");
+		split_str = ft_split(tmp_str, '=');
+		free(tmp_str);
 		tmp_str = ft_strjoin("declare -x ", split_str[0], 0, 0);
 		tmp_str_2 = ft_strjoin("=\"", split_str[1], 0, 0);
-		tmp_str_3 = ft_strjoin(tmp_str_2, "\"", 0, 0);
-		free(tmp_str_2);
+		tmp_str_3 = ft_strjoin(tmp_str_2, "\"", 1, 0);
 		free_char_arr(split_str, NULL);
-		export_str = ft_strjoin(tmp_str, tmp_str_3, 0, 0);
-		free(tmp_str);
-		free(tmp_str_3);
+		tmp_str = ft_strjoin(tmp_str, tmp_str_3, 1, 1);
 	}
-	if (!export_str)
-		return (NULL);
-	return (export_str);
+	// if (!export_str)
+	// 	return (NULL);
+	return (tmp_str);
 }
 
 void	create_ms_export(t_lst **exp_head, t_lst *env)
@@ -118,14 +113,18 @@ void	dup_env_exp(t_ms_var **ms, char **env)
 	i = 0;
 	while (env[++i])
 	{
-		new_node = create_new_node(ft_strdup(env[i]), 0);
-		new_node->bwd = (*ms)->env;
-		(*ms)->env->fwd = new_node;
-		(*ms)->env = (*ms)->env->fwd;
+		if (strncmp(env[i], "_", 1) && strncmp(env[i], "LD_", 3)
+			&& strncmp(env[i], "GLIBC", 5))
+		{
+			new_node = create_new_node(ft_strdup(env[i]), 0);
+			new_node->bwd = (*ms)->env;
+			(*ms)->env->fwd = new_node;
+			(*ms)->env = (*ms)->env->fwd;
+		}
 	}
-	// new_node = create_new_node(ft_strdup("$=4321"), 0);
-	// new_node->bwd = (*ms)->env;
-	// (*ms)->env->fwd = new_node;
+	new_node = create_new_node(ft_strdup("?=0"), 0);
+	new_node->bwd = (*ms)->env;
+	(*ms)->env->fwd = new_node;
 	(*ms)->env = head_ptr;
 	while (head_ptr)
 	{

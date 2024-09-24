@@ -82,7 +82,8 @@ void	export(t_tree_node *n)
 		export_node = n->ms->exp;
 		while (export_node)
 		{
-			printf("%s", export_node->var_n_val);
+			if (ft_strncmp(export_node->var, "declare -x ?", 13))
+				printf("%s", export_node->var_n_val);
 			export_node = export_node->fwd;
 		}
 	}
