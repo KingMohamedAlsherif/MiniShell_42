@@ -85,7 +85,7 @@ int	get_operator(char **input)
 		if (*(*input - 1) == '>')
 			return (REDIRECT_OUT);
 		if (*(*input - 1) == '&')
-			exit (1);
+			return (AND);
 		return (PIPE);
 	}
 }
@@ -128,6 +128,6 @@ void    tokenize(char *input, t_token **tokens, t_lst *env)
 			else
 				add_token(tokens, get_str(&input, env, 0), WORD);
 	    }
-		add_token(tokens, ft_strdup("END"), END);
+		add_token(tokens, NULL, END);
 	}
 }

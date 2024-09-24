@@ -118,7 +118,6 @@ void	init_ms(char *input, t_ms_var *ms)
 {
 	t_token		*tokens;
 	t_tree_node	*ast;
-	t_token		*tmp_token;
 	int			pipe_ct;
 
 	add_history(input);
@@ -128,18 +127,20 @@ void	init_ms(char *input, t_ms_var *ms)
 	if (tokens && !syntax_errors(tokens))
 	{
 		ast = NULL;
-		parse(tokens, &ast, ms);
+		parse(tokens, &ast, ms, tokens);
 		// print_tree(start_node(ast));
-		while (tokens)
-		{
-			tmp_token = tokens;
-			// printf("%d: %s\n", tmp_token->type, tmp_token->value);
-			tokens = tokens->next;
-			free(tmp_token->value);
-			free(tmp_token);
-		}
 		pipes_n_exec_path(start_node(ast), ms, &pipe_ct);
 		init_exec(start_node(ast), pipe_ct);
+		ast = start_node(ast);
+		while (ast->type != END)
+		{
+			if (!ast->exec_cmd_path && ast->type == WORD)
+				printf("%s: command not found\n", ast->value);
+			traverse_tree(&ast);
+		}
+		ast->is_read = (ast->is_read + 1) % 2;
+		// printf("%d: read? %d\n", ast->type, ast->is_read);
+		// printf("parent of %d: read? %d\n", ast->parent->type, ast->parent->is_read);
 		free_tree(start_node(ast));
 	}
 }
@@ -192,6 +193,7 @@ int	init_signals(void)
 		perror("sigaction");
 		return (1);
 	}
+	signal(SIGPIPE, SIG_IGN);
 	return (0);
 }
 

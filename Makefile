@@ -14,7 +14,8 @@ NAME = minishell
 # CFLAGS = -Wall -Werror -Wextra -g3 -fsanitize=address
 CFLAGS = -Wall -Werror -Wextra -g3
 LIBFT_DIR = ./libft
-LIBS = ./libft/libft.a -L$(HOME)/.local/opt/readline/lib -I$(HOME)/.local/opt/readline/include -lreadline
+LIBS = ./libft/libft.a -L$(HOME)/.local/opt/readline/lib \
+-I$(HOME)/.local/opt/readline/include -lreadline
 # LIBS = ./libft/libft.a -lreadline
 OBJS = $(SRCS:.c=.o)
 SRCS = main.c env_export.c utils_main.c free.c \

@@ -12,6 +12,62 @@
 
 #include "../minishell.h"
 
+char	*guarantee_file(char *original)
+{
+	char	*filename;
+
+	filename = ft_strdup(original);
+	free(original);
+	while (!access(filename, F_OK))
+		filename = ft_strjoin(filename, "_new", 1, 0);
+	return (filename);
+}
+
+void	create_err_file(t_tree_node *n)
+{
+	char	*err_filename;
+	int		err_fd;
+
+	err_filename = guarantee_file(ft_strdup("error"));
+	err_fd = open(err_filename, O_WRONLY | O_CREAT);
+	if (err_fd < 0)
+	{
+		unlink(err_filename);
+		free(err_filename);
+		ft_error(errno, ft_strdup("err file"), n, 1);
+	}
+	dup2(err_fd, STDERR_FILENO);
+	close(err_fd);
+	unlink(err_filename);
+	free(err_filename);
+}
+
+void	close_fds(t_tree_node *n, int pipe_ct)
+{
+	int			i;
+
+	n = start_node(n);
+	if (n->type != END)
+		while (n->redir)
+		{
+			if (n->redir->in_fd > 2)
+				close(n->redir->in_fd);
+			if (n->redir->out_fd > 2)
+				close(n->redir->out_fd);
+			if (n->redir->heredoc_delim)
+				unlink(n->redir->filename);
+			n->redir = n->redir->fwd;
+		}
+	if (n->type == END)
+		n = start_node(n);
+	i = -1;
+	while (++i < pipe_ct)
+	{
+		close(n->pipefd[i][0]);
+		close(n->pipefd[i][1]);
+	}
+}
+
 t_tree_node	*start_node(t_tree_node *n)
 {
 	while (n->parent)
@@ -42,29 +98,4 @@ void	traverse_tree(t_tree_node **n)
 		*n = (*n)->left;
 	else
 		*n = (*n)->right;
-}
-
-void	close_fds(t_tree_node *n, int pipe_ct)
-{
-	int			i;
-
-	if (n->type != END)
-		while (n->redir)
-		{
-			if (n->redir->in_fd > 2)
-				close(n->redir->in_fd);
-			if (n->redir->out_fd > 2)
-				close(n->redir->out_fd);
-			if (n->redir->heredoc_delim)
-				unlink(n->redir->filename);
-			n->redir = n->redir->fwd;
-		}
-	if (n->type == END)
-		n = start_node(n);
-	i = -1;
-	while (++i < pipe_ct)
-	{
-		close(n->pipefd[i][0]);
-		close(n->pipefd[i][1]);
-	}
 }

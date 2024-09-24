@@ -20,22 +20,23 @@ char	*export_str(char *str)
 	char	*tmp_str_3;
 	char	*export_str;
 
-	export_str = ft_strjoin("declare -x ", str, 0, 0);
+	tmp_str = ft_strtrim(str, "\n");
+	export_str = ft_strjoin("declare -x ", tmp_str, 0, 1);
 	if (ft_strchr(str, '='))
 	{
-		split_str = ft_split(str, '=');
+		split_str = ft_split(export_str, '=');
+		free(export_str);
 		tmp_str = ft_strjoin("declare -x ", split_str[0], 0, 0);
 		tmp_str_2 = ft_strjoin("=\"", split_str[1], 0, 0);
 		tmp_str_3 = ft_strjoin(tmp_str_2, "\"", 0, 0);
 		free(tmp_str_2);
 		free_char_arr(split_str, NULL);
-		free(export_str);
 		export_str = ft_strjoin(tmp_str, tmp_str_3, 0, 0);
 		free(tmp_str);
 		free(tmp_str_3);
 	}
 	if (!export_str)
-		exit (1);
+		return (NULL);
 	return (export_str);
 }
 
@@ -78,7 +79,7 @@ void	create_ms_env_arr(char ***ms_env, char **env)
 	{
 		(*ms_env)[str_ct] = ft_strdup(env[str_ct]);
 		if (!(*ms_env)[str_ct])
-			exit (1);
+			return ;
 	}
 	(*ms_env)[str_ct] = NULL;
 }
@@ -111,7 +112,7 @@ void	dup_env_exp(t_ms_var **ms, char **env)
 
 	*ms = malloc(sizeof(t_ms_var));
 	if (!*ms)
-		exit (1);
+		return ;
 	(*ms)->env = create_new_node(ft_strdup(env[0]), 0);
 	head_ptr = (*ms)->env;
 	i = 0;

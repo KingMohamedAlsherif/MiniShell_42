@@ -104,7 +104,7 @@ typedef struct s_redir
 	int 			 out_fd;
 	struct s_redir   *fwd;
 	struct s_redir   *bwd;
-} t_redir;
+}	t_redir;
 
 typedef struct s_tree_node
 {
@@ -122,7 +122,7 @@ typedef struct s_tree_node
 	struct s_tree_node	*right;
 	bool				is_read;
 	t_ms_var			*ms;
-} t_tree_node;
+}	t_tree_node;
 
 void 		rl_replace_line(const char *text, int clear_undo);
 void 		rl_clear_history (void);
@@ -140,7 +140,7 @@ char		*get_substr(char **input, char *blocker);
 void 		add_cmd_arg(t_args **args_lst, char *value);
 bool 		syntax_errors(t_token *tokens_list);
 
-void 		parse(t_token *token, t_tree_node **ast, t_ms_var *ms);
+void 		parse(t_token *token, t_tree_node **ast, t_ms_var *ms, t_token *head);
 void		pipes_n_exec_path(t_tree_node *head, t_ms_var *ms, int *pipe_ct);
 t_tree_node	*init_tree_node(t_token *token, t_ms_var *ms);
 void		update_node(t_redir *new_redir, char *value, token_type type);
@@ -161,6 +161,8 @@ void		update_order(t_lst *head, t_lst *node);
 char		*remove_quotes(char *str);
 void		del_node(t_lst *n, int rank);
 void		last_redir_fd(t_redir *redir, char type, int *fd);
+char		*guarantee_file(char *original);
+void		create_err_file(t_tree_node *n);
 
 bool		is_builtin(t_tree_node *n, char *cmd);
 void		export(t_tree_node *n);

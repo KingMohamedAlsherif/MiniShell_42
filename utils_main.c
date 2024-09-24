@@ -19,7 +19,7 @@ t_lst	*create_new_node(char *str, int ascii_order)
 
 	node = malloc(sizeof(t_lst));
 	if (!node)
-		exit (1);
+		return (NULL);
 	node->var_n_val = ft_strjoin(str, "\n", 0, 0);
 	split_str = ft_split(str, '=');
 	free(str);
@@ -79,22 +79,19 @@ void	traverse_tree_to_free(t_tree_node **n, int is_read_flag)
 
 void ft_error(int error, char *str, t_tree_node *n, int exit_switch)
 {
-	printf("error #: %d\n", error);
-	if (!error)
-		ft_printf("%s\n", str);
-	if (error == 14 || error == 2)
-		ft_printf("%s: command not found\n", str);
-	else if (error == 666)
-		ft_printf("-Minishell: %s: No such file or directory\n", str);
-	else
-		ft_printf("%s: %s\n", str, strerror(error));
+	// printf("error #: %d\n", error);
+	if (error == 666)
+		printf("-Minishell: %s: No such file or directory\n", str);
 	free(str);
+	close_fds(n, n->pipe_ct);
 	if (exit_switch)
 	{
 		free_lst(n->ms->env);
 		free_lst(n->ms->exp);
 		free_char_arr(n->ms->env_arr, NULL);
 		free(n->ms);
+		while (n->type != END)
+			traverse_tree(&n);
 		free_tree(start_node(n));
 		exit(EXIT_FAILURE);
 	}

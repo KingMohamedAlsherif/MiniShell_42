@@ -1,5 +1,19 @@
 #include "../minishell.h"
 
+void	free_tokens(t_token *token)
+{
+	t_token	*tmp_token;
+
+	while (token)
+	{
+		tmp_token = token;
+		// printf("%d: %s\n", tmp_token->type, tmp_token->value);
+		token = token->next;
+		free(tmp_token->value);
+		free(tmp_token);
+	}
+}
+
 void	update_node(t_redir *new_redir, char *value, token_type type)
 {
     new_redir->filename = ft_strdup(value);
@@ -19,7 +33,7 @@ void	parse_redir(t_token *token, t_redir **redir)
 
 	new_redir = malloc(sizeof(t_redir));
     if (!new_redir)
-        exit (1);
+        return ;
     new_redir->filename = NULL;
     new_redir->heredoc_delim = NULL;
     new_redir->in_fd = 0;
@@ -45,18 +59,18 @@ void	parse_word(t_token *token, t_tree_node **ast, t_ms_var *ms)
 	{
 		(*ast)->right = init_tree_node(token, ms);
 		(*ast)->right->parent = *ast;
-		*ast = (*ast)->right;
 	}
-	if (!(*ast)->value)
+	if (!(*ast)->value && token->type != END)
 		(*ast)->value = ft_strdup(token->value);
-	add_cmd_arg(&((*ast)->cmd_args), token->value);
+	if (token->type != END)
+		add_cmd_arg(&((*ast)->cmd_args), token->value);
 }
 
-void	parse(t_token *token, t_tree_node **ast, t_ms_var *ms)
+void	parse(t_token *token, t_tree_node **ast, t_ms_var *ms, t_token *head)
 {
 	if (!*ast)
 		*ast = init_tree_node(token, ms);
-	if (token->type == PIPE)
+	if (token->type == PIPE || token->type == AND || token->type == OR)
 	{
 		while ((*ast)->parent)
 			*ast = (*ast)->parent;
@@ -74,5 +88,7 @@ void	parse(t_token *token, t_tree_node **ast, t_ms_var *ms)
     else if (token)
 		parse_word(token, ast, ms);
 	if (token->next)
-		parse(token->next, ast, ms);
+		parse(token->next, ast, ms, head);
+	else
+		free_tokens(head);
 }

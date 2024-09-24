@@ -51,7 +51,7 @@ char	*remove_quotes(char *str)
 			quote_count++;
 	str_ex_quotes = malloc(ft_strlen(str) - quote_count + 1);
 	if (!str_ex_quotes)
-		exit (1);
+		return (NULL);
 	i = 0;
 	j = -1;
 	while (str[i])

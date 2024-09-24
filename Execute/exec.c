@@ -37,14 +37,8 @@ void	last_redir_fd(t_redir *redir, char type, int *fd)
 void	init_heredoc(t_redir *redir, t_tree_node *n)
 {
 	char	*line;
-	char	*new_file_name;
 
-	if (!access(redir->filename, F_OK))
-	{
-		new_file_name = ft_strjoin(redir->filename, "_tmp", 0, 0);
-		free(redir->filename);
-		redir->filename = new_file_name;
-	}
+	redir->filename = guarantee_file(redir->filename);
 	redir->in_fd = open(redir->filename, O_RDWR | O_TRUNC | O_CREAT, 0777);
 	if (redir->in_fd < 0)
 		ft_error(errno, ft_strdup(redir->filename), n, 1);
@@ -84,8 +78,8 @@ void	init_infiles_outfiles(t_redir *redir, t_tree_node *n)
 
 void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 {
-	int	use_in_fd;
-	int	use_out_fd;
+	int		use_in_fd;
+	int		use_out_fd;
 
 	// printf("%s\n", n->exec_cmd_path);
 	// printf("arg: %s\n", n->cmd_args_arr[0]);
@@ -108,8 +102,10 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 		ft_error(errno, ft_strdup("dup infile"), n, 1);
 	if (dup2(use_out_fd, STDOUT_FILENO) < 0)
 		ft_error(errno, ft_strdup("dup outfile"), n, 1);
+	create_err_file(n);
 	close_fds(n, pipe_ct);
-	if (execve(n->exec_cmd_path, n->cmd_args_arr, n->ms->env_arr) < 0)
+	if (!n->exec_cmd_path
+		|| execve(n->exec_cmd_path, n->cmd_args_arr, n->ms->env_arr) < 0)
 		ft_error(errno, ft_strdup(n->cmd_args_arr[0]), n, 1);
 }
 
@@ -142,4 +138,5 @@ void init_exec(t_tree_node *n, int pipe_ct)
 	close_fds(n, pipe_ct);
 	while (i-- > 0)
 		waitpid(-1, &status, 0);
+	// update_(status);
 }

@@ -54,19 +54,19 @@ void	unset(t_tree_node *n)
 	}
 }
 
-void	env(t_tree_node *n)
+void	env(char *arg, t_lst *env)
 {
-	if (!n->cmd_args_arr[1])
+	if (!arg)
 	{
-		while (n->ms->env)
+		while (env)
 		{
-			if (ft_strchr(n->ms->env->var_n_val, '='))
-				printf("%s", n->ms->env->var_n_val);
-			n->ms->env = n->ms->env->fwd;
+			if (ft_strchr(env->var_n_val, '='))
+				printf("%s", env->var_n_val);
+			env = env->fwd;
 		}
 	}
 	else
-		printf("env: '%s': No such file or directory\n", n->cmd_args_arr[1]);
+		printf("env: '%s': No such file or directory\n", arg);
 }
 
 bool	is_builtin(t_tree_node *n, char *cmd)
@@ -76,7 +76,7 @@ bool	is_builtin(t_tree_node *n, char *cmd)
 	else if (ft_strlen(cmd) == 2 && !ft_strncmp(cmd, "cd", 3))
 		return (cd(n), 1);
 	else if (ft_strlen(cmd) == 3 && !ft_strncmp(cmd, "env", 4))
-		return (env(n), 1);
+		return (env(n->cmd_args_arr[1], n->ms->env), 1);
 	else if (ft_strlen(cmd) == 5 && !ft_strncmp(cmd, "unset", 6))
 		return (unset(n), 1);
 	return (0);

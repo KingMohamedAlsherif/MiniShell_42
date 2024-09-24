@@ -49,6 +49,20 @@ void free_lst(t_lst *lst)
 	free(lst);
 }
 
+void free_redir(t_tree_node *n)
+{
+	t_redir *redir_ptr;
+
+	while (n->redir)
+	{
+		redir_ptr = n->redir;
+		n->redir = n->redir->fwd;
+		free(redir_ptr->filename);
+		free(redir_ptr->heredoc_delim);
+		free(redir_ptr);
+	}
+}
+
 void free_tree_node(t_tree_node *n, bool is_read_flag)
 {
 	// printf("node: %s\n", n->value);
@@ -72,32 +86,20 @@ void free_tree_node(t_tree_node *n, bool is_read_flag)
 	}
 }
 
-void free_redir(t_tree_node *n)
-{
-	t_redir *redir_ptr;
-
-	while (n->redir)
-	{
-		redir_ptr = n->redir;
-		n->redir = n->redir->fwd;
-		free(redir_ptr->filename);
-		free(redir_ptr->heredoc_delim);
-		free(redir_ptr);
-	}
-}
-
 void free_tree(t_tree_node *n)
 {
 	bool is_read_flag;
 	int i;
 
+	// printf("start node value: %s\n", n->value);
 	is_read_flag = (n->is_read + 1) % 2;
 	i = 0;
 	while (i < n->pipe_ct)
 		free(n->pipefd[i++]);
 	free(n->pipefd);
-	while (n->type != END)
+	while (n && n->type != END)
 	{
+		// printf("node value: %s; is read: %d\n", n->value, n->is_read);
 		if (n->is_read != is_read_flag)
 		{
 			free(n->value);
@@ -109,8 +111,8 @@ void free_tree(t_tree_node *n)
 		if (n)
 			free_tree_node(n, is_read_flag);
 	}
-	free(n->value);
-	free(n->cmd_args->arg);
-	free(n->cmd_args);
-	free(n);
+	// printf("node value: %p type: %d\n", NULL, n->type);
+	// printf("node type: %d\n", n->type);
+	if (n)
+		free(n);
 }

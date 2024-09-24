@@ -7,7 +7,7 @@ void	add_cmd_arg(t_args **args_lst, char *value)
 
 	new_arg = malloc(sizeof(t_args));
 	if (!new_arg)
-		exit (1);
+		return ;
     new_arg->arg = ft_strdup(value);
     new_arg->next = NULL;
     if (!*args_lst)
@@ -27,7 +27,7 @@ t_tree_node	*init_tree_node(t_token *token, t_ms_var *ms)
 
     new_node = malloc(sizeof(t_tree_node));
     if (!new_node)
-        exit (1);
+        return (NULL);
     if (token->type == PIPE || token->type == END)
         new_node->type = token->type;
     else
