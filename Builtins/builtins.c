@@ -75,8 +75,8 @@ bool	is_builtin(t_tree_node *n, char *cmd)
 		return (export(n), 1);
 	else if (ft_strlen(cmd) == 2 && !ft_strncmp(cmd, "cd", 3))
 		return (cd(n), 1);
-	else if (ft_strlen(cmd) == 3 && !ft_strncmp(cmd, "env", 4))
-		return (env(n->cmd_args_arr[1], n->ms->env), 1);
+	// else if (ft_strlen(cmd) == 3 && !ft_strncmp(cmd, "env", 4))
+	// 	return (env(n->cmd_args_arr[1], n->ms->env), 1);
 	else if (ft_strlen(cmd) == 5 && !ft_strncmp(cmd, "unset", 6))
 		return (unset(n), 1);
 	return (0);
