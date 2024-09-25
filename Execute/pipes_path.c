@@ -12,12 +12,21 @@
 
 #include "../minishell.h"
 
+void	finalize_exec_cmd_path(char	**exec_cmd_path, char *value)
+{
+	if (is_number(value))
+		*exec_cmd_path = ft_strdup("?");
+	else if (!*exec_cmd_path)
+		*exec_cmd_path = ft_strdup("invalid");
+}
+
 void	create_cmd_args_arr(t_tree_node *n)
 {
 	int		str_ct;
 	t_args	*args_ptr;
 	int		i;
 
+	finalize_exec_cmd_path(&n->exec_cmd_path, n->value);
 	str_ct = 0;
 	args_ptr = n->cmd_args;
 	while (args_ptr)
@@ -26,6 +35,8 @@ void	create_cmd_args_arr(t_tree_node *n)
 		args_ptr = args_ptr->next;
 	}
 	n->cmd_args_arr = malloc(sizeof(char *) * (str_ct + 1));
+	if (!n->cmd_args_arr)
+		return ;
 	i = -1;
 	while (++i < str_ct)
 	{
@@ -55,7 +66,7 @@ void	exec_path_args_arr(t_tree_node *n, t_paths p, int **pipefd)
 				{
 					n->exec_cmd_path = ft_strdup(p.filepath);
 					free(p.filepath);
-					break;
+					break ;
 				}
 				free(p.filepath);
 			}
@@ -99,14 +110,14 @@ void	pipes_n_exec_path(t_tree_node *head, t_ms_var *ms, int *pipe_ct)
 	}
 	pipefd = malloc(sizeof(int *) * *pipe_ct);
 	if (!pipefd)
-		ft_exit(errno, ft_strdup("pipe malloc"), start_node(head), 1);
+		ft_error(errno, ft_strdup("pipe malloc"), start_node(head), 1);
 	i = 0;
 	j = *pipe_ct;
 	while (--j > -1)
 	{
 		pipefd[i] = malloc(sizeof(int) * 2);
 		if (pipe(pipefd[i++]) < 0)
-			ft_exit(errno, ft_strdup("pipe"), head, 1);
+			ft_error(errno, ft_strdup("pipe"), head, 1);
 	}
 	init_filepaths(&p, ms->env);
 	exec_path_args_arr(start_node(head), p, pipefd);

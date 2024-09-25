@@ -15,7 +15,7 @@
 void	cd(t_tree_node *n)
 {
 	if (chdir(n->cmd_args_arr[0]) < 0)
-		ft_exit(errno, ft_strjoin("cd: ", n->cmd_args_arr[0], 0, 0), n, 1);
+		ft_error(errno, ft_strjoin("cd: ", n->cmd_args_arr[0], 0, 0), n, 1);
 	// update pwd and oldpwd
 }
 
@@ -26,7 +26,7 @@ void	get_cwd(t_tree_node *n)
 	if (getcwd(cwd, sizeof(cwd)))
 		printf("Current working directory: %s\n", cwd);
 	else
-		ft_exit(errno, ft_strdup("cwd"), n, 1);
+		ft_error(errno, ft_strdup("cwd"), n, 1);
 }
 
 void	unset(t_tree_node *n)
@@ -74,28 +74,16 @@ void	env(t_lst *env, char *arg)
 
 void	execute_builtin(t_tree_node *n, char *cmd, bool exit_flag)
 {
-	t_lst	*env_ptr;
 
 	if (ft_strlen(cmd) == 2 && !ft_strncmp(cmd, "cd", 3))
 		cd(n);
-	else if (ft_strlen(cmd) == 2 && !ft_strncmp(cmd, "$?", 3))
-	{
-		env_ptr = n->ms->env;
-		while (env_ptr)
-		{
-			if (ft_strncmp(env_ptr->var, "?", 2))
-				break ;
-			env_ptr = env_ptr->fwd;
-		}
-		printf("%s\n", env_ptr->val);
-	}
 	else if (ft_strlen(cmd) == 3 && !ft_strncmp(cmd, "env", 4))
 		env(n->ms->env, n->cmd_args_arr[1]);
 	else if (ft_strlen(cmd) == 5 && !ft_strncmp(cmd, "unset", 6))
 		unset(n);
 	if (ft_strlen(cmd) == 6 && !ft_strncmp(cmd, "export", 7))
 		export(n);
-	ft_exit(0, ft_strdup(n->cmd_args_arr[0]), n, exit_flag);
+	ft_error(0, ft_strdup(n->cmd_args_arr[0]), n, exit_flag);
 }
 
 bool	is_builtin(char *cmd)

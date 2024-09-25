@@ -134,7 +134,7 @@ void	init_ms(char *input, t_ms_var *ms)
 		ast = start_node(ast);
 		while (ast->type != END)
 		{
-			if (!ast->exec_cmd_path && ast->type == WORD
+			if (ast->exec_cmd_path && !ft_strncmp(ast->exec_cmd_path, "invalid", 8)
 				&& !is_builtin(ast->value))
 				printf("%s: command not found\n", ast->value);
 			traverse_tree(&ast);
@@ -175,7 +175,6 @@ void	signal_handler(int signum)
 {
 	if (signum == SIGINT)
 	{
-		// printf("\033[12C  ");
 		printf("\n");
 		rl_replace_line("", 0);
 		rl_on_new_line();

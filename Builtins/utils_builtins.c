@@ -75,9 +75,12 @@ char	*remove_quotes(char *str)
 
 int	has_valid_chars(char *str)
 {
+	if (*str < 'A' || *str > 'z')
+		return (0);
+	str++;
 	while (*str)
 	{
-		if (*str < 'A' || *str > 'z')
+		if ((*str < 'A' || *str > 'z') && !(*str > '0' && *str < '9'))
 			return (0);
 		str++;
 	}

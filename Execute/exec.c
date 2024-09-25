@@ -41,7 +41,7 @@ void	init_heredoc(t_redir *redir, t_tree_node *n)
 	redir->filename = guarantee_file(redir->filename);
 	redir->in_fd = open(redir->filename, O_RDWR | O_TRUNC | O_CREAT, 0777);
 	if (redir->in_fd < 0)
-		ft_exit(errno, ft_strdup(redir->filename), n, 1);
+		ft_error(errno, ft_strdup(redir->filename), n, 1);
 	line = get_next_line(0);
 	while (ft_strncmp(redir->heredoc_delim, line, ft_strlen(line) - 1))
 	{
@@ -54,40 +54,17 @@ void	init_heredoc(t_redir *redir, t_tree_node *n)
 	redir->in_fd = open(redir->filename, O_RDONLY);
 }
 
-void	init_infiles_outfiles(t_redir *redir, t_tree_node *n)
-{
-	while (redir)
-	{
-		if (redir->heredoc_delim)
-			init_heredoc(redir, n);
-		else if (redir->in_fd)
-		{
-			redir->in_fd = open(redir->filename, O_RDONLY);
-			if (redir->in_fd < 0)
-				ft_exit(666, ft_strdup(redir->filename), n, 1);
-		}
-		else if (redir->is_append)
-			redir->out_fd = open(redir->filename,
-			O_WRONLY | O_APPEND | O_CREAT, 0777);
-		else
-			redir->out_fd = open(redir->filename,
-			O_WRONLY | O_TRUNC | O_CREAT, 0777);
-		if (redir->out_fd < 0)
-			ft_exit(errno, ft_strdup(redir->filename), n, 1);
-		redir = redir->fwd;
-	}
-}
-
 void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 {
 	int		use_in_fd;
 	int		use_out_fd;
+	// printf("%s\n", n->value);
 	// printf("%s\n", n->exec_cmd_path);
 	// printf("arg: %s\n", n->cmd_args_arr[0]);
 	// printf("%s\n", n->ms->env_arr[0]);
 	// printf("pipe idx: %d pipe ct: %d\n", pipe_index, pipe_ct);
+	// printf("pipe index: %d\n", pipe_index);
 	
-	init_infiles_outfiles(n->redir, n);
 	use_in_fd = 0;
 	use_out_fd = 1;
 	if (n->redir)
@@ -101,25 +78,53 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 		use_out_fd = n->pipefd[pipe_index][1];
 	// printf("in:%d out:%d\n", use_in_fd, use_out_fd);
 	if (dup2(use_in_fd, STDIN_FILENO) < 0)
-		ft_exit(errno, ft_strdup("dup infile"), n, 1);
+		ft_error(errno, ft_strdup("dup infile"), n, 1);
 	if (dup2(use_out_fd, STDOUT_FILENO) < 0)
-		ft_exit(errno, ft_strdup("dup outfile"), n, 1);
+		ft_error(errno, ft_strdup("dup outfile"), n, 1);
 	create_err_file(n);
 	close_fds(n, pipe_ct);
 	if (is_builtin(n->value))
 		execute_builtin(n, n->value, 1);
-	else if (!n->exec_cmd_path
-		|| execve(n->exec_cmd_path, n->cmd_args_arr, n->ms->env_arr) < 0)
-		ft_exit(errno, ft_strdup(n->cmd_args_arr[0]), n, 1);
+	else if (execve(n->exec_cmd_path, n->cmd_args_arr, n->ms->env_arr) < 0)
+		ft_error(errno, ft_strdup(n->cmd_args_arr[0]), n, 1);
+}
+
+bool	init_infiles_outfiles(t_redir *redir, t_tree_node *n, int *status)
+{
+	while (redir)
+	{
+		if (redir->heredoc_delim)
+			init_heredoc(redir, n);
+		else if (redir->in_fd)
+		{
+			redir->in_fd = open(redir->filename, O_RDONLY);
+			if (redir->in_fd < 0)
+			{
+				*status = 1;
+				traverse_tree(&n);
+				return (ft_error(666, ft_strdup(redir->filename), n, 0), 0);
+			}
+		}
+		else if (redir->is_append)
+			redir->out_fd = open(redir->filename,
+			O_WRONLY | O_APPEND | O_CREAT, 0777);
+		else
+			redir->out_fd = open(redir->filename,
+			O_WRONLY | O_TRUNC | O_CREAT, 0777);
+		if (redir->out_fd < 0)
+			return (ft_error(errno, ft_strdup(redir->filename), n, 0), 0);
+		redir = redir->fwd;
+	}
+	return (1);
 }
 
 void init_exec(t_tree_node *n, int pipe_ct)
 {
 	int	pid;
-	int	i;
+	int	pipe_index;
 	int	status;
 
-	i = 0;
+	pipe_index = 0;
 	status = 0;
 	while (n->type != END)
 	{
@@ -130,17 +135,26 @@ void init_exec(t_tree_node *n, int pipe_ct)
 		{
 			// printf("%s\n", n->exec_cmd_path);
 			// printf("%s\n", n->cmd_args[0]);
-			pid = fork();
-			if (pid < 0)
-				ft_exit(errno, ft_strdup("fork"), n, 1);
-			if (!pid)
-				execute(n, i, pipe_ct);
-			i++;
+			while (n->type == PIPE ||
+				!init_infiles_outfiles(n->redir, n, &status))
+				traverse_tree(&n);
+			if (n->type != END)
+			{
+				pid = fork();
+				if (pid < 0)
+					ft_error(errno, ft_strdup("fork"), n, 1);
+				if (!pid)
+					execute(n, pipe_index, pipe_ct);
+				pipe_index++;
+			}
 		}
 		traverse_tree(&n);
 	}
 	close_fds(n, pipe_ct);
-	while (i-- > 0)
+	while (pipe_index-- > 0)
 		waitpid(-1, &status, 0);
+	// printf("exit status: %d; converted: %d\n", status, WEXITSTATUS(status));
+	if (status == 256)
+		status = 127;
 	update_exit_status(n->ms->env, status);
 }

@@ -89,11 +89,11 @@ void	export(t_tree_node *n)
 	}
 	else
 	{
-		i = -1;
+		i = 0;
 		while (n->cmd_args_arr[++i])
 		{
 			if (!has_valid_chars(n->cmd_args_arr[i]))
-				printf("bash: export: `%s': not a valid identifier\n"
+				printf("-bash: export: `%s': not a valid identifier\n"
 					, n->cmd_args_arr[i]);
 			else
 				export_update(n, n->cmd_args_arr[i]);

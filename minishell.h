@@ -145,7 +145,7 @@ void		pipes_n_exec_path(t_tree_node *head, t_ms_var *ms, int *pipe_ct);
 t_tree_node	*init_tree_node(t_token *token, t_ms_var *ms);
 void		update_node(t_redir *new_redir, char *value, token_type type);
 
-void 		ft_exit(int error, char *str, t_tree_node *p, bool exit_flag);
+void 		ft_error(int error, char *str, t_tree_node *p, bool exit_flag);
 void		check_filepaths(t_tree_node *head);
 t_tree_node	*start_node(t_tree_node *n);
 void		traverse_tree(t_tree_node **n);

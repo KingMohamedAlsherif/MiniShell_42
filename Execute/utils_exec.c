@@ -34,7 +34,7 @@ void	create_err_file(t_tree_node *n)
 	{
 		unlink(err_filename);
 		free(err_filename);
-		ft_exit(errno, ft_strdup("err file"), n, 1);
+		ft_error(errno, ft_strdup("err file"), n, 1);
 	}
 	dup2(err_fd, STDERR_FILENO);
 	close(err_fd);
@@ -62,8 +62,10 @@ void	close_fds(t_tree_node *n, int pipe_ct)
 	i = -1;
 	while (++i < pipe_ct)
 	{
-		close(n->pipefd[i][0]);
-		close(n->pipefd[i][1]);
+		if (n->pipefd[i][0] > 2)
+			close(n->pipefd[i][0]);
+		if (n->pipefd[i][1] > 2)
+			close(n->pipefd[i][1]);
 	}
 }
 

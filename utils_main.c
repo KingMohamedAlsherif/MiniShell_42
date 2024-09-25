@@ -77,9 +77,11 @@ void	traverse_tree_to_free(t_tree_node **n, int is_read_flag)
 		*n = (*n)->right;
 }
 
-void ft_exit(int error, char *str, t_tree_node *n, bool exit_flag)
+void ft_error(int error, char *str, t_tree_node *n, bool exit_flag)
 {
-	// printf("error #: %d\n", error);
+	// printf("errno: %d\n", error);
+	if (n->exec_cmd_path && !strncmp(n->exec_cmd_path, "invalid", 8) && error == 2)
+		printf("%s: command not found\n", n->value);
 	if (error == 666)
 		printf("-Minishell: %s: No such file or directory\n", str);
 	free(str);
