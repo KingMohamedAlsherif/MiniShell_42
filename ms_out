@@ -1,5 +1,20 @@
-hey
-there
-i am 
-you is
-ok...
+Makefile
+README.md
+builtins
+env_export.c
+env_export.o
+execute
+free.c
+free.o
+libft
+main.c
+main.o
+minishell
+minishell.h
+ms_out
+parsing
+readline.supp
+test_files
+tokenize
+utils_main.c
+utils_main.o

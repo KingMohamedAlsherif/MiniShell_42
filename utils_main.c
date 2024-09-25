@@ -77,15 +77,15 @@ void	traverse_tree_to_free(t_tree_node **n, int is_read_flag)
 		*n = (*n)->right;
 }
 
-void ft_exit(int error, char *str, t_tree_node *n, int exit_switch)
+void ft_exit(int error, char *str, t_tree_node *n, bool exit_flag)
 {
 	// printf("error #: %d\n", error);
 	if (error == 666)
 		printf("-Minishell: %s: No such file or directory\n", str);
 	free(str);
-	close_fds(n, n->pipe_ct);
-	if (exit_switch)
+	if (exit_flag)
 	{
+		close_fds(n, n->pipe_ct);
 		free_lst(n->ms->env);
 		free_lst(n->ms->exp);
 		free_char_arr(n->ms->env_arr, NULL);

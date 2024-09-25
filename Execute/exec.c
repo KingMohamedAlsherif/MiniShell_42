@@ -82,20 +82,18 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 {
 	int		use_in_fd;
 	int		use_out_fd;
-	t_redir	*redir_ptr;
 	// printf("%s\n", n->exec_cmd_path);
 	// printf("arg: %s\n", n->cmd_args_arr[0]);
 	// printf("%s\n", n->ms->env_arr[0]);
 	// printf("pipe idx: %d pipe ct: %d\n", pipe_index, pipe_ct);
 	
-	redir_ptr = n->redir;
-	init_infiles_outfiles(redir_ptr, n);
+	init_infiles_outfiles(n->redir, n);
 	use_in_fd = 0;
 	use_out_fd = 1;
-	if (redir_ptr)
+	if (n->redir)
 	{
-		last_redir_fd(redir_ptr, 'i', &use_in_fd);
-		last_redir_fd(redir_ptr, 'o', &use_out_fd);
+		last_redir_fd(n->redir, 'i', &use_in_fd);
+		last_redir_fd(n->redir, 'o', &use_out_fd);
 	}
 	if (use_in_fd < 2 && pipe_index)
 		use_in_fd = n->pipefd[pipe_index - 1][0];
@@ -109,7 +107,7 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 	create_err_file(n);
 	close_fds(n, pipe_ct);
 	if (is_builtin(n->value))
-		execute_builtin(n, n->value);
+		execute_builtin(n, n->value, 1);
 	else if (!n->exec_cmd_path
 		|| execve(n->exec_cmd_path, n->cmd_args_arr, n->ms->env_arr) < 0)
 		ft_exit(errno, ft_strdup(n->cmd_args_arr[0]), n, 1);
@@ -122,13 +120,13 @@ void init_exec(t_tree_node *n, int pipe_ct)
 	int	status;
 
 	i = 0;
+	status = 0;
 	while (n->type != END)
 	{
 		n->pipe_ct = pipe_ct;
-		// if ((n->parent && n->parent->type == AND
-		// 	&& n->type == CD))
-		// 	cd(n);
-		if (n->type != PIPE)
+		if (!pipe_ct && is_builtin(n->value))
+			execute_builtin(n, n->value, 0);
+		else if (n->type != PIPE)
 		{
 			// printf("%s\n", n->exec_cmd_path);
 			// printf("%s\n", n->cmd_args[0]);

@@ -34,6 +34,7 @@ void	unset(t_tree_node *n)
 	char	*new_str;
 	int		i;
 	t_lst	*env_node;
+	int		ascii_order;
 
 	i = -1;
 	while (n->cmd_args_arr[++i])
@@ -42,10 +43,12 @@ void	unset(t_tree_node *n)
 		new_str = remove_quotes(n->cmd_args_arr[i]);
 		while (env_node)
 		{
+			ascii_order = env_node->ascii_order;
+			// printf("rank: %d\n", env_node->ascii_order);
 			if (!ft_strncmp(env_node->var, new_str, ft_strlen(new_str) + 1))
 			{
-				del_node(n->ms->env, env_node->ascii_order);
-				del_node(n->ms->exp, env_node->ascii_order);
+				del_node(n->ms->env, ascii_order);
+				del_node(n->ms->exp, ascii_order);
 				break ;
 			}
 			env_node = env_node->fwd;
@@ -69,7 +72,7 @@ void	env(t_lst *env, char *arg)
 		printf("env: '%s': No such file or directory\n", arg);
 }
 
-void	execute_builtin(t_tree_node *n, char *cmd)
+void	execute_builtin(t_tree_node *n, char *cmd, bool exit_flag)
 {
 	t_lst	*env_ptr;
 
@@ -92,7 +95,7 @@ void	execute_builtin(t_tree_node *n, char *cmd)
 		unset(n);
 	if (ft_strlen(cmd) == 6 && !ft_strncmp(cmd, "export", 7))
 		export(n);
-	ft_exit(0, ft_strdup(n->cmd_args_arr[0]), n, 1);
+	ft_exit(0, ft_strdup(n->cmd_args_arr[0]), n, exit_flag);
 }
 
 bool	is_builtin(char *cmd)

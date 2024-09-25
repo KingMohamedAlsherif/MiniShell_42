@@ -145,7 +145,7 @@ void		pipes_n_exec_path(t_tree_node *head, t_ms_var *ms, int *pipe_ct);
 t_tree_node	*init_tree_node(t_token *token, t_ms_var *ms);
 void		update_node(t_redir *new_redir, char *value, token_type type);
 
-void 		ft_exit(int error, char *str, t_tree_node *p, int exit_switch);
+void 		ft_exit(int error, char *str, t_tree_node *p, bool exit_flag);
 void		check_filepaths(t_tree_node *head);
 t_tree_node	*start_node(t_tree_node *n);
 void		traverse_tree(t_tree_node **n);
@@ -164,7 +164,7 @@ void		last_redir_fd(t_redir *redir, char type, int *fd);
 char		*guarantee_file(char *original);
 void		create_err_file(t_tree_node *n);
 
-void		execute_builtin(t_tree_node *n, char *cmd);
+void		execute_builtin(t_tree_node *n, char *cmd, bool exit_flag);
 bool		is_builtin(char *cmd);
 void		export(t_tree_node *n);
 void		update_exit_status(t_lst *env, int status);
