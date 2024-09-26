@@ -129,18 +129,19 @@ void	init_ms(char *input, t_ms_var *ms)
 		ast = NULL;
 		parse(tokens, &ast, ms, tokens);
 		// print_tree(start_node(ast));
+		// printf("%s\n", start_node(ast)->redir->filename);
 		pipes_n_exec_path(start_node(ast), ms, &pipe_ct);
 		init_exec(start_node(ast), pipe_ct);
 		ast = start_node(ast);
 		while (ast->type != END)
 		{
-			if (ast->exec_cmd_path && !ft_strncmp(ast->exec_cmd_path, "invalid", 8)
+			if (ast->exec_cmd_path && !ft_strncmp(ast->exec_cmd_path, "?", 2)
 				&& !is_builtin(ast->value))
 				printf("%s: command not found\n", ast->value);
 			traverse_tree(&ast);
 		}
 		// printf("%d\n", ast->type);
-		ast->is_read = (ast->is_read + 1) % 2;
+		ast->is_read = start_node(ast)->is_read;
 		// printf("%d: read? %d\n", ast->type, ast->is_read);
 		// printf("parent of %d: read? %d\n", ast->parent->type, ast->parent->is_read);
 		free_tree(start_node(ast));

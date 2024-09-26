@@ -106,6 +106,13 @@ typedef struct s_redir
 	struct s_redir   *bwd;
 }	t_redir;
 
+typedef struct s_exec
+{
+	int	pid;
+	int	pipe_index;
+	int	status;
+}	t_exec;
+
 typedef struct s_tree_node
 {
 	token_type			type;
@@ -150,6 +157,8 @@ void		check_filepaths(t_tree_node *head);
 t_tree_node	*start_node(t_tree_node *n);
 void		traverse_tree(t_tree_node **n);
 void		init_exec(t_tree_node *n, int pipe_ct);
+bool		init_infiles_outfiles(t_redir *redir, t_tree_node *n, int *status);
+
 void		cd(t_tree_node *n);
 void 		close_fds(t_tree_node *n, int pipe_ct);
 int			is_number(char *str);
