@@ -56,7 +56,7 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 		use_in_fd = n->pipefd[pipe_index - 1][0];
 	if (use_out_fd < 2 && pipe_ct && !n->right)
 		use_out_fd = n->pipefd[pipe_index][1];
-	printf("in:%d out:%d\n", use_in_fd, use_out_fd);
+	// printf("in:%d out:%d\n", use_in_fd, use_out_fd);
 	if (dup2(use_in_fd, STDIN_FILENO) < 0)
 		ft_error(errno, ft_strdup("dup infile"), n, 1);
 	if (dup2(use_out_fd, STDOUT_FILENO) < 0)
@@ -116,7 +116,7 @@ void	init_exec(t_tree_node *n, int pipe_ct)
 		}
 		traverse_tree(&n);
 	}
-	close_fds(n, pipe_ct);
+	close_fds(start_node(n), pipe_ct);
 	while (e.pipe_index-- > 0)
 		waitpid(-1, &e.status, 0);
 	// printf("exit status: %d; converted: %d\n", status, WEXITSTATUS(status));

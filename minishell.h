@@ -136,6 +136,8 @@ void 		rl_clear_history (void);
 void		dup_env_exp(t_ms_var **ms, char **env);
 char		*export_str(char *str);
 
+int			init_signals(void);
+
 // PARSING FUNCS
 void 		tokenize(char *input, t_token **tokens, t_lst *env);
 void 		print_tokens(t_token *tokens);
@@ -164,7 +166,7 @@ void 		close_fds(t_tree_node *n, int pipe_ct);
 int			is_number(char *str);
 int			count_lst_nodes(t_lst *head);
 int			has_valid_chars(char *str);
-void		insert_node(t_tree_node *n, char *str);
+void		insert_node(t_ms_var *ms, char *str);
 t_lst		*create_new_node(char *str, int ascii_order);
 void		update_order(t_lst *head, t_lst *node);
 char		*remove_quotes(char *str);

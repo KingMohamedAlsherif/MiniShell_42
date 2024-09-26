@@ -18,7 +18,7 @@ LIBS = ./libft/libft.a -L$(HOME)/.local/opt/readline/lib \
 -I$(HOME)/.local/opt/readline/include -lreadline
 # LIBS = ./libft/libft.a -lreadline
 OBJS = $(SRCS:.c=.o)
-SRCS = main.c env_export.c utils.c free.c \
+SRCS = main.c signals.c env_export.c utils.c mv_tree.c free.c \
 tokenize/tokenize.c tokenize/utils.c \
 ./execute/pipes_path.c ./execute/exec.c ./execute/utils.c ./execute/fcntl.c\
 ./builtins/builtins.c ./builtins/export.c ./builtins/utils.c \

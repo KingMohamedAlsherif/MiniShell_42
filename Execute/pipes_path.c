@@ -58,7 +58,7 @@ void	exec_path_args_arr(t_tree_node *n, t_paths p, int **pipefd)
 		i = -1;
 		if (n->type == WORD)
 		{
-			while (p.split_filepaths[++i])
+			while (p.split_filepaths && p.split_filepaths[++i])
 			{
 				p.filepath_0 = ft_strjoin(p.split_filepaths[i], "/", 0, 0);
 				p.filepath = ft_strjoin(p.filepath_0, n->value, 1, 0);
@@ -89,9 +89,12 @@ void init_filepaths(t_paths *p, t_lst *ms_env)
 			break ;
 		ms_env = ms_env->fwd;
 	}
-	p->split_filepaths = ft_split(ms_env->val, ':');
-	if (!p->split_filepaths)
-		return ;
+	if (ms_env)
+	{
+		p->split_filepaths = ft_split(ms_env->val, ':');
+		if (!p->split_filepaths)
+			return ;
+	}
 }
 
 void	pipes_n_exec_path(t_tree_node *head, t_ms_var *ms, int *pipe_ct)

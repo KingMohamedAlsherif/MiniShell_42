@@ -14,25 +14,23 @@
 
 char	*export_str(char *str)
 {
-	char	**split_str;
-	char	*tmp_str;
-	char	*tmp_str_2;
-	char	*tmp_str_3;
+	char	*str_0;
+	char	*str_2;
+	char	*str_3;
+	int		substr_len;
 
+	str_0 = ft_strtrim(str, "\n");
+	str_0 = ft_strjoin("declare -x ", str_0, 0, 1);
 	if (ft_strchr(str, '='))
 	{
-		tmp_str = ft_strtrim(str, "\n");
-		split_str = ft_split(tmp_str, '=');
-		free(tmp_str);
-		tmp_str = ft_strjoin("declare -x ", split_str[0], 0, 0);
-		tmp_str_2 = ft_strjoin("=\"", split_str[1], 0, 0);
-		tmp_str_3 = ft_strjoin(tmp_str_2, "\"", 1, 0);
-		free_char_arr(split_str, NULL);
-		tmp_str = ft_strjoin(tmp_str, tmp_str_3, 1, 1);
+		substr_len = ft_strchr(str_0, '=') - str_0 + 1;
+		str_2 = ft_substr(str_0, 0, substr_len);
+		str_2 = ft_strjoin(str_2, "\"", 1, 0);
+		str_3 = ft_strjoin(ft_substr(str_0, substr_len, ft_strlen(str_0)), "\"", 1, 0);
+		free(str_0);
+		str_0 = ft_strjoin(str_2, str_3, 1, 1);
 	}
-	// if (!export_str)
-	// 	return (NULL);
-	return (tmp_str);
+	return (str_0);
 }
 
 void	create_ms_export(t_lst **exp_head, t_lst *env)
@@ -83,8 +81,9 @@ void	update_order(t_lst *head, t_lst *node)
 {
 	int	rank;
 	int	node_str_len;
-	int i = -1;
+	int i;
 
+	i = -1;
 	rank = 0;
 	node_str_len = ft_strlen(node->var) + 1;
 	while (head)

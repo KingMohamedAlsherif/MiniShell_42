@@ -49,15 +49,17 @@ void free_lst(t_lst *lst)
 	free(lst);
 }
 
-void free_redir(t_tree_node *n)
+void free_redir(t_redir *redir)
 {
 	t_redir *redir_ptr;
 
 	// printf("%s\n", n->value);
-	while (n->redir)
+	while (redir->bwd)
+		redir = redir->bwd;
+	while (redir)
 	{
-		redir_ptr = n->redir;
-		n->redir = n->redir->fwd;
+		redir_ptr = redir;
+		redir = redir->fwd;
 		// printf("%s\n", redir_ptr->filename);
 		free(redir_ptr->filename);
 		free(redir_ptr->heredoc_delim);
@@ -94,6 +96,7 @@ void free_tree(t_tree_node *n)
 	int i;
 
 	// printf("start node value: %s\n", n->value);
+	// printf("redir file: %s\n", n->redir->filename);
 	is_read_flag = (n->is_read + 1) % 2;
 	i = 0;
 	while (i < n->pipe_ct)
@@ -105,7 +108,8 @@ void free_tree(t_tree_node *n)
 		if (n->is_read != is_read_flag)
 		{
 			free(n->value);
-			free_redir(n);
+			if (n->redir)
+				free_redir(n->redir);
 			free_char_arr(n->cmd_args_arr, NULL);
 			free(n->exec_cmd_path);
 		}
@@ -115,6 +119,5 @@ void free_tree(t_tree_node *n)
 	}
 	// printf("node value: %p type: %d\n", NULL, n->type);
 	// printf("node type: %d\n", n->type);
-	if (n)
-		free(n);
+	free(n);
 }

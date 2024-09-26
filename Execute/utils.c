@@ -44,21 +44,9 @@ void	create_err_file(t_tree_node *n)
 
 void	close_fds(t_tree_node *n, int pipe_ct)
 {
-	int	i;
+	int		i;
+	t_redir	*redir_ptr;
 
-	if (n->type != END)
-		while (n->redir)
-		{
-			if (n->redir->in_fd > 2)
-				close(n->redir->in_fd);
-			if (n->redir->out_fd > 2)
-				close(n->redir->out_fd);
-			if (n->redir->heredoc_delim)
-				unlink(n->redir->filename);
-			n->redir = n->redir->fwd;
-		}
-	if (n->type == END)
-		n = start_node(n);
 	i = -1;
 	while (++i < pipe_ct)
 	{
@@ -67,36 +55,20 @@ void	close_fds(t_tree_node *n, int pipe_ct)
 		if (n->pipefd[i][1] > 2)
 			close(n->pipefd[i][1]);
 	}
+	while (n->type != END)
+	{
+		redir_ptr = n->redir;
+		while (redir_ptr)
+		{
+			if (redir_ptr->in_fd > 2)
+				close(redir_ptr->in_fd);
+			if (redir_ptr->out_fd > 2)
+				close(redir_ptr->out_fd);
+			if (redir_ptr->heredoc_delim)
+				unlink(redir_ptr->filename);
+			redir_ptr = redir_ptr->fwd;
+		}
+		traverse_tree(&n);
+	}
 }
 
-t_tree_node	*start_node(t_tree_node *n)
-{
-	while (n->parent)
-		n = n->parent;
-	while (n->left)
-		n = n->left;
-	return (n);
-}
-
-void	traverse_tree(t_tree_node **n)
-{
-	bool	read_flag;
-	bool	unread_flag;
-
-	if ((start_node(*n)) == *n)
-		read_flag = ((*n)->is_read + 1) % 2;
-	else
-		read_flag = start_node(*n)->is_read;
-	unread_flag = (read_flag + 1) % 2;
-	(*n)->is_read = read_flag;
-	if ((*n)->type == END)
-		return ;
-	if ((*n)->parent && ((!(*n)->left && !(*n)->right)
-		|| ((*n)->left && (*n)->left->is_read == read_flag
-			&& (*n)->right && (*n)->right->is_read == read_flag)))
-		*n = (*n)->parent;
-	else if ((*n)->left && (*n)->left->is_read == unread_flag)
-		*n = (*n)->left;
-	else
-		*n = (*n)->right;
-}

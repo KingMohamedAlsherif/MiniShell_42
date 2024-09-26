@@ -53,42 +53,42 @@ void	parse_redir(t_token *token, t_redir **redir)
 	update_node(new_redir, token->next->value, token->type);
 }
 
-void	parse_word(t_token *token, t_tree_node **ast, t_ms_var *ms)
+void	parse_word(t_token *token, t_tree_node **n, t_ms_var *ms)
 {
 	if (token->type == END)
 	{
-		(*ast)->right = init_tree_node(token, ms);
-		(*ast)->right->parent = *ast;
+		(*n)->right = init_tree_node(token, ms);
+		(*n)->right->parent = *n;
 	}
-	if (!(*ast)->value && token->type != END)
-		(*ast)->value = ft_strdup(token->value);
+	if (!(*n)->value && token->type != END)
+		(*n)->value = ft_strdup(token->value);
 	if (token->type != END)
-		add_cmd_arg(&((*ast)->cmd_args), token->value);
+		add_cmd_arg(&((*n)->cmd_args), token->value);
 }
 
-void	parse(t_token *token, t_tree_node **ast, t_ms_var *ms, t_token *head)
+void	parse(t_token *token, t_tree_node **n, t_ms_var *ms, t_token *head)
 {
-	if (!*ast)
-		*ast = init_tree_node(token, ms);
+	if (!*n)
+		*n = init_tree_node(token, ms);
 	if (token->type == PIPE || token->type == AND || token->type == OR)
 	{
-		while ((*ast)->parent)
-			*ast = (*ast)->parent;
-		(*ast)->parent = init_tree_node(token, ms);
-		(*ast)->parent->left = *ast;
-		(*ast)->parent->right = init_tree_node(token->next, ms);
-		(*ast)->parent->right->parent = (*ast)->parent;
-		*ast = (*ast)->parent->right;
+		while ((*n)->parent)
+			*n = (*n)->parent;
+		(*n)->parent = init_tree_node(token, ms);
+		(*n)->parent->left = *n;
+		(*n)->parent->right = init_tree_node(token->next, ms);
+		(*n)->parent->right->parent = (*n)->parent;
+		*n = (*n)->parent->right;
 	}
     else if (token->type >= REDIRECT_IN && token->type <= APPEND)
 	{
-		parse_redir(token, &(*ast)->redir);
+		parse_redir(token, &(*n)->redir);
 		token = token->next;
 	}
     else if (token)
-		parse_word(token, ast, ms);
+		parse_word(token, n, ms);
 	if (token->next)
-		parse(token->next, ast, ms, head);
+		parse(token->next, n, ms, head);
 	else
 		free_tokens(head);
 }

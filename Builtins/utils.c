@@ -12,39 +12,6 @@
 
 #include "../minishell.h"
 
-void	update_exit_status(t_lst *env, int status)
-{
-	while (env && ft_strncmp(env->var, "?", 2))
-		env = env->fwd;
-	free(env->val);
-	env->val = (ft_itoa(status));
-}
-
-void	del_node(t_lst *node, int rank)
-{
-	t_lst	*node_ptr;
-
-	node_ptr = node;
-	while (node_ptr->ascii_order != rank)
-		node_ptr = node_ptr->fwd;
-	if (!node_ptr->bwd)
-	{
-		node = node_ptr->fwd;
-		node->bwd = NULL;
-	}
-	else if (!node_ptr->fwd)
-		node_ptr->bwd->fwd = NULL;
-	else
-	{
-		node_ptr->bwd->fwd = node_ptr->fwd;
-		node_ptr->fwd->bwd = node_ptr->bwd;
-	}
-	free(node_ptr->var_n_val);
-	free(node_ptr->var);
-	free(node_ptr->val);
-	free(node_ptr);
-}
-
 char	*remove_quotes(char *str)
 {
 	char	*str_ex_quotes;
@@ -73,6 +40,31 @@ char	*remove_quotes(char *str)
 	return (str_ex_quotes);
 }
 
+void	del_node(t_lst *node, int rank)
+{
+	t_lst	*node_ptr;
+
+	node_ptr = node;
+	while (node_ptr->ascii_order != rank)
+		node_ptr = node_ptr->fwd;
+	if (!node_ptr->bwd)
+	{
+		node = node_ptr->fwd;
+		node->bwd = NULL;
+	}
+	else if (!node_ptr->fwd)
+		node_ptr->bwd->fwd = NULL;
+	else
+	{
+		node_ptr->bwd->fwd = node_ptr->fwd;
+		node_ptr->fwd->bwd = node_ptr->bwd;
+	}
+	free(node_ptr->var_n_val);
+	free(node_ptr->var);
+	free(node_ptr->val);
+	free(node_ptr);
+}
+
 int	has_valid_chars(char *str)
 {
 	if (*str < 'A' || *str > 'z')
@@ -80,8 +72,9 @@ int	has_valid_chars(char *str)
 	str++;
 	while (*str)
 	{
-		if ((*str < 'A' || *str > 'z') && !(*str > '0' && *str < '9'))
-			return (0);
+		if (!(*str >= '0' && *str <= '9') && (*str < 'A' || *str > 'z')
+			&& *str != '=')
+				return (0);
 		str++;
 	}
 	return (1);

@@ -12,39 +12,57 @@
 
 #include "../minishell.h"
 
-void	insert_node(t_tree_node *n, char *str)
+void	insert_node(t_ms_var *ms, char *str)
 {
 	t_lst	*env_node;
-	t_lst	*export_node;
+	t_lst	*exp_node;
 	t_lst	*tmp_node;
 	int		rank;
 
-	env_node = n->ms->env;
+	env_node = ms->env;
 	while (env_node->fwd)
 		env_node = env_node->fwd;
 	env_node->fwd = create_new_node(ft_strdup(str), 0);
-	update_order(n->ms->env, env_node);
-	rank = env_node->ascii_order;
-	export_node = n->ms->exp;
-	while (export_node->ascii_order < rank - 1)
-		export_node = export_node->fwd;
-	tmp_node = export_node->fwd;
-	export_node->fwd = create_new_node(export_str(str), rank);
-	export_node->fwd->fwd = tmp_node;
-	export_node = tmp_node;
-	while (export_node)
+	env_node->fwd->bwd = env_node;
+	update_order(ms->env, env_node->fwd);
+	rank = env_node->fwd->ascii_order;
+	// printf("rank: %d\n", rank);
+	exp_node = ms->exp;
+	while (exp_node->ascii_order < rank - 1)
+		exp_node = exp_node->fwd;
+	tmp_node = exp_node->fwd;
+	exp_node->fwd = create_new_node(export_str(str), rank);
+	exp_node->fwd->bwd = exp_node;
+	exp_node->fwd->fwd = tmp_node;
+	if (tmp_node)
+		tmp_node->bwd = exp_node->fwd;
+	exp_node = tmp_node;
+	while (exp_node)
 	{
-		export_node->ascii_order++;
-		export_node = export_node->fwd;
+		exp_node->ascii_order++;
+		exp_node = exp_node->fwd;
 	}
 	free(str);
 }
 
-void	export_update(t_tree_node *n, char *str)
+void	update_tlst(t_lst *env_node, t_lst *exp_node, char *str, char **s_str)
+{
+	free(env_node->var_n_val);
+	free(env_node->val);
+	env_node->var_n_val = ft_strjoin(ft_strdup(str), "\n", 1, 0);
+	env_node->val = ft_strdup(s_str[1]);
+	while (exp_node->ascii_order != env_node->ascii_order)
+		exp_node = exp_node->fwd;
+	free(exp_node->var_n_val);
+	exp_node->var_n_val = ft_strjoin(export_str(str), "\n", 1, 0);
+	free_char_arr(s_str, NULL);
+	free(str);
+}
+
+void	env_export_update(t_tree_node *n, char *str)
 {
 	char	*new_str;
 	t_lst	*env_node;
-	t_lst	*export_node;
 	char	**s_new_str;
 
 	new_str = remove_quotes(str);
@@ -53,38 +71,29 @@ void	export_update(t_tree_node *n, char *str)
 	while (env_node)
 	{
 		if (!ft_strncmp(env_node->var, s_new_str[0], ft_strlen(s_new_str[0])))
-		{
-			free(env_node->var_n_val);
-			free(env_node->val);
-			env_node->var_n_val = ft_strdup(new_str);
-			env_node->val = ft_strdup(s_new_str[1]);
-			export_node = n->ms->exp;
-			while (export_node->ascii_order != env_node->ascii_order)
-				export_node = export_node->fwd;
-			free(export_node->var_n_val);
-			// free(export_node->val);
-			export_node->var_n_val = export_str(new_str);
-			// export_node->val = export_str(new_str);
-			return ;
-		}
+			{
+				update_tlst(env_node, n->ms->exp, new_str, s_new_str);
+				return ;
+			}
 		env_node = env_node->fwd;
 	}
-	insert_node(n, new_str);
+	free_char_arr(s_new_str, NULL);
+	insert_node(n->ms, new_str);
 }
 
 void	export(t_tree_node *n)
 {
-	t_lst	*export_node;
+	t_lst	*exp_node;
 	int		i;
 
 	if (!n->cmd_args_arr[1])
 	{
-		export_node = n->ms->exp;
-		while (export_node)
+		exp_node = n->ms->exp;
+		while (exp_node)
 		{
-			if (ft_strncmp(export_node->var, "declare -x ?", 13))
-				printf("%s", export_node->var_n_val);
-			export_node = export_node->fwd;
+			if (ft_strncmp(exp_node->var, "declare -x ?", 13))
+				printf("%s", exp_node->var_n_val);
+			exp_node = exp_node->fwd;
 		}
 	}
 	else
@@ -96,7 +105,7 @@ void	export(t_tree_node *n)
 				printf("-bash: export: `%s': not a valid identifier\n"
 					, n->cmd_args_arr[i]);
 			else
-				export_update(n, n->cmd_args_arr[i]);
+				env_export_update(n, n->cmd_args_arr[i]);
 		}
 	}
 }

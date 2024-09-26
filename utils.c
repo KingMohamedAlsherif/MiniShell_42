@@ -59,24 +59,6 @@ int	count_lst_nodes(t_lst *head)
 	return (node_ct);
 }
 
-void	traverse_tree_to_free(t_tree_node **n, int is_read_flag)
-{
-	bool	unread_flag;
-
-	unread_flag = (is_read_flag + 1) % 2;
-	(*n)->is_read = is_read_flag;
-	if ((*n)->type == END)
-		return ;
-	if ((*n)->parent && ((!(*n)->left && !(*n)->right)
-		|| ((*n)->left && (*n)->left->is_read == is_read_flag
-			&& (*n)->right && (*n)->right->is_read == is_read_flag)))
-		*n = (*n)->parent;
-	else if ((*n)->left && (*n)->left->is_read == unread_flag)
-		*n = (*n)->left;
-	else
-		*n = (*n)->right;
-}
-
 void ft_error(int error, char *str, t_tree_node *n, bool exit_flag)
 {
 	// printf("errno: %d\n", error);

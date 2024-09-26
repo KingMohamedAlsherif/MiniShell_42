@@ -38,63 +38,63 @@ void print_redir(t_redir *redir, char type)
 	printf("\n");
 }
 
-void	print_tree(t_tree_node	*ast)
+void	print_tree(t_tree_node	*n)
 {
-	while (ast->type != END)
+	while (n->type != END)
 	{
-		printf("node type: %d value: %s\n", ast->type, ast->value);
-		if (ast->type != PIPE)
+		printf("node type: %d value: %s\n", n->type, n->value);
+		if (n->type != PIPE)
 		{
-			print_args(ast->cmd_args);
-			if (ast->redir)
+			print_args(n->cmd_args);
+			if (n->redir)
 			{
-				while(ast->redir->bwd)
-					ast->redir = ast->redir->bwd;
+				while(n->redir->bwd)
+					n->redir = n->redir->bwd;
 			}
 			printf("redir in: "); 
-			print_redir(ast->redir, 'i');
+			print_redir(n->redir, 'i');
 			printf("redir out: "); 
-			print_redir(ast->redir, 'o');
+			print_redir(n->redir, 'o');
 		}
-		if (ast->parent)
-			printf("parent: %s\n", ast->parent->value);
+		if (n->parent)
+			printf("parent: %s\n", n->parent->value);
 		else
 			printf("parent: none\n");
-		if (ast->left)
-			printf("left: %s\n", ast->left->value);
+		if (n->left)
+			printf("left: %s\n", n->left->value);
 		else
 			printf("left: none\n");
-		if (ast->right)
-			printf("right: %s\n", ast->right->value);
+		if (n->right)
+			printf("right: %s\n", n->right->value);
 		else
 			printf("right: none\n");
 		printf("\n");
-		traverse_tree(&ast);
+		traverse_tree(&n);
 	}
-	printf("node type: %d value: %s\n", ast->type, ast->value);
-	if (ast->type != PIPE)
+	printf("node type: %d value: %s\n", n->type, n->value);
+	if (n->type != PIPE)
 	{
-		print_args(ast->cmd_args);
-		if (ast->redir)
+		print_args(n->cmd_args);
+		if (n->redir)
 		{
-			while(ast->redir->bwd)
-				ast->redir = ast->redir->bwd;
+			while(n->redir->bwd)
+				n->redir = n->redir->bwd;
 		}
 		printf("redir in: "); 
-		print_redir(ast->redir, 'i');
+		print_redir(n->redir, 'i');
 		printf("redir out: "); 
-		print_redir(ast->redir, 'o');
+		print_redir(n->redir, 'o');
 	}
-	if (ast->parent)
-		printf("parent: %s\n", ast->parent->value);
+	if (n->parent)
+		printf("parent: %s\n", n->parent->value);
 	else
 		printf("parent: none\n");
-	if (ast->left)
-		printf("left: %s\n", ast->left->value);
+	if (n->left)
+		printf("left: %s\n", n->left->value);
 	else
 		printf("left: none\n");
-	if (ast->right)
-		printf("right: %s\n", ast->right->value);
+	if (n->right)
+		printf("right: %s\n", n->right->value);
 	else
 		printf("right: none\n");
 	printf("\n");
@@ -114,10 +114,37 @@ void print_tokens(t_token *token)
 	}
 }
 
+bool	path_exists(t_tree_node *n, t_lst *env)
+{
+	t_redir	*redir_ptr;	
+
+	while (env)
+	{
+		if (!ft_strncmp(env->var, "PATH", 5))
+			break ;
+		env = env->fwd;
+	}
+	if (!env)
+	{
+		redir_ptr = n->redir;
+		while (redir_ptr && access(redir_ptr->filename, X_OK) > -1)
+			redir_ptr = redir_ptr->fwd;
+		if (redir_ptr)
+			printf("-Minishell: %s: No such file or directory\n",
+			redir_ptr->filename);
+		else
+			printf("-Minishell: %s: No such file or directory\n",
+			n->value);
+		return (0);
+	}
+	printf("%s\n", env->var);
+	return (1);
+}
+
 void	init_ms(char *input, t_ms_var *ms)
 {
 	t_token		*tokens;
-	t_tree_node	*ast;
+	t_tree_node	*n;
 	int			pipe_ct;
 
 	add_history(input);
@@ -126,25 +153,28 @@ void	init_ms(char *input, t_ms_var *ms)
 	// print_tokens(tokens);
 	if (tokens && !syntax_errors(tokens))
 	{
-		ast = NULL;
-		parse(tokens, &ast, ms, tokens);
-		// print_tree(start_node(ast));
-		// printf("%s\n", start_node(ast)->redir->filename);
-		pipes_n_exec_path(start_node(ast), ms, &pipe_ct);
-		init_exec(start_node(ast), pipe_ct);
-		ast = start_node(ast);
-		while (ast->type != END)
+		n = NULL;
+		parse(tokens, &n, ms, tokens);
+		// print_tree(start_node(n));
+		// printf("%s\n", start_node(n)->redir->filename);
+		if (path_exists(start_node(n), ms->env))
 		{
-			if (ast->exec_cmd_path && !ft_strncmp(ast->exec_cmd_path, "?", 2)
-				&& !is_builtin(ast->value))
-				printf("%s: command not found\n", ast->value);
-			traverse_tree(&ast);
+			pipes_n_exec_path(start_node(n), ms, &pipe_ct);
+			init_exec(start_node(n), pipe_ct);
+			n = start_node(n);
+			while (n->type != END)
+			{
+				if (n->exec_cmd_path && !ft_strncmp(n->exec_cmd_path, "?", 2)
+					&& !is_builtin(n->value))
+					printf("%s: command not found\n", n->value);
+				traverse_tree(&n);
+			}
 		}
-		// printf("%d\n", ast->type);
-		ast->is_read = start_node(ast)->is_read;
-		// printf("%d: read? %d\n", ast->type, ast->is_read);
-		// printf("parent of %d: read? %d\n", ast->parent->type, ast->parent->is_read);
-		free_tree(start_node(ast));
+		// printf("%d\n", n->type);
+		n->is_read = start_node(n)->is_read;
+		// printf("%d: read? %d\n", n->type, n->is_read);
+		// printf("parent of %d: read? %d\n", n->type, n->parent->is_read);
+		free_tree(start_node(n));
 	}
 }
 
@@ -169,33 +199,6 @@ bool	exit_ms(char *input, t_ms_var *ms)
 		return (1);
 	}
 	free_char_arr(split_input, NULL);
-	return (0);
-}
-
-void	signal_handler(int signum)
-{
-	if (signum == SIGINT)
-	{
-		printf("\n");
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
-	}
-}
-
-int	init_signals(void)
-{
-	struct sigaction sa;
-
-	sa.sa_handler = signal_handler;
-	sa.sa_flags = 0;
-    sigemptyset(&sa.sa_mask);
-	if (sigaction(SIGINT, &sa, NULL) < 0)
-	{
-		perror("sigaction");
-		return (1);
-	}
-	signal(SIGPIPE, SIG_IGN);
 	return (0);
 }
 

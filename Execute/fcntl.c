@@ -1,5 +1,13 @@
 #include "../minishell.h"
 
+void	update_exit_status(t_lst *env, int status)
+{
+	while (env && ft_strncmp(env->var, "?", 2))
+		env = env->fwd;
+	free(env->val);
+	env->val = (ft_itoa(status));
+}
+
 void	init_heredoc(t_redir *redir, t_tree_node *n)
 {
 	char	*line;
