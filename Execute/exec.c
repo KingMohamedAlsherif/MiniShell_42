@@ -67,6 +67,7 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 		execute_builtin(n, n->value, 1);
 	else if (execve(n->exec_cmd_path, n->cmd_args_arr, n->ms->env_arr) < 0)
 		ft_error(errno, ft_strdup(n->cmd_args_arr[0]), n, 1);
+
 }
 
 void	setup_exec(t_exec *e, t_tree_node *n, int pipe_ct)

@@ -6,7 +6,7 @@
 /*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:19 by chon              #+#    #+#             */
-/*   Updated: 2024/09/15 08:05:14 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/26 22:41:04 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,11 @@ char    *get_str(char **input, t_lst *env, char quote)
 	s.str = get_substr(input, s.blockers);
 	if (s.convert)
 		s.str = get_env(s.str, env);
+	if (!s.str || !*s.str)
+	{
+		free(s.str);
+		return (NULL);
+	}
 	if (quote && **input == quote)
 	{
 		quote = 0;
@@ -113,6 +118,9 @@ bool valid_quote_pairs(char *input)
 void    tokenize(char *input, t_token **tokens, t_lst *env) 
 {
 	*tokens = NULL;
+	char *str;
+	
+	str = NULL;
 	if (!valid_quote_pairs(input))
 		printf("Must input closing quote\n");
 	else
@@ -126,8 +134,17 @@ void    tokenize(char *input, t_token **tokens, t_lst *env)
 			if (ft_strchr("<>|&", *input))
 				add_token(tokens, NULL, get_operator(&input));
 			else
-				add_token(tokens, get_str(&input, env, 0), WORD);
-	    }
+			{
+				str = get_str(&input, env, 0);
+				if (str) // Only if str not NULL
+					add_token(tokens, str, WORD);
+			}
+		}
 		add_token(tokens, NULL, END);
 	}
+}
+
+void		remove_empty(t_token  *tokens)
+{
+	
 }
