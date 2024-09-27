@@ -172,49 +172,17 @@ bool	exit_ms(char *input, t_ms_var *ms)
 	return (0);
 }
 
-// void	signal_handler(int signum)
-// {
-// 	if (signum == SIGINT)
-// 	{
-// 		printf("\n");
-// 		rl_replace_line("", 0);
-// 		rl_on_new_line();
-// 		rl_redisplay();
-// 	}
-// }
 
-void signal_handler(int signum)
+
+void	signal_handler(int signum)
 {
-	static pid_t child_pid = -1; // Store child PID in a static variable
-
 	if (signum == SIGINT)
 	{
-		if (child_pid > 0)
-		{
-			// Send SIGINT to the child process
-			kill(child_pid, SIGINT);
-		}
-		else
-		{
-			// Handle SIGINT at the shell level
-			printf("\n");
-			rl_replace_line("", 0); // Clear the current line
-			rl_on_new_line();		// Move to a new line
-			rl_redisplay();			// Redisplay the prompt
-		}
+		printf("\n");
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
 	}
-}
-
-void set_child_pid(pid_t pid)
-{
-	static pid_t child_pid = -1;
-	child_pid = pid; // Set the child PID when a new process starts
-}
-
-void reset_child_pid(void)
-{
-	static pid_t child_pid = -1;
-	child_pid = -1; // Reset the child PID after the process exits
 }
 
 int	init_signals(void)
