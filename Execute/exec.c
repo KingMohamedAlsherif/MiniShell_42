@@ -56,7 +56,7 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 		use_in_fd = n->pipefd[pipe_index - 1][0];
 	if (use_out_fd < 2 && pipe_ct && !n->right)
 		use_out_fd = n->pipefd[pipe_index][1];
-	printf("in:%d out:%d\n", use_in_fd, use_out_fd);
+	// printf("in:%d out:%d\n", use_in_fd, use_out_fd);
 	if (dup2(use_in_fd, STDIN_FILENO) < 0)
 		ft_error(errno, ft_strdup("dup infile"), n, 1);
 	if (dup2(use_out_fd, STDOUT_FILENO) < 0)
