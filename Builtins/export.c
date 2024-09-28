@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 12:53:22 by chon              #+#    #+#             */
-/*   Updated: 2024/09/09 16:27:47 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/28 21:32:33 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ void	insert_node(t_ms_var *ms, char *str)
 	env_node->fwd->bwd = env_node;
 	update_order(ms->env, env_node->fwd);
 	rank = env_node->fwd->ascii_order;
-	// printf("rank: %d\n", rank);
 	exp_node = ms->exp;
 	while (exp_node->ascii_order < rank - 1)
 		exp_node = exp_node->fwd;
@@ -47,14 +46,25 @@ void	insert_node(t_ms_var *ms, char *str)
 
 void	update_tlst(t_lst *env_node, t_lst *exp_node, char *str, char **s_str)
 {
-	free(env_node->var_n_val);
-	free(env_node->val);
-	env_node->var_n_val = ft_strjoin(ft_strdup(str), "\n", 1, 0);
-	env_node->val = ft_strdup(s_str[1]);
 	while (exp_node->ascii_order != env_node->ascii_order)
 		exp_node = exp_node->fwd;
+	free(env_node->var_n_val);
+	if (env_node->val)
+		free(env_node->val);
 	free(exp_node->var_n_val);
-	exp_node->var_n_val = ft_strjoin(export_str(str), "\n", 1, 0);
+	if (s_str[1])
+	{
+		env_node->var_n_val = ft_strjoin(ft_strdup(str), "\n", 1, 0);
+		env_node->val = ft_strdup(s_str[1]);
+		exp_node->var_n_val = ft_strjoin(export_str(str), "\n", 1, 0);
+	}
+	else
+	{
+		env_node->var_n_val = ft_strjoin(ft_strdup(str), "\"\"\n", 1, 0);
+		env_node->val = NULL;
+		exp_node->var_n_val = ft_strjoin(ft_strdup(str), "\"\"\n", 1, 0);
+		exp_node->var_n_val = ft_strjoin("declare -x ", exp_node->var_n_val, 0, 1);
+	}
 	free_char_arr(s_str, NULL);
 	free(str);
 }

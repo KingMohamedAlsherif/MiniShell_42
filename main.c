@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-volatile	sig_atomic_t signal_received;
+volatile sig_atomic_t signal_received;
 
 void print_args(t_args *cmd_args)
 {
@@ -38,7 +38,7 @@ void print_redir(t_redir *redir, char type)
 	printf("\n");
 }
 
-void	print_tree(t_tree_node	*n)
+void print_tree(t_tree_node *n)
 {
 	while (n->type != END)
 	{
@@ -48,12 +48,12 @@ void	print_tree(t_tree_node	*n)
 			print_args(n->cmd_args);
 			if (n->redir)
 			{
-				while(n->redir->bwd)
+				while (n->redir->bwd)
 					n->redir = n->redir->bwd;
 			}
-			printf("redir in: "); 
+			printf("redir in: ");
 			print_redir(n->redir, 'i');
-			printf("redir out: "); 
+			printf("redir out: ");
 			print_redir(n->redir, 'o');
 		}
 		if (n->parent)
@@ -77,12 +77,12 @@ void	print_tree(t_tree_node	*n)
 		print_args(n->cmd_args);
 		if (n->redir)
 		{
-			while(n->redir->bwd)
+			while (n->redir->bwd)
 				n->redir = n->redir->bwd;
 		}
-		printf("redir in: "); 
+		printf("redir in: ");
 		print_redir(n->redir, 'i');
-		printf("redir out: "); 
+		printf("redir out: ");
 		print_redir(n->redir, 'o');
 	}
 	if (n->parent)
@@ -114,11 +114,11 @@ void print_tokens(t_token *token)
 	}
 }
 
-void	init_ms(char *input, t_ms_var *ms)
+void init_ms(char *input, t_ms_var *ms)
 {
-	t_token		*tokens;
-	t_tree_node	*n;
-	int			pipe_ct;
+	t_token *tokens;
+	t_tree_node *n;
+	int pipe_ct;
 
 	add_history(input);
 	tokenize(input, &tokens, ms->env);
@@ -135,11 +135,10 @@ void	init_ms(char *input, t_ms_var *ms)
 		n = start_node(n);
 		while (n->type != END)
 		{
-			if ((n->exec_cmd_path && !ft_strncmp(n->exec_cmd_path, "?", 2)
-				&& !is_builtin(n->value)) || (!is_builtin(n->value) && n->exec_cmd_path && !strncmp(n->exec_cmd_path, "invalid", 8)))
+			if ((n->exec_cmd_path && !ft_strncmp(n->exec_cmd_path, "?", 2) && !is_builtin(n->value)) || (!is_builtin(n->value) && n->exec_cmd_path && !strncmp(n->exec_cmd_path, "invalid", 8)))
 				printf("%s: command not found\n", n->value);
 			else if (n->value && !is_builtin(n->value) && !strncmp(n->exec_cmd_path, "PATH", 5))
-				printf("-Minishell: %s: No such file or directory\n", n->value);
+				printf("Minishell: %s: No such file or directory\n", n->value);
 			traverse_tree(&n);
 		}
 		// printf("%d\n", n->type);
@@ -150,16 +149,15 @@ void	init_ms(char *input, t_ms_var *ms)
 	}
 }
 
-bool	exit_ms(char *input, t_ms_var *ms)
+bool exit_ms(char *input, t_ms_var *ms)
 {
-	char		**split_input;
+	char **split_input;
 
 	split_input = ft_split(input, ' ');
 	if (!input || (split_input[0] && !ft_strncmp(split_input[0], "exit", 5)))
 	{
 		if (input && split_input[1] && !is_number(split_input[1]))
-			printf("exit\nbash: exit: %s: numeric argument required\n"
-				, split_input[1]);
+			printf("exit\nbash: exit: %s: numeric argument required\n", split_input[1]);
 		else
 			printf("exit\n");
 		free_char_arr(split_input, NULL);
@@ -174,10 +172,10 @@ bool	exit_ms(char *input, t_ms_var *ms)
 	return (0);
 }
 
-int	main(int ac, char **av, char **env)
+int main(int ac, char **av, char **env)
 {
-	char		*input;
-	t_ms_var	*ms;
+	char *input;
+	t_ms_var *ms;
 	// int			path_flag;
 
 	(void)ac;
@@ -192,9 +190,8 @@ int	main(int ac, char **av, char **env)
 		{
 			input = readline("Minishell $ ");
 			if (exit_ms(input, ms))
-				break ;
-			if ((ft_strlen(input) > 5 && !ft_strncmp(input, "clear ", 6))
-				|| (ft_strlen(input) < 6 && !ft_strncmp(input, "clear", 5)))
+				break;
+			if ((ft_strlen(input) > 5 && !ft_strncmp(input, "clear ", 6)) || (ft_strlen(input) < 6 && !ft_strncmp(input, "clear", 5)))
 				printf("\033[2J\033[H");
 			else if (ms->env)
 				init_ms(input, ms);

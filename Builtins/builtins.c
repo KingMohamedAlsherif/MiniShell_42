@@ -12,23 +12,23 @@
 
 #include "../minishell.h"
 
-void	cd(t_tree_node *n)
+void cd(t_tree_node *n)
 {
-	if (n->cmd_args_arr[2])
-		printf("-Minishell: cd: too many arguments\n");
-	else if (!n->cmd_args_arr[1])
+	if (!n->cmd_args_arr[1])
 	{
 		if (chdir("/") < 0)
 			ft_error(errno, ft_strjoin("cd: ", n->cmd_args_arr[0], 0, 0), n, 0);
 	}
-	else if (chdir(n->cmd_args_arr[0]) < 0)
+	else if (n->cmd_args_arr[2])
+		printf("Minishell: cd: too many arguments\n");
+	else if (chdir(n->cmd_args_arr[1]) < 0)
 		ft_error(errno, ft_strjoin("cd: ", n->cmd_args_arr[0], 0, 0), n, 0);
 	// update pwd and oldpwd
 }
 
-void	get_cwd(t_tree_node *n)
+void pwd(t_tree_node *n)
 {
-	char	cwd[PATH_MAX];
+	char cwd[PATH_MAX];
 
 	if (getcwd(cwd, sizeof(cwd)))
 		printf("Current working directory: %s\n", cwd);
@@ -36,12 +36,12 @@ void	get_cwd(t_tree_node *n)
 		ft_error(errno, ft_strdup("cwd"), n, 1);
 }
 
-void	unset(t_tree_node *n)
+void unset(t_tree_node *n)
 {
-	char	*new_str;
-	int		i;
-	t_lst	*env_node;
-	int		ascii_order;
+	char *new_str;
+	int i;
+	t_lst *env_node;
+	int ascii_order;
 
 	i = -1;
 	while (n->cmd_args_arr[++i])
@@ -56,7 +56,7 @@ void	unset(t_tree_node *n)
 			{
 				del_node(n->ms->env, ascii_order);
 				del_node(n->ms->exp, ascii_order);
-				break ;
+				break;
 			}
 			env_node = env_node->fwd;
 		}
@@ -64,7 +64,7 @@ void	unset(t_tree_node *n)
 	}
 }
 
-void	env(char *exec_cmd_path, char *arg, t_lst *env)
+void env(char *exec_cmd_path, char *arg, t_lst *env)
 {
 	if (ft_strncmp(exec_cmd_path, "PATH", 5) && !arg)
 	{
@@ -79,13 +79,15 @@ void	env(char *exec_cmd_path, char *arg, t_lst *env)
 	else if (ft_strncmp(exec_cmd_path, "PATH", 5))
 		printf("env: '%s': No such file or directory\n", arg);
 	else
-		printf("-Minishell: env: No such file or directory\n");
+		printf("Minishell: env: No such file or directory\n");
 }
 
-void	execute_builtin(t_tree_node *n, char *cmd, bool exit_flag)
+void execute_builtin(t_tree_node *n, char *cmd, bool exit_flag)
 {
 	if (ft_strlen(cmd) == 2 && !ft_strncmp(cmd, "cd", 3))
 		cd(n);
+	else if (ft_strlen(cmd) == 3 && !ft_strncmp(cmd, "pwd", 4))
+		pwd(n);
 	else if (ft_strlen(cmd) == 3 && !ft_strncmp(cmd, "env", 4))
 		env(n->exec_cmd_path, n->cmd_args_arr[1], n->ms->env);
 	else if (ft_strlen(cmd) == 5 && !ft_strncmp(cmd, "unset", 6))
@@ -95,13 +97,9 @@ void	execute_builtin(t_tree_node *n, char *cmd, bool exit_flag)
 	ft_error(0, ft_strdup(n->cmd_args_arr[0]), n, exit_flag);
 }
 
-bool	is_builtin(char *cmd)
+bool is_builtin(char *cmd)
 {
-	if ((ft_strlen(cmd) == 2 && (!ft_strncmp(cmd, "cd", 3)
-		|| !ft_strncmp(cmd, "$?", 3)))
-		|| (ft_strlen(cmd) == 3 && !ft_strncmp(cmd, "env", 4))
-		|| (ft_strlen(cmd) == 5 && !ft_strncmp(cmd, "unset", 6))
-		|| (ft_strlen(cmd) == 6 && !ft_strncmp(cmd, "export", 7)))
+	if ((ft_strlen(cmd) == 2 && (!ft_strncmp(cmd, "cd", 3) || !ft_strncmp(cmd, "$?", 3))) || (ft_strlen(cmd) == 3 && !ft_strncmp(cmd, "pwd", 4)) || (ft_strlen(cmd) == 3 && !ft_strncmp(cmd, "env", 4)) || (ft_strlen(cmd) == 5 && !ft_strncmp(cmd, "unset", 6)) || (ft_strlen(cmd) == 6 && !ft_strncmp(cmd, "export", 7)))
 		return (1);
 	return (0);
 }

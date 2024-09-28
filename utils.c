@@ -1,21 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_main.c                                       :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:19:14 by chon              #+#    #+#             */
-/*   Updated: 2024/09/23 14:50:10 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/28 21:35:33 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_lst	*create_new_node(char *str, int ascii_order)
+t_lst *create_new_node(char *str, int ascii_order)
 {
-	t_lst	*node;
-	char	**split_str;
+	t_lst *node;
+	char **split_str;
 
 	node = malloc(sizeof(t_lst));
 	if (!node)
@@ -35,7 +35,7 @@ t_lst	*create_new_node(char *str, int ascii_order)
 	return (node);
 }
 
-int	is_number(char *str)
+int is_number(char *str)
 {
 	while (*str)
 	{
@@ -46,9 +46,9 @@ int	is_number(char *str)
 	return (1);
 }
 
-int	count_lst_nodes(t_lst *head)
+int count_lst_nodes(t_lst *head)
 {
-	int	node_ct;
+	int node_ct;
 
 	node_ct = 0;
 	while (head)
@@ -63,7 +63,7 @@ void ft_error(int error, char *str, t_tree_node *n, bool exit_flag)
 {
 	// printf("errno: %d\n", error);
 	if (error == 666)
-		printf("-Minishell: %s: No such file or directory\n", str);
+		printf("Minishell: %s: No such file or directory\n", str);
 	// else if (!strncmp(n->exec_cmd_path, "invalid", 8) && error == 2)
 	// 	printf("%s: command not found\n", n->value);
 	free(str);
