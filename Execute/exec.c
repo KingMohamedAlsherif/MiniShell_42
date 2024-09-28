@@ -98,7 +98,7 @@ void prepare_exec(t_tree_node *n, int pipe_ct, t_exec *e)
 			execute_builtin(n, n->value, 0);
 		else if (n->type != PIPE)
 		{
-			while (n->type == PIPE || !init_infiles_outfiles(n->redir, n, &e->status))
+			while (n->type == PIPE || n->type == AND || n->type == OR || !init_infiles_outfiles(n->redir, n, &e->status))
 				traverse_tree(&n);
 			if (n->type != END)
 			{
