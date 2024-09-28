@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_exec.c                                       :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 16:09:22 by chon              #+#    #+#             */
-/*   Updated: 2024/09/23 15:08:47 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/28 23:42:39 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,19 +42,25 @@ void	create_err_file(t_tree_node *n)
 	free(err_filename);
 }
 
-void	close_fds(t_tree_node *n, int pipe_ct)
+void	close_pipe(int **pipe, int pipe_ct)
 {
 	int		i;
-	t_redir	*redir_ptr;
 
 	i = -1;
 	while (++i < pipe_ct)
 	{
-		if (n->pipefd[i][0] > 2)
-			close(n->pipefd[i][0]);
-		if (n->pipefd[i][1] > 2)
-			close(n->pipefd[i][1]);
+		if (pipe[i][0] > 2)
+			close(pipe[i][0]);
+		if (pipe[i][1] > 2)
+			close(pipe[i][1]);
 	}
+}
+
+void	close_fds(t_tree_node *n, int pipe_ct)
+{
+	t_redir	*redir_ptr;
+
+	close_pipe(start_node(n)->pipefd, pipe_ct);
 	while (n->type != END)
 	{
 		redir_ptr = n->redir;
