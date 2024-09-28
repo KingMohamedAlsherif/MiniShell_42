@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 12:53:22 by chon              #+#    #+#             */
-/*   Updated: 2024/09/28 22:45:07 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 00:05:26 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ void	update_tlst(t_lst *env_node, t_lst *exp_node, char *str, char **s_str)
 		env_node->var_n_val = ft_strjoin(ft_strdup(str), "\"\"\n", 1, 0);
 		env_node->val = NULL;
 		exp_node->var_n_val = ft_strjoin(ft_strdup(str), "\"\"\n", 1, 0);
-		exp_node->var_n_val = ft_strjoin("declare -x ", exp_node->var_n_val, 0, 1);
 	}
 	free_char_arr(s_str, NULL);
 	free(str);

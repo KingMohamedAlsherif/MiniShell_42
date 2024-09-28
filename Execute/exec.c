@@ -121,7 +121,7 @@ void prepare_exec(t_tree_node *n, int pipe_ct, t_exec *e)
 	close_fds(n, pipe_ct);
 }
 
-void finalize_exec(t_tree_node *n, t_exec *e, int pipe_ct)
+void finalize_exec(t_tree_node *n, t_exec *e)
 {
 	while (e->pipe_index-- > 0)
 	{
@@ -140,5 +140,5 @@ void init_exec(t_tree_node *n, int pipe_ct)
 	t_exec e;
 
 	prepare_exec(n, pipe_ct, &e);  // Handles setup, fork, and execute
-	finalize_exec(n, &e, pipe_ct); // Handles waiting and signal handling
+	finalize_exec(n, &e); // Handles waiting and signal handling
 }

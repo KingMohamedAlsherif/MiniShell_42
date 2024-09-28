@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
+/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:11 by chon              #+#    #+#             */
-/*   Updated: 2024/09/26 22:36:28 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/29 00:11:08 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,8 @@ bool	syntax_errors(t_token *tokens)
 			 tokens->type == APPEND || tokens->type == HEREDOC) &&
 			(!tokens->next || tokens->next->type != WORD))
 			return (print_syntax_error(tokens_ptr, tokens->type), 1);
-		if ((tokens->type == PIPE || tokens->type == OR || tokens->type == AND) && !tokens->next)
+		if ((tokens->type == PIPE || tokens->type == OR || tokens->type == AND) 
+		&& (!tokens->next || tokens->next->type == END))
 			return (print_syntax_error(tokens_ptr, tokens->type), 1);
 		tokens = tokens->next;
 	}
