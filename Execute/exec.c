@@ -54,7 +54,7 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 		use_in_fd = n->pipefd[pipe_index - 1][0];
 	if (use_out_fd < 2 && pipe_ct && !n->right)
 		use_out_fd = n->pipefd[pipe_index][1];
-	// printf("in:%d out:%d\n", use_in_fd, use_out_fd);
+	printf("in:%d out:%d\n", use_in_fd, use_out_fd);
 	if (dup2(use_in_fd, STDIN_FILENO) < 0)
 		ft_error(errno, ft_strdup("dup infile"), n, 1);
 	if (dup2(use_out_fd, STDOUT_FILENO) < 0)
@@ -84,6 +84,7 @@ void	setup_exec(t_exec *e, t_tree_node *n, int pipe_ct)
 				redir_ptr = redir_ptr->bwd;
 		n->redir = redir_ptr;
 		n->pipe_ct = pipe_ct;
+		init_infiles_outfiles(n->redir, n, &e->status);
 		traverse_tree(&n);
 	}
 }
@@ -98,7 +99,7 @@ void prepare_exec(t_tree_node *n, int pipe_ct, t_exec *e)
 			execute_builtin(n, n->value, 0);
 		else if (n->type != PIPE)
 		{
-			while (n->type == PIPE || n->type == AND || n->type == OR || !init_infiles_outfiles(n->redir, n, &e->status))
+			while (n->type == PIPE || n->type == AND || n->type == OR)
 				traverse_tree(&n);
 			if (n->type != END)
 			{

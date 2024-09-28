@@ -112,8 +112,9 @@ bool	syntax_errors(t_token *tokens)
 			 tokens->type == APPEND || tokens->type == HEREDOC) &&
 			(!tokens->next || tokens->next->type != WORD))
 			return (print_syntax_error(tokens_ptr, tokens->type), 1);
-		if ((tokens->type == PIPE || tokens->type == OR || tokens->type == AND) 
-		&& (!tokens->next || tokens->next->type == END))
+		if ((tokens->type == PIPE || tokens->type == OR || tokens->type == AND)
+		&& (!tokens->next))
+		// && (!tokens->next || tokens->next->type == END))
 			return (print_syntax_error(tokens_ptr, tokens->type), 1);
 		tokens = tokens->next;
 	}
