@@ -88,39 +88,57 @@ void	setup_exec(t_exec *e, t_tree_node *n, int pipe_ct)
 	}
 }
 
-void	init_exec(t_tree_node *n, int pipe_ct)
-{
-	t_exec	e;
 
-	setup_exec(&e, n, pipe_ct);
+void prepare_exec(t_tree_node *n, int pipe_ct, t_exec *e)
+{
+	setup_exec(e, n, pipe_ct);
 	while (n->type != END)
 	{
 		if (!pipe_ct && is_builtin(n->value))
 			execute_builtin(n, n->value, 0);
 		else if (n->type != PIPE)
 		{
-			// printf("%s\n", n->exec_cmd_path);
-			// printf("%s\n", n->cmd_args[0]);
-			while (n->type == PIPE ||
-				!init_infiles_outfiles(n->redir, n, &e.status))
+			while (n->type == PIPE || !init_infiles_outfiles(n->redir, n, &e->status))
 				traverse_tree(&n);
 			if (n->type != END)
 			{
-				e.pid = fork();
-				if (e.pid < 0)
+				e->pid = fork();
+				if (e->pid < 0)
 					ft_error(errno, ft_strdup("fork"), n, 1);
-				if (!e.pid)
-					execute(n, e.pipe_index, pipe_ct);
-				e.pipe_index++;
+				if (!e->pid) // Child process
+				{
+					signal(SIGINT, SIG_DFL);
+					signal(SIGQUIT, SIG_DFL);
+					execute(n, e->pipe_index, pipe_ct);
+				}
+				else // Parent process ignores Ctrl+C
+					signal(SIGINT, SIG_IGN);
+				e->pipe_index++;
 			}
 		}
 		traverse_tree(&n);
 	}
-	close_fds(start_node(n), pipe_ct);
-	while (e.pipe_index-- > 0)
-		waitpid(-1, &e.status, 0);
-	// printf("exit status: %d; converted: %d\n", status, WEXITSTATUS(status));
-	if (e.status == 256)
-		e.status = 127;
-	update_exit_status(n->ms->env, e.status);
+	close_fds(n, pipe_ct);
+}
+
+void finalize_exec(t_tree_node *n, t_exec *e, int pipe_ct)
+{
+	while (e->pipe_index-- > 0)
+	{
+		waitpid(-1, &e->status, 0);
+		if (WIFSIGNALED(e->status) && WTERMSIG(e->status) == SIGINT)
+			printf("\n");
+	}
+	signal(SIGINT, SIG_IGN); // Ignore SIGINT after child processes finish
+	if (e->status == 256)
+		e->status = 127;
+	update_exit_status(n->ms->env, e->status);
+}
+
+void init_exec(t_tree_node *n, int pipe_ct)
+{
+	t_exec e;
+
+	prepare_exec(n, pipe_ct, &e);  // Handles setup, fork, and execute
+	finalize_exec(n, &e, pipe_ct); // Handles waiting and signal handling
 }

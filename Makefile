@@ -3,19 +3,19 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: chon <chon@student.42.fr>                  +#+  +:+       +#+         #
+#    By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/10 11:20:21 by chon              #+#    #+#              #
-#    Updated: 2024/09/23 13:40:08 by chon             ###   ########.fr        #
+#    Updated: 2024/09/26 16:13:29 by kingmohamedalshe ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 # CFLAGS = -Wall -Werror -Wextra -g3 -fsanitize=address
-CFLAGS = -Wall -Werror -Wextra -g3
+CFLAGS =  -g3
 LIBFT_DIR = ./libft
-LIBS = ./libft/libft.a -L$(HOME)/.local/opt/readline/lib \
--I$(HOME)/.local/opt/readline/include -lreadline
+LIBS = ./libft/libft.a -L/usr/local/opt/readline/lib \
+-I/usr/local/opt/readline/include -lreadline
 # LIBS = ./libft/libft.a -lreadline
 OBJS = $(SRCS:.c=.o)
 SRCS = main.c signals.c env_export.c utils.c mv_tree.c free.c \

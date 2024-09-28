@@ -176,7 +176,6 @@ int main(int ac, char **av, char **env)
 {
 	char *input;
 	t_ms_var *ms;
-	// int			path_flag;
 
 	(void)ac;
 	(void)av;
