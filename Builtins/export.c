@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 12:53:22 by chon              #+#    #+#             */
-/*   Updated: 2024/09/28 21:32:33 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/28 22:45:07 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void	export(t_tree_node *n)
 		while (exp_node)
 		{
 			if (ft_strncmp(exp_node->var, "declare -x ?", 13))
-				printf("%s", exp_node->var_n_val);
+				printf("declare -x %s", exp_node->var_n_val);
 			exp_node = exp_node->fwd;
 		}
 	}

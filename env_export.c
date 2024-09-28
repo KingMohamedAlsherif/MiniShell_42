@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:24:09 by chon              #+#    #+#             */
-/*   Updated: 2024/09/13 16:55:08 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/28 22:56:24 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ char	*export_str(char *str)
 	int		substr_len;
 
 	str_0 = ft_strtrim(str, "\n");
-	str_0 = ft_strjoin("declare -x ", str_0, 0, 1);
 	if (ft_strchr(str, '='))
 	{
 		substr_len = ft_strchr(str_0, '=') - str_0 + 1;
@@ -53,6 +52,7 @@ void	create_ms_export(t_lst **exp_head, t_lst *env)
 		while (env->ascii_order != i)
 			env = env->fwd;
 		exp_head_ptr->fwd = create_new_node(export_str(env->var_n_val), env->ascii_order);
+		// printf("val in exp: %s\n", exp_head_ptr->fwd->val);
 		exp_head_ptr->fwd->bwd = exp_head_ptr;
 		exp_head_ptr = exp_head_ptr->fwd;
 		env = env_head;
@@ -112,10 +112,15 @@ void	dup_env_exp(t_ms_var **ms, char **env)
 	i = 0;
 	while (env[++i])
 	{
-		if (strncmp(env[i], "_", 1) && strncmp(env[i], "LD_", 3)
-			&& strncmp(env[i], "GLIBC", 5))
+		if (strncmp(env[i], "LD_", 3) && strncmp(env[i], "GLIBC", 5))
 		{
 			new_node = create_new_node(ft_strdup(env[i]), 0);
+			// printf("value: %s\n", new_node->val);
+			if (!ft_strncmp(env[i], "OLDPWD=", 7))
+			{
+				free(new_node->var_n_val);
+				new_node->var_n_val = ft_strdup("OLDPWD");
+			}
 			new_node->bwd = (*ms)->env;
 			(*ms)->env->fwd = new_node;
 			(*ms)->env = (*ms)->env->fwd;
