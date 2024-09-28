@@ -21,11 +21,12 @@ void	update_pwd(t_lst *pwd_ptr, t_lst *old_pwd_ptr, bool env_flag)
 	while (ft_strncmp(old_pwd_ptr->var, "OLDPWD", 7))
 		old_pwd_ptr = old_pwd_ptr->fwd;
 	free(old_pwd_ptr->var_n_val);
-	old_pwd_ptr->var_n_val = ft_strdup(pwd_ptr->var_n_val);
+	old_pwd_ptr->var_n_val = ft_strjoin("OLDPWD=", pwd_ptr->val, 0, 0);
+	old_pwd_ptr->var_n_val = ft_strjoin(old_pwd_ptr->var_n_val, "\n", 1, 0);
 	free(pwd_ptr->var_n_val);
 	if (env_flag)
 	{
-		pwd_ptr->var_n_val = ft_strjoin("PWD=", (getcwd(cwd, sizeof(cwd))), 0, 0);
+		pwd_ptr->var_n_val = ft_strjoin("PWD=", getcwd(cwd, sizeof(cwd)), 0, 0);
 		pwd_ptr->var_n_val = ft_strjoin(pwd_ptr->var_n_val, "\n", 1, 0);
 	}
 	else
@@ -33,6 +34,8 @@ void	update_pwd(t_lst *pwd_ptr, t_lst *old_pwd_ptr, bool env_flag)
 		pwd_ptr->var_n_val = ft_strjoin("PWD=\"", (getcwd(cwd, sizeof(cwd))), 0, 0);
 		pwd_ptr->var_n_val = ft_strjoin(pwd_ptr->var_n_val, "\"\n", 1, 0);
 	}
+	free(pwd_ptr->val);
+	pwd_ptr->val = ft_strdup(getcwd(cwd, sizeof(cwd)));
 }
 
 void	cd(t_tree_node *n)
