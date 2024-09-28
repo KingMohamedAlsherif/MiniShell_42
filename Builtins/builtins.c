@@ -14,8 +14,15 @@
 
 void	cd(t_tree_node *n)
 {
-	if (chdir(n->cmd_args_arr[0]) < 0)
-		ft_error(errno, ft_strjoin("cd: ", n->cmd_args_arr[0], 0, 0), n, 1);
+	if (n->cmd_args_arr[2])
+		printf("-Minishell: cd: too many arguments\n");
+	else if (!n->cmd_args_arr[1])
+	{
+		if (chdir("/") < 0)
+			ft_error(errno, ft_strjoin("cd: ", n->cmd_args_arr[0], 0, 0), n, 0);
+	}
+	else if (chdir(n->cmd_args_arr[0]) < 0)
+		ft_error(errno, ft_strjoin("cd: ", n->cmd_args_arr[0], 0, 0), n, 0);
 	// update pwd and oldpwd
 }
 
@@ -57,10 +64,11 @@ void	unset(t_tree_node *n)
 	}
 }
 
-void	env(t_lst *env, char *arg)
+void	env(char *exec_cmd_path, char *arg, t_lst *env)
 {
-	if (!arg)
+	if (ft_strncmp(exec_cmd_path, "PATH", 5) && !arg)
 	{
+		printf("env cmd path: %s\n", exec_cmd_path);
 		while (env)
 		{
 			if (ft_strchr(env->var_n_val, '=') && !ft_strchr(env->var, '?'))
@@ -68,17 +76,18 @@ void	env(t_lst *env, char *arg)
 			env = env->fwd;
 		}
 	}
-	else
+	else if (ft_strncmp(exec_cmd_path, "PATH", 5))
 		printf("env: '%s': No such file or directory\n", arg);
+	else
+		printf("-Minishell: env: No such file or directory\n");
 }
 
 void	execute_builtin(t_tree_node *n, char *cmd, bool exit_flag)
 {
-
 	if (ft_strlen(cmd) == 2 && !ft_strncmp(cmd, "cd", 3))
 		cd(n);
 	else if (ft_strlen(cmd) == 3 && !ft_strncmp(cmd, "env", 4))
-		env(n->ms->env, n->cmd_args_arr[1]);
+		env(n->exec_cmd_path, n->cmd_args_arr[1], n->ms->env);
 	else if (ft_strlen(cmd) == 5 && !ft_strncmp(cmd, "unset", 6))
 		unset(n);
 	if (ft_strlen(cmd) == 6 && !ft_strncmp(cmd, "export", 7))

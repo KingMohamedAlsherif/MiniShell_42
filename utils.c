@@ -62,10 +62,10 @@ int	count_lst_nodes(t_lst *head)
 void ft_error(int error, char *str, t_tree_node *n, bool exit_flag)
 {
 	// printf("errno: %d\n", error);
-	if (n->exec_cmd_path && !strncmp(n->exec_cmd_path, "invalid", 8) && error == 2)
-		printf("%s: command not found\n", n->value);
 	if (error == 666)
 		printf("-Minishell: %s: No such file or directory\n", str);
+	// else if (!strncmp(n->exec_cmd_path, "invalid", 8) && error == 2)
+	// 	printf("%s: command not found\n", n->value);
 	free(str);
 	if (exit_flag)
 	{

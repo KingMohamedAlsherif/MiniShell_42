@@ -12,21 +12,35 @@
 
 #include "../minishell.h"
 
-void	finalize_exec_cmd_path(char	**exec_cmd_path, char *value)
+void	finalize_exec_cmd_path(char	**exec_cmd_path, char *value, t_lst *env)
 {
 	if (is_number(value))
 		*exec_cmd_path = ft_strdup("?");
-	else if (!*exec_cmd_path)
-		*exec_cmd_path = ft_strdup("invalid");
+	else if (!*exec_cmd_path || !ft_strncmp(value, "env", 4))
+	{
+		while (env)
+		{
+			if (!ft_strncmp(env->var, "PATH", 5))
+			{
+				if (!*exec_cmd_path)
+					*exec_cmd_path = ft_strdup("invalid");
+				return ;
+			}
+			env = env->fwd;
+		}
+		if (*exec_cmd_path)
+			free(exec_cmd_path);
+		*exec_cmd_path = ft_strdup("PATH");
+	}
 }
 
-void	create_cmd_args_arr(t_tree_node *n)
+void	finalize_cmd_path_n_args(t_tree_node *n)
 {
 	int		str_ct;
 	t_args	*args_ptr;
 	int		i;
 
-	finalize_exec_cmd_path(&n->exec_cmd_path, n->value);
+	finalize_exec_cmd_path(&n->exec_cmd_path, n->value, n->ms->env);
 	str_ct = 0;
 	args_ptr = n->cmd_args;
 	while (args_ptr)
@@ -71,7 +85,7 @@ void	exec_path_args_arr(t_tree_node *n, t_paths p, int **pipefd)
 				free(p.filepath);
 			}
 			n->pipefd = pipefd;
-			create_cmd_args_arr(n);
+			finalize_cmd_path_n_args(n);
 		}
 		traverse_tree(&n);
 	}

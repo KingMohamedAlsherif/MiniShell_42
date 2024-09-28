@@ -114,33 +114,6 @@ void print_tokens(t_token *token)
 	}
 }
 
-bool	path_exists(t_tree_node *n, t_lst *env)
-{
-	t_redir	*redir_ptr;	
-
-	while (env)
-	{
-		if (!ft_strncmp(env->var, "PATH", 5))
-			break ;
-		env = env->fwd;
-	}
-	if (!env)
-	{
-		redir_ptr = n->redir;
-		while (redir_ptr && access(redir_ptr->filename, X_OK) > -1)
-			redir_ptr = redir_ptr->fwd;
-		if (redir_ptr)
-			printf("-Minishell: %s: No such file or directory\n",
-			redir_ptr->filename);
-		else
-			printf("-Minishell: %s: No such file or directory\n",
-			n->value);
-		return (0);
-	}
-	printf("%s\n", env->var);
-	return (1);
-}
-
 void	init_ms(char *input, t_ms_var *ms)
 {
 	t_token		*tokens;
@@ -157,18 +130,17 @@ void	init_ms(char *input, t_ms_var *ms)
 		parse(tokens, &n, ms, tokens);
 		// print_tree(start_node(n));
 		// printf("%s\n", start_node(n)->redir->filename);
-		if (path_exists(start_node(n), ms->env))
+		pipes_n_exec_path(start_node(n), ms, &pipe_ct);
+		init_exec(start_node(n), pipe_ct);
+		n = start_node(n);
+		while (n->type != END)
 		{
-			pipes_n_exec_path(start_node(n), ms, &pipe_ct);
-			init_exec(start_node(n), pipe_ct);
-			n = start_node(n);
-			while (n->type != END)
-			{
-				if (n->exec_cmd_path && !ft_strncmp(n->exec_cmd_path, "?", 2)
-					&& !is_builtin(n->value))
-					printf("%s: command not found\n", n->value);
-				traverse_tree(&n);
-			}
+			if ((n->exec_cmd_path && !ft_strncmp(n->exec_cmd_path, "?", 2)
+				&& !is_builtin(n->value)) || (!is_builtin(n->value) && n->exec_cmd_path && !strncmp(n->exec_cmd_path, "invalid", 8)))
+				printf("%s: command not found\n", n->value);
+			else if (n->value && !is_builtin(n->value) && !strncmp(n->exec_cmd_path, "PATH", 5))
+				printf("-Minishell: %s: No such file or directory\n", n->value);
+			traverse_tree(&n);
 		}
 		// printf("%d\n", n->type);
 		n->is_read = start_node(n)->is_read;
@@ -206,6 +178,7 @@ int	main(int ac, char **av, char **env)
 {
 	char		*input;
 	t_ms_var	*ms;
+	// int			path_flag;
 
 	(void)ac;
 	(void)av;

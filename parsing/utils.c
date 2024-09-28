@@ -1,5 +1,18 @@
 #include "../minishell.h"
 
+void	free_tokens(t_token *token)
+{
+	t_token	*tmp_token;
+
+	while (token)
+	{
+		tmp_token = token;
+		token = token->next;
+		free(tmp_token->value);
+		free(tmp_token);
+	}
+}
+
 void	add_cmd_arg(t_args **args_lst, char *value)
 {
     t_args	*new_arg;
@@ -19,6 +32,13 @@ void	add_cmd_arg(t_args **args_lst, char *value)
             current = current->next;
         current->next = new_arg;
     }
+}
+
+void    init_tree_paths(t_tree_node *new_node)
+{
+    new_node->parent = NULL;
+    new_node->left = NULL;
+    new_node->right = NULL;
 }
 
 t_tree_node	*init_tree_node(t_token *token, t_ms_var *ms)
@@ -42,9 +62,7 @@ t_tree_node	*init_tree_node(t_token *token, t_ms_var *ms)
     new_node->redir = NULL;
     new_node->pipe_ct = 0;
     new_node->pipefd = NULL;
-    new_node->parent = NULL;
-    new_node->left = NULL;
-    new_node->right = NULL;
+    init_tree_paths(new_node);
     new_node->is_read = 0;
 	new_node->ms = ms;
     return (new_node);

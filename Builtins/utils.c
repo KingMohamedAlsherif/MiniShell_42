@@ -73,7 +73,7 @@ int	has_valid_chars(char *str)
 	while (*str)
 	{
 		if (!(*str >= '0' && *str <= '9') && (*str < 'A' || *str > 'z')
-			&& *str != '=')
+			&& *str != '=' && *str != ':' && *str != '/' && *str != '.')
 				return (0);
 		str++;
 	}

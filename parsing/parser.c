@@ -1,19 +1,5 @@
 #include "../minishell.h"
 
-void	free_tokens(t_token *token)
-{
-	t_token	*tmp_token;
-
-	while (token)
-	{
-		tmp_token = token;
-		// printf("%d: %s\n", tmp_token->type, tmp_token->value);
-		token = token->next;
-		free(tmp_token->value);
-		free(tmp_token);
-	}
-}
-
 void	update_node(t_redir *new_redir, char *value, token_type type)
 {
     new_redir->filename = ft_strdup(value);
