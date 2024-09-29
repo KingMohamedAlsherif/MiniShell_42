@@ -6,11 +6,13 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:08:29 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 20:24:38 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 22:56:47 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+volatile sig_atomic_t signal = 0;
 
 void print_args(t_args *cmd_args)
 {
@@ -145,9 +147,11 @@ void	init_ms(char *input, t_ms_var *ms)
 		// print_tree(start_node(n));
 		pipes_n_exec_path(start_node(n), ms, &pipe_ct);
 		init_exec(start_node(n), pipe_ct);
-		n = start_node(n);
-		traverse_and_check_errors(n);
+		traverse_and_check_errors(start_node(n));
 		n->is_read = start_node(n)->is_read;
+		// printf("node: %s %d\n",	n->value, n->type);
+		// printf("node read? %d\n", n->is_read);
+		// printf("parent node read? %d\n", n->parent->is_read);
 		free_tree(start_node(n));
 	}
 }
@@ -197,7 +201,7 @@ int	main(int ac, char **av, char **env)
 			if ((ft_strlen(input) > 5 && !ft_strncmp(input, "clear ", 6))
 				|| (ft_strlen(input) < 6 && !ft_strncmp(input, "clear", 5)))
 				printf("\033[2J\033[H");
-			else if (ms->env)
+			else if (ms->env && *input)
 				init_ms(input, ms);
 		}
 	}

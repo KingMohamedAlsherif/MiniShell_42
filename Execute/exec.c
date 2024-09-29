@@ -39,8 +39,6 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 
 void prepare_exec(t_tree_node *n, int pipe_ct, t_exec *e)
 {
-	while (n->type == PIPE)
-		traverse_tree(&n);
 	if (n->type != END)
 	{
 		e->pid = fork();
@@ -86,8 +84,9 @@ void init_exec(t_tree_node *n, int pipe_ct)
 	{
 		if (!pipe_ct && is_builtin(n->value))
 			execute_builtin(n, n->value, 0);
-		else if (n->type != PIPE)
-			prepare_exec(n, pipe_ct, &e);
+		while (n->type == PIPE)
+			traverse_tree(&n);
+		prepare_exec(n, pipe_ct, &e);
 		traverse_tree(&n);
 	}
 	close_fds(n, pipe_ct);

@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 09:17:25 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 20:57:10 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 21:30:04 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ void execute_builtin(t_tree_node *n, char *cmd, bool exit_flag)
 		unset(n);
 	if (ft_strlen(cmd) == 6 && !ft_strncmp(cmd, "export", 7))
 		export(n);
-	printf("hits\n");
 	ft_exit(0, ft_strdup(n->cmd_args_arr[0]), start_node(n), exit_flag);
 }
 

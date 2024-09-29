@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:19:14 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 20:57:05 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 21:58:51 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,8 @@ int count_lst_nodes(t_lst *head)
 	return (node_ct);
 }
 
-void ft_exit(int error, char *str, t_tree_node *n, bool exit_flag)
+void	ft_exit(int error, char *str, t_tree_node *n, bool exit_flag)
 {
-	// printf("fterror: %s\n", n->value);
 	if (error == 666)
 		printf("Minishell: %s: No such file or directory\n", str);
 	free(str);
@@ -95,6 +94,7 @@ void ft_exit(int error, char *str, t_tree_node *n, bool exit_flag)
 		free(n->ms);
 		while (n->type != END)
 			traverse_tree(&n);
+		n->is_read = start_node(n)->is_read;
 		free_tree(start_node(n));
 		exit(1);
 	}

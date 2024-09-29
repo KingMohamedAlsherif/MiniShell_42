@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 16:09:22 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 20:56:03 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 22:32:38 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,8 @@ void close_fds(t_tree_node *n, int pipe_ct)
 {
 	t_redir *redir_ptr;
 
-	close_pipe(start_node(n)->pipefd, pipe_ct);
+	n = start_node(n);
+	close_pipe(n->pipefd, pipe_ct);
 	while (n->type != END)
 	{
 		redir_ptr = n->redir;
