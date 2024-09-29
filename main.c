@@ -6,11 +6,27 @@
 /*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:08:29 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 09:27:45 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/29 16:27:40 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	traverse_and_check_errors(t_tree_node *n)
+{
+	while (n->type != END)
+	{
+		if ((n->exec_cmd_path && !ft_strncmp(n->exec_cmd_path, "?", 2)
+				&& !is_builtin(n->value)) || (!is_builtin(n->value)
+				&& n->exec_cmd_path
+				&& !strncmp(n->exec_cmd_path, "invalid", 8)))
+			printf("%s: command not found\n", n->value);
+		else if (n->value && !is_builtin(n->value)
+			&& !strncmp(n->exec_cmd_path, "PATH", 5))
+			printf("Minishell: %s: No such file or directory\n", n->value);
+		traverse_tree(&n);
+	}
+}
 
 void	init_ms(char *input, t_ms_var *ms)
 {
@@ -28,18 +44,7 @@ void	init_ms(char *input, t_ms_var *ms)
 		pipes_n_exec_path(start_node(n), ms, &pipe_ct);
 		init_exec(start_node(n), pipe_ct);
 		n = start_node(n);
-		while (n->type != END)
-		{
-			if ((n->exec_cmd_path && !ft_strncmp(n->exec_cmd_path, "?", 2)
-					&& !is_builtin(n->value)) || (!is_builtin(n->value)
-					&& n->exec_cmd_path && !strncmp(n->exec_cmd_path, "invalid",
-						8)))
-				printf("%s: command not found\n", n->value);
-			else if (n->value && !is_builtin(n->value)
-				&& !strncmp(n->exec_cmd_path, "PATH", 5))
-				printf("Minishell: %s: No such file or directory\n", n->value);
-			traverse_tree(&n);
-		}
+		traverse_and_check_errors(n);
 		n->is_read = start_node(n)->is_read;
 		free_tree(start_node(n));
 	}

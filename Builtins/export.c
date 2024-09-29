@@ -3,21 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 12:53:22 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 04:58:03 by malsheri         ###   ########.fr       */
+/*   Updated: 2024/09/29 14:53:45 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	insert_node(t_ms_var *ms, char *str)
+void insert_env_node(t_ms_var *ms, char *str)
 {
-	t_lst	*env_node;
-	t_lst	*exp_node;
-	t_lst	*tmp_node;
-	int		rank;
+	t_lst *env_node;
 
 	env_node = ms->env;
 	while (env_node->fwd)
@@ -25,8 +22,16 @@ void	insert_node(t_ms_var *ms, char *str)
 	env_node->fwd = create_new_node(ft_strdup(str), 0);
 	env_node->fwd->bwd = env_node;
 	update_order(ms->env, env_node->fwd);
-	rank = env_node->fwd->ascii_order;
+}
+
+void insert_exp_node(t_ms_var *ms, char *str)
+{
+	t_lst *exp_node;
+	t_lst *tmp_node;
+	int rank;
+
 	exp_node = ms->exp;
+	rank = ms->env->fwd->ascii_order; // Use the rank from the recently inserted env node
 	while (exp_node->ascii_order < rank - 1)
 		exp_node = exp_node->fwd;
 	tmp_node = exp_node->fwd;
@@ -43,6 +48,44 @@ void	insert_node(t_ms_var *ms, char *str)
 	}
 	free(str);
 }
+
+void insert_node(t_ms_var *ms, char *str)
+{
+	insert_env_node(ms, str);
+	insert_exp_node(ms, str);
+}
+
+// void	insert_node(t_ms_var *ms, char *str)
+// {
+// 	t_lst	*env_node;
+// 	t_lst	*exp_node;
+// 	t_lst	*tmp_node;
+// 	int		rank;
+
+// 	env_node = ms->env;
+// 	while (env_node->fwd)
+// 		env_node = env_node->fwd;
+// 	env_node->fwd = create_new_node(ft_strdup(str), 0);
+// 	env_node->fwd->bwd = env_node;
+// 	update_order(ms->env, env_node->fwd);
+// 	rank = env_node->fwd->ascii_order;
+// 	exp_node = ms->exp;
+// 	while (exp_node->ascii_order < rank - 1)
+// 		exp_node = exp_node->fwd;
+// 	tmp_node = exp_node->fwd;
+// 	exp_node->fwd = create_new_node(export_str(str), rank);
+// 	exp_node->fwd->bwd = exp_node;
+// 	exp_node->fwd->fwd = tmp_node;
+// 	if (tmp_node)
+// 		tmp_node->bwd = exp_node->fwd;
+// 	exp_node = tmp_node;
+// 	while (exp_node)
+// 	{
+// 		exp_node->ascii_order++;
+// 		exp_node = exp_node->fwd;
+// 	}
+// 	free(str);
+// }
 
 void	update_tlst(t_lst *env_node, t_lst *exp_node, char *str, char **s_str)
 {

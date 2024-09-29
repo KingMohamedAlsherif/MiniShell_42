@@ -6,7 +6,7 @@
 /*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 12:39:38 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/29 16:16:52 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ typedef struct s_exec
 
 typedef struct s_tree_node
 {
-	t_token_type			type;
+	t_token_type		type;
 	char				*value;
 	t_args				*cmd_args;
 	char				**cmd_args_arr;
@@ -142,7 +142,8 @@ int						init_signals(void);
 void					tokenize(char *input, t_token **tokens, t_lst *env);
 void					print_tokens(t_token *tokens);
 void					free_tokens(t_token *tokens);
-void					add_token(t_token **tokens, char *str, t_token_type type);
+void					add_token(t_token **tokens, char *str,
+							t_token_type type);
 char					*get_env(char *input, t_lst *env);
 bool					valid_quote_pairs(char *input);
 char					*get_substr(char **input, char *blocker);

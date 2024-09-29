@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 15:32:47 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 04:30:36 by malsheri         ###   ########.fr       */
+/*   Updated: 2024/09/29 16:37:49 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,7 @@ void	unset(t_tree_node *n)
 		free(new_str);
 	}
 }
-
-void	env(char *exec_cmd_path, char *arg, t_lst *env)
+void env(char *exec_cmd_path, char *arg, t_lst *env)
 {
 	if (ft_strncmp(exec_cmd_path, "PATH", 5) && !arg)
 	{
@@ -102,7 +101,7 @@ void	env(char *exec_cmd_path, char *arg, t_lst *env)
 		printf("Minishell: env: No such file or directory\n");
 }
 
-void	execute_builtin(t_tree_node *n, char *cmd, bool exit_flag)
+void execute_builtin(t_tree_node *n, char *cmd, bool exit_flag)
 {
 	if (ft_strlen(cmd) == 2 && !ft_strncmp(cmd, "cd", 3) && n->cmd_args_arr[1])
 		cd(n);
@@ -117,13 +116,15 @@ void	execute_builtin(t_tree_node *n, char *cmd, bool exit_flag)
 	ft_error(0, ft_strdup(n->cmd_args_arr[0]), n, exit_flag);
 }
 
-bool	is_builtin(char *cmd)
+bool is_builtin(char *cmd)
 {
 	if ((ft_strlen(cmd) == 2 && (!ft_strncmp(cmd, "cd", 3) || !ft_strncmp(cmd,
-					"$?", 3))) || (ft_strlen(cmd) == 3 && !ft_strncmp(cmd,
-				"pwd", 4)) || (ft_strlen(cmd) == 3 && !ft_strncmp(cmd, "env",
-				4)) || (ft_strlen(cmd) == 5 && !ft_strncmp(cmd, "unset", 6))
-		|| (ft_strlen(cmd) == 6 && !ft_strncmp(cmd, "export", 7)))
+																		  "$?", 3))) ||
+		(ft_strlen(cmd) == 3 && !ft_strncmp(cmd,
+											"pwd", 4)) ||
+		(ft_strlen(cmd) == 3 && !ft_strncmp(cmd, "env",
+											4)) ||
+		(ft_strlen(cmd) == 5 && !ft_strncmp(cmd, "unset", 6)) || (ft_strlen(cmd) == 6 && !ft_strncmp(cmd, "export", 7)))
 		return (1);
 	return (0);
 }
