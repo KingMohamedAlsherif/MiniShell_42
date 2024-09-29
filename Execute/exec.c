@@ -54,7 +54,7 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct, int operator)
 		ft_error(errno, ft_strdup("dup infile"), n, 1);
 	if (dup2(n->use_out_fd, STDOUT_FILENO) < 0)
 		ft_error(errno, ft_strdup("dup outfile"), n, 1);
-	create_err_file(n);
+	// create_err_file(n);
 	close_fds(n, pipe_ct);
 	if (ft_strlen(n->value) == 3 && !ft_strncmp(n->value, "env", 4)
 		&& n->cmd_args_arr && n->cmd_args_arr[1])
@@ -101,7 +101,7 @@ void prepare_exec(t_tree_node *n, int pipe_ct, t_exec *e)
 				e->pid = fork();
 				if (e->pid < 0)
 					ft_error(errno, ft_strdup("fork"), n, 1);
-				if (!e->pid) // Child process
+				if (!e->pid)
 				{
 					signal(SIGINT, SIG_DFL);
 					signal(SIGQUIT, SIG_DFL);
@@ -110,28 +110,38 @@ void prepare_exec(t_tree_node *n, int pipe_ct, t_exec *e)
 					else
 						execute(n, e->pipe_index, pipe_ct, n->parent->type);
 				}
-				else // Parent process ignores Ctrl+C
+				else
 				{
 					signal(SIGINT, SIG_IGN);
-
-					printf("status: %d\n", e->status);
+					waitpid(e->pid, &e->status, 0);
+					// printf("status: %d\n", e->status);
+					// printf("wifexited status: %d\n", WIFEXITED(e->status));
+					printf("wexitstatus status: %d\n", WEXITSTATUS(e->status));
+					if (WIFEXITED(e->status))
+					{
+						// printf("errno in exec: %d\n", errno);
+						if (errno == 9)
+							e->status = 1;
+						else if (errno == 2)
+							e->status = 127;
+					}
+					else if (WIFSIGNALED(e->status) && WTERMSIG(e->status) == SIGINT)
+					{
+						printf("\n");
+ 						e->status = 128 + WTERMSIG(e->status);
+						// printf("error status: %d\n", e->status);
+					}
 				}
-				if (e->status != 0)
+				printf("status: %d\n", e->status);
+				if (WIFEXITED(e->status) != 0 && n->parent->type == AND)
 					break ;
 				e->pipe_index++;
 			}
 		}
 		traverse_tree(&n);
 	}
-	while (e->pipe_index-- > 0)
-	{
-		waitpid(-1, &e->status, 0);
-		if (WIFSIGNALED(e->status) && WTERMSIG(e->status) == SIGINT)
-			printf("\n");
-	}
 	signal(SIGINT, SIG_IGN); // Ignore SIGINT after child processes finish
-	if (e->status == 256)
-		e->status = 127;
+	// printf("status: %d\n", e->status);
 	update_exit_status(n->ms->env, e->status);
 	close_fds(n, pipe_ct);
 }

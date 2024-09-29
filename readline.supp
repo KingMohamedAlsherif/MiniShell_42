@@ -1,6 +1,6 @@
 {
-   ignore_readline
-   Memcheck:Leak
-   fun:malloc
-   fun:readline
+	readline_leak_errs
+	Memcheck:Leak
+	...
+	obj:*/libreadline.so.*
 }

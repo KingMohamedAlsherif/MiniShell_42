@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:19:14 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 10:19:54 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 18:46:28 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int count_lst_nodes(t_lst *head)
 
 void ft_error(int error, char *str, t_tree_node *n, bool exit_flag)
 {
-	// printf("errno: %d\n", error);
+	// printf("str: %s errno: %d\n", str, error);
 	if (error == 666)
 		printf("Minishell: %s: No such file or directory\n", str);
 	// else if (!strncmp(n->exec_cmd_path, "invalid", 8) && error == 2)
