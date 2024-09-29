@@ -6,15 +6,15 @@
 #    By: chon <chon@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/10 11:20:21 by chon              #+#    #+#              #
-#    Updated: 2024/09/29 15:50:21 by chon             ###   ########.fr        #
+#    Updated: 2024/09/29 15:58:34 by chon             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 CFLAGS = -Wall -Werror -Wextra -g3
 LIBFT_DIR = ./libft
-LIBS = ./libft/libft.a -L/usr/local/opt/readline/lib \
--I/usr/local/opt/readline/include -lreadline
+LIBS = ./libft/libft.a -L/Users/chon/.local/opt/readline/lib \
+-I/Users/chon/.local/opt/readline/include -lreadline
 # LIBS = ./libft/libft.a -lreadlineb
 OBJS = $(SRCS:.c=.o)
 SRCS = main.c signals.c env_export.c utils.c mv_tree.c free.c \
@@ -28,7 +28,7 @@ tokenize/tokenize.c tokenize/utils.c \
 
 $(NAME): $(OBJS)
 	make -C $(LIBFT_DIR)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LIBS) -lreadline
 
 all: $(NAME)
 
