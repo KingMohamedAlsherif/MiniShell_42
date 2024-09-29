@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_export.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
+/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:24:09 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 14:51:01 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/29 19:25:51 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,25 +78,21 @@ void	create_ms_env_arr(char ***ms_env, char **env)
 	(*ms_env)[str_ct] = NULL;
 }
 
-void	update_order(t_lst *head, t_lst *node)
+void	env_arr_exp_lst(t_ms_var **ms, char **env, t_lst *head_ptr)
 {
-	int	rank;
-	int	node_str_len;
-	int	i;
-
-	i = -1;
-	rank = 0;
-	node_str_len = ft_strlen(node->var) + 1;
-	while (head)
+	t_lst	*new_node;
+	
+	new_node = create_new_node(ft_strdup("?=0"), 0);
+	new_node->bwd = (*ms)->env;
+	(*ms)->env->fwd = new_node;
+	(*ms)->env = head_ptr;
+	while (head_ptr)
 	{
-		if (ft_strncmp(node->var, head->var, node_str_len) > 0)
-			rank++;
-		else if (ft_strncmp(node->var, head->var, node_str_len) < 0)
-			node->ascii_order++;
-		head = head->fwd;
-		i++;
+		update_order((*ms)->env, head_ptr);
+		head_ptr = head_ptr->fwd;
 	}
-	node->ascii_order = rank;
+	create_ms_env_arr(&(*ms)->env_arr, env);
+	create_ms_export(&(*ms)->exp, (*ms)->env);
 }
 
 void	dup_env_exp(t_ms_var **ms, char **env)
@@ -113,28 +109,15 @@ void	dup_env_exp(t_ms_var **ms, char **env)
 	i = 0;
 	while (env[++i])
 	{
-		if (strncmp(env[i], "LD_", 3) && strncmp(env[i], "GLIBC", 5))
+		new_node = create_new_node(ft_strdup(env[i]), 0);
+		if (!ft_strncmp(env[i], "OLDPWD=", 7))
 		{
-			new_node = create_new_node(ft_strdup(env[i]), 0);
-			if (!ft_strncmp(env[i], "OLDPWD=", 7))
-			{
-				free(new_node->var_n_val);
-				new_node->var_n_val = ft_strdup("OLDPWD");
-			}
-			new_node->bwd = (*ms)->env;
-			(*ms)->env->fwd = new_node;
-			(*ms)->env = (*ms)->env->fwd;
+			free(new_node->var_n_val);
+			new_node->var_n_val = ft_strdup("OLDPWD");
 		}
+		new_node->bwd = (*ms)->env;
+		(*ms)->env->fwd = new_node;
+		(*ms)->env = (*ms)->env->fwd;
 	}
-	new_node = create_new_node(ft_strdup("?=0"), 0);
-	new_node->bwd = (*ms)->env;
-	(*ms)->env->fwd = new_node;
-	(*ms)->env = head_ptr;
-	while (head_ptr)
-	{
-		update_order((*ms)->env, head_ptr);
-		head_ptr = head_ptr->fwd;
-	}
-	create_ms_env_arr(&(*ms)->env_arr, env);
-	create_ms_export(&(*ms)->exp, (*ms)->env);
+	env_arr_exp_lst(ms, env, head_ptr);
 }

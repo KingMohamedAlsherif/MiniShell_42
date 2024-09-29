@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
+/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:11 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 18:25:07 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/29 19:44:30 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ bool	syntax_errors(t_token *tokens)
 	t_token	*tokens_ptr;
 
 	tokens_ptr = tokens;
-	if (tokens->type == PIPE || tokens->type == OR || tokens->type == AND)
+	if (tokens->type == PIPE)
 		return (print_syntax_error(tokens_ptr, tokens->type), 1);
 	while (tokens)
 	{
@@ -111,7 +111,7 @@ bool	syntax_errors(t_token *tokens)
 				|| tokens->type == APPEND || tokens->type == HEREDOC)
 			&& (!tokens->next || tokens->next->type != WORD))
 			return (print_syntax_error(tokens_ptr, tokens->type), 1);
-		if ((tokens->type == PIPE || tokens->type == OR || tokens->type == AND)
+		if ((tokens->type == PIPE)
 			&& (!tokens->next))
 			return (print_syntax_error(tokens_ptr, tokens->type), 1);
 		tokens = tokens->next;

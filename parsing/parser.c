@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
+/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 04:25:38 by malsheri          #+#    #+#             */
-/*   Updated: 2024/09/29 18:24:41 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/29 20:19:59 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,19 +70,22 @@ void	init_loop(t_token *token, t_tree_node **n, t_ms_var *ms)
 		*n = (*n)->parent;
 	(*n)->parent = init_tree_node(token, ms);
 	(*n)->parent->left = *n;
-	(*n)->parent->right = init_tree_node(token->next, ms);
-	(*n)->parent->right->parent = (*n)->parent;
-	*n = (*n)->parent->right;
+	if (token->next->type != END)
+	{
+		(*n)->parent->right = init_tree_node(token->next, ms);
+		(*n)->parent->right->parent = (*n)->parent;
+		*n = (*n)->parent->right;
+	}
+	else
+		*n = (*n)->parent;
 }
 
 void	parse(t_token *token, t_tree_node **n, t_ms_var *ms, t_token *head)
 {
 	if (!*n)
 		*n = init_tree_node(token, ms);
-	if (token->type == PIPE || token->type == AND || token->type == OR)
-	{
+	if (token->type == PIPE)
 		init_loop(token, n, ms);
-	}
 	else if (token->type >= REDIRECT_IN && token->type <= APPEND)
 	{
 		if (n)

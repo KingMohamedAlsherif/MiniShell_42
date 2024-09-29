@@ -3,19 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
+/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 18:17:46 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/29 19:33:36 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
-
-# define MALLOC_ERROR 1
-# define SYNTAX_ERROR 2
-# define UNCLOUSED_Q 3
 
 # include "./libft/libft.h"
 # include <ctype.h>
@@ -54,9 +50,6 @@ typedef enum e_token
 	HEREDOC,
 	APPEND,
 	PIPE,
-	AND,
-	OR,
-	CD,
 	END
 }						t_token_type;
 
@@ -124,6 +117,8 @@ typedef struct s_tree_node
 	t_redir				*redir;
 	int					pipe_ct;
 	int					**pipefd;
+	int					use_in_fd;
+	int					use_out_fd;
 	struct s_tree_node	*parent;
 	struct s_tree_node	*left;
 	struct s_tree_node	*right;

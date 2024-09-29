@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:18:37 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 04:46:44 by malsheri         ###   ########.fr       */
+/*   Updated: 2024/09/29 20:29:22 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,18 +67,22 @@ void	free_redir(t_redir *redir)
 
 void	free_tree_node(t_tree_node *n, bool is_read_flag)
 {
+	printf("node: %d\n", n->type);
 	if (n->left && n->left->is_read == is_read_flag)
 	{
+		printf("left freed: %d\n", n->left->type);
 		free(n->left);
 		n->left = NULL;
 	}
 	if (n->right && n->right->is_read == is_read_flag)
 	{
+		printf("right freed: %d\n", n->right->type);
 		free(n->right);
 		n->right = NULL;
 	}
 	if (n->parent && !n->parent->parent && n->parent->is_read == is_read_flag)
 	{
+		printf("parent freed: %d\n", n->parent->type);
 		free(n->parent);
 		n->parent = NULL;
 	}
@@ -108,5 +112,6 @@ void	free_tree(t_tree_node *n)
 		if (n)
 			free_tree_node(n, is_read_flag);
 	}
+	printf("last node freed: %d\n", n->type);
 	free(n);
 }

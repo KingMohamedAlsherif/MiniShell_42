@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 04:25:43 by malsheri          #+#    #+#             */
-/*   Updated: 2024/09/29 04:25:44 by malsheri         ###   ########.fr       */
+/*   Updated: 2024/09/29 20:28:44 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,16 +57,17 @@ t_tree_node	*init_tree_node(t_token *token, t_ms_var *ms)
 {
 	t_tree_node	*new_node;
 
+	printf("token parsed: %d\n", token->type);
 	new_node = malloc(sizeof(t_tree_node));
-	if (!new_node)
-		return (NULL);
-	if (token->type == PIPE || token->type == END)
-		new_node->type = token->type;
-	else
-		new_node->type = WORD;
-	new_node->value = NULL;
-	if (token->type == WORD)
-		new_node->value = ft_strdup(token->value);
+    if (!new_node)
+        return (NULL);
+    if (token->type != WORD)
+        new_node->type = token->type;
+    else
+        new_node->type = WORD;
+    new_node->value = NULL;
+    if (token->type == WORD)
+	    new_node->value = ft_strdup(token->value);
 	new_node->cmd_args = NULL;
 	new_node->cmd_args_arr = NULL;
 	new_node->exec_cmd_path = NULL;
@@ -74,6 +75,8 @@ t_tree_node	*init_tree_node(t_token *token, t_ms_var *ms)
 	new_node->redir = NULL;
 	new_node->pipe_ct = 0;
 	new_node->pipefd = NULL;
+	new_node->use_in_fd = 0;
+	new_node->use_out_fd = 1;
 	init_tree_paths(new_node);
 	new_node->is_read = 0;
 	new_node->ms = ms;

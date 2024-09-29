@@ -3,14 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:19:14 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 04:55:21 by malsheri         ###   ########.fr       */
+/*   Updated: 2024/09/29 19:39:42 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	update_order(t_lst *head, t_lst *node)
+{
+	int	rank;
+	int	node_str_len;
+	int	i;
+
+	i = -1;
+	rank = 0;
+	node_str_len = ft_strlen(node->var) + 1;
+	while (head)
+	{
+		if (ft_strncmp(node->var, head->var, node_str_len) > 0)
+			rank++;
+		else if (ft_strncmp(node->var, head->var, node_str_len) < 0)
+			node->ascii_order++;
+		head = head->fwd;
+		i++;
+	}
+	node->ascii_order = rank;
+}
 
 t_lst	*create_new_node(char *str, int ascii_order)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:19 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 04:41:19 by malsheri         ###   ########.fr       */
+/*   Updated: 2024/09/29 19:39:23 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,6 @@ int	get_operator(char **input)
 			return (HEREDOC);
 		if (*(*input - 1) == '>')
 			return (APPEND);
-		if (*(*input - 1) == '|')
-			return (OR);
-		else
-			return (AND);
 	}
 	else
 	{
@@ -87,10 +83,8 @@ int	get_operator(char **input)
 			return (REDIRECT_IN);
 		if (*(*input - 1) == '>')
 			return (REDIRECT_OUT);
-		if (*(*input - 1) == '&')
-			return (AND);
-		return (PIPE);
 	}
+	return (PIPE);
 }
 
 bool	valid_quote_pairs(char *input)
