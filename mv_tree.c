@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   mv_tree.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/29 04:56:22 by malsheri          #+#    #+#             */
+/*   Updated: 2024/09/29 04:56:23 by malsheri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 t_tree_node	*start_node(t_tree_node *n)
@@ -22,9 +34,9 @@ void	traverse_tree(t_tree_node **n)
 	(*n)->is_read = read_flag;
 	if ((*n)->type == END)
 		return ;
-	if ((*n)->parent && ((!(*n)->left && !(*n)->right)
-		|| ((*n)->left && (*n)->left->is_read == read_flag
-			&& (*n)->right && (*n)->right->is_read == read_flag)))
+	if ((*n)->parent && ((!(*n)->left && !(*n)->right) || ((*n)->left
+				&& (*n)->left->is_read == read_flag && (*n)->right
+				&& (*n)->right->is_read == read_flag)))
 		*n = (*n)->parent;
 	else if ((*n)->left && (*n)->left->is_read == unread_flag)
 		*n = (*n)->left;
@@ -40,9 +52,9 @@ void	traverse_tree_to_free(t_tree_node **n, int is_read_flag)
 	(*n)->is_read = is_read_flag;
 	if ((*n)->type == END)
 		return ;
-	if ((*n)->parent && ((!(*n)->left && !(*n)->right)
-		|| ((*n)->left && (*n)->left->is_read == is_read_flag
-			&& (*n)->right && (*n)->right->is_read == is_read_flag)))
+	if ((*n)->parent && ((!(*n)->left && !(*n)->right) || ((*n)->left
+				&& (*n)->left->is_read == is_read_flag && (*n)->right
+				&& (*n)->right->is_read == is_read_flag)))
 		*n = (*n)->parent;
 	else if ((*n)->left && (*n)->left->is_read == unread_flag)
 		*n = (*n)->left;

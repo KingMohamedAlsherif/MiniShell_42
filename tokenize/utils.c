@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:11 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 00:11:08 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 04:43:40 by malsheri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void add_token(t_token **tokens, char *str, token_type type)
+void	add_token(t_token **tokens, char *str, token_type type)
 {
-	t_token *new_token;
-	t_token *last;
+	t_token	*new_token;
+	t_token	*last;
 
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
@@ -34,7 +34,7 @@ void add_token(t_token **tokens, char *str, token_type type)
 	}
 }
 
-char *get_env(char *str, t_lst *env)
+char	*get_env(char *str, t_lst *env)
 {
 	size_t	str_len;
 
@@ -58,10 +58,10 @@ char *get_env(char *str, t_lst *env)
 	return (ft_strdup(env->val));
 }
 
-char *get_substr(char **input, char *blocker)
+char	*get_substr(char **input, char *blocker)
 {
-	int len;
-	char *start;
+	int		len;
+	char	*start;
 
 	if (!**input)
 		return (NULL);
@@ -92,7 +92,6 @@ void	print_syntax_error(t_token *tokens, token_type type)
 	while (tokens)
 	{
 		tmp_token = tokens;
-		// printf("%d: %s\n", tmp_token->type, tmp_token->value);
 		tokens = tokens->next;
 		free(tmp_token->value);
 		free(tmp_token);
@@ -101,20 +100,20 @@ void	print_syntax_error(t_token *tokens, token_type type)
 
 bool	syntax_errors(t_token *tokens)
 {
-	t_token *tokens_ptr;
+	t_token	*tokens_ptr;
 
 	tokens_ptr = tokens;
 	if (tokens->type == PIPE || tokens->type == OR || tokens->type == AND)
 		return (print_syntax_error(tokens_ptr, tokens->type), 1);
 	while (tokens)
 	{
-		if ((tokens->type == REDIRECT_IN || tokens->type == REDIRECT_OUT ||
-			 tokens->type == APPEND || tokens->type == HEREDOC) &&
-			(!tokens->next || tokens->next->type != WORD))
+		if ((tokens->type == REDIRECT_IN || tokens->type == REDIRECT_OUT
+				|| tokens->type == APPEND || tokens->type == HEREDOC)
+			&& (!tokens->next || tokens->next->type != WORD))
 			return (print_syntax_error(tokens_ptr, tokens->type), 1);
 		if ((tokens->type == PIPE || tokens->type == OR || tokens->type == AND)
-		&& (!tokens->next))
-		// && (!tokens->next || tokens->next->type == END))
+			&& (!tokens->next))
+			// && (!tokens->next || tokens->next->type == END))
 			return (print_syntax_error(tokens_ptr, tokens->type), 1);
 		tokens = tokens->next;
 	}

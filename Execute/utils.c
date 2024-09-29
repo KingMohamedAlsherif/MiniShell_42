@@ -44,7 +44,7 @@ void	create_err_file(t_tree_node *n)
 
 void	close_pipe(int **pipe, int pipe_ct)
 {
-	int		i;
+	int	i;
 
 	i = -1;
 	while (++i < pipe_ct)
@@ -77,4 +77,3 @@ void	close_fds(t_tree_node *n, int pipe_ct)
 		traverse_tree(&n);
 	}
 }
-

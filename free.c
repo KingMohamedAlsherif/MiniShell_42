@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:18:37 by chon              #+#    #+#             */
-/*   Updated: 2024/09/23 14:44:59 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 04:46:44 by malsheri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void free_char_arr(char **two_d, char ***three_d)
+void	free_char_arr(char **two_d, char ***three_d)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = -1;
 	j = -1;
@@ -33,7 +33,7 @@ void free_char_arr(char **two_d, char ***three_d)
 	}
 }
 
-void free_lst(t_lst *lst)
+void	free_lst(t_lst *lst)
 {
 	while (lst->fwd)
 	{
@@ -49,54 +49,46 @@ void free_lst(t_lst *lst)
 	free(lst);
 }
 
-void free_redir(t_redir *redir)
+void	free_redir(t_redir *redir)
 {
-	t_redir *redir_ptr;
+	t_redir	*redir_ptr;
 
-	// printf("%s\n", n->value);
 	while (redir->bwd)
 		redir = redir->bwd;
 	while (redir)
 	{
 		redir_ptr = redir;
 		redir = redir->fwd;
-		// printf("%s\n", redir_ptr->filename);
 		free(redir_ptr->filename);
 		free(redir_ptr->heredoc_delim);
 		free(redir_ptr);
 	}
 }
 
-void free_tree_node(t_tree_node *n, bool is_read_flag)
+void	free_tree_node(t_tree_node *n, bool is_read_flag)
 {
-	// printf("node: %s\n", n->value);
 	if (n->left && n->left->is_read == is_read_flag)
 	{
-		// printf("freeing left\n");
 		free(n->left);
 		n->left = NULL;
 	}
 	if (n->right && n->right->is_read == is_read_flag)
 	{
-		// printf("freeing right\n");
 		free(n->right);
 		n->right = NULL;
 	}
 	if (n->parent && !n->parent->parent && n->parent->is_read == is_read_flag)
 	{
-		// printf("freeing parent\n");
 		free(n->parent);
 		n->parent = NULL;
 	}
 }
 
-void free_tree(t_tree_node *n)
+void	free_tree(t_tree_node *n)
 {
-	bool is_read_flag;
-	int i;
+	bool	is_read_flag;
+	int		i;
 
-	// printf("start node value: %s\n", n->value);
-	// printf("redir file: %s\n", n->redir->filename);
 	is_read_flag = (n->is_read + 1) % 2;
 	i = 0;
 	while (i < n->pipe_ct)
@@ -104,7 +96,6 @@ void free_tree(t_tree_node *n)
 	free(n->pipefd);
 	while (n && n->type != END)
 	{
-		// printf("node value: %s; is read: %d\n", n->value, n->is_read);
 		if (n->is_read != is_read_flag)
 		{
 			free(n->value);
@@ -117,7 +108,5 @@ void free_tree(t_tree_node *n)
 		if (n)
 			free_tree_node(n, is_read_flag);
 	}
-	// printf("node value: %p type: %d\n", NULL, n->type);
-	// printf("node type: %d\n", n->type);
 	free(n);
 }

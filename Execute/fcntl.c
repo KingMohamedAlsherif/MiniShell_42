@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fcntl.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/29 04:35:09 by malsheri          #+#    #+#             */
+/*   Updated: 2024/09/29 04:38:29 by malsheri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 void	update_exit_status(t_lst *env, int status)
@@ -46,13 +58,33 @@ bool	init_infiles_outfiles(t_redir *redir, t_tree_node *n, int *status)
 		}
 		else if (redir->is_append)
 			redir->out_fd = open(redir->filename,
-			O_WRONLY | O_APPEND | O_CREAT, 0777);
+					O_WRONLY | O_APPEND | O_CREAT, 0777);
 		else
 			redir->out_fd = open(redir->filename,
-			O_WRONLY | O_TRUNC | O_CREAT, 0777);
+					O_WRONLY | O_TRUNC | O_CREAT, 0777);
 		if (redir->out_fd < 0)
 			return (ft_error(errno, ft_strdup(redir->filename), n, 0), 0);
 		redir = redir->fwd;
 	}
 	return (1);
+}
+
+void	last_redir_fd(t_redir *redir, char type, int *fd)
+{
+	while (redir->fwd)
+		redir = redir->fwd;
+	if (type == 'i')
+	{
+		while (redir->bwd && !redir->in_fd && !redir->heredoc_delim)
+			redir = redir->bwd;
+		if (redir->in_fd)
+			*fd = redir->in_fd;
+	}
+	else
+	{
+		while (redir->bwd && !redir->out_fd && !redir->is_append)
+			redir = redir->bwd;
+		if (redir->out_fd)
+			*fd = redir->out_fd;
+	}
 }

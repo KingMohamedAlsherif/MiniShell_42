@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:19 by chon              #+#    #+#             */
-/*   Updated: 2024/09/28 23:30:28 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 04:41:19 by malsheri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,18 @@ void	set_vars(t_var *s, char **input, char *quote)
 	else if (**input == '\"' || *quote == '\"')
 		s->blockers = s->dbl_quote_block;
 	if (**input == '\'' || **input == '\"')
+	{
 		if (!*quote)
 		{
 			*quote = **input;
 			(*input)++;
 		}
+	}
 }
 
-char    *get_str(char **input, t_lst *env, char quote)
+char	*get_str(char **input, t_lst *env, char quote)
 {
 	t_var	s;
-	// char	*new_str;
 
 	set_vars(&s, input, &quote);
 	if (**input == '$' && quote != '\'')
@@ -62,9 +63,6 @@ char    *get_str(char **input, t_lst *env, char quote)
 	}
 	if (!**input || (!quote && ft_strchr(s.std_block_ex_quotes, **input)))
 		return (s.str);
-	// new_str = ft_strjoin(s.str, get_str(input, env, quote));
-	// free(s.str);
-	// return (new_str);
 	return (ft_strjoin(s.str, get_str(input, env, quote), 1, 1));
 }
 
@@ -95,7 +93,7 @@ int	get_operator(char **input)
 	}
 }
 
-bool valid_quote_pairs(char *input)
+bool	valid_quote_pairs(char *input)
 {
 	while (*input)
 	{
@@ -115,11 +113,11 @@ bool valid_quote_pairs(char *input)
 	return (1);
 }
 
-void    tokenize(char *input, t_token **tokens, t_lst *env) 
+void	tokenize(char *input, t_token **tokens, t_lst *env)
 {
+	char	*str;
+
 	*tokens = NULL;
-	char *str;
-	
 	str = NULL;
 	if (!valid_quote_pairs(input))
 		printf("Must input closing quote\n");
@@ -127,7 +125,7 @@ void    tokenize(char *input, t_token **tokens, t_lst *env)
 	{
 		while (*input)
 		{
-			while(*input && ft_strchr(" \n\t\f\v\r", *input))
+			while (*input && ft_strchr(" \n\t\f\v\r", *input))
 				input++;
 			if (!*input)
 				break ;
@@ -136,7 +134,7 @@ void    tokenize(char *input, t_token **tokens, t_lst *env)
 			else
 			{
 				str = get_str(&input, env, 0);
-				if (str) // Only if str not NULL
+				if (str)
 					add_token(tokens, str, WORD);
 			}
 		}

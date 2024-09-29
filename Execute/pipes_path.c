@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-void	finalize_exec_cmd_path(char	**exec_cmd_path, char *value, t_lst *env)
+void	finalize_exec_cmd_path(char **exec_cmd_path, char *value, t_lst *env)
 {
 	if (is_number(value))
 		*exec_cmd_path = ft_strdup("?");
@@ -92,7 +92,7 @@ void	exec_path_args_arr(t_tree_node *n, t_paths p, int **pipefd)
 	free_char_arr(p.split_filepaths, NULL);
 }
 
-void init_filepaths(t_paths *p, t_lst *ms_env)
+void	init_filepaths(t_paths *p, t_lst *ms_env)
 {
 	p->split_filepaths = NULL;
 	p->filepath_0 = NULL;

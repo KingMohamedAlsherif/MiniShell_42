@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 12:53:22 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 00:05:26 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 04:58:03 by malsheri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,10 @@ void	env_export_update(t_tree_node *n, char *str)
 	while (env_node)
 	{
 		if (!ft_strncmp(env_node->var, s_new_str[0], ft_strlen(s_new_str[0])))
-			{
-				update_tlst(env_node, n->ms->exp, new_str, s_new_str);
-				return ;
-			}
+		{
+			update_tlst(env_node, n->ms->exp, new_str, s_new_str);
+			return ;
+		}
 		env_node = env_node->fwd;
 	}
 	free_char_arr(s_new_str, NULL);
@@ -111,8 +111,8 @@ void	export(t_tree_node *n)
 		while (n->cmd_args_arr[++i])
 		{
 			if (!has_valid_chars(n->cmd_args_arr[i]))
-				printf("-bash: export: `%s': not a valid identifier\n"
-					, n->cmd_args_arr[i]);
+				printf("-bash: export: `%s': not a valid identifier\n",
+					n->cmd_args_arr[i]);
 			else
 				env_export_update(n, n->cmd_args_arr[i]);
 		}

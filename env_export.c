@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_export.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:24:09 by chon              #+#    #+#             */
-/*   Updated: 2024/09/28 22:56:24 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 04:45:32 by malsheri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ char	*export_str(char *str)
 		substr_len = ft_strchr(str_0, '=') - str_0 + 1;
 		str_2 = ft_substr(str_0, 0, substr_len);
 		str_2 = ft_strjoin(str_2, "\"", 1, 0);
-		str_3 = ft_strjoin(ft_substr(str_0, substr_len, ft_strlen(str_0)), "\"", 1, 0);
+		str_3 = ft_strjoin(ft_substr(str_0, substr_len, ft_strlen(str_0)), "\"",
+				1, 0);
 		free(str_0);
 		str_0 = ft_strjoin(str_2, str_3, 1, 1);
 	}
@@ -51,8 +52,8 @@ void	create_ms_export(t_lst **exp_head, t_lst *env)
 	{
 		while (env->ascii_order != i)
 			env = env->fwd;
-		exp_head_ptr->fwd = create_new_node(export_str(env->var_n_val), env->ascii_order);
-		// printf("val in exp: %s\n", exp_head_ptr->fwd->val);
+		exp_head_ptr->fwd = create_new_node(export_str(env->var_n_val),
+				env->ascii_order);
 		exp_head_ptr->fwd->bwd = exp_head_ptr;
 		exp_head_ptr = exp_head_ptr->fwd;
 		env = env_head;
@@ -61,7 +62,7 @@ void	create_ms_export(t_lst **exp_head, t_lst *env)
 
 void	create_ms_env_arr(char ***ms_env, char **env)
 {
-	int		str_ct;
+	int	str_ct;
 
 	str_ct = 0;
 	while (env[str_ct])
@@ -81,7 +82,7 @@ void	update_order(t_lst *head, t_lst *node)
 {
 	int	rank;
 	int	node_str_len;
-	int i;
+	int	i;
 
 	i = -1;
 	rank = 0;
@@ -115,7 +116,6 @@ void	dup_env_exp(t_ms_var **ms, char **env)
 		if (strncmp(env[i], "LD_", 3) && strncmp(env[i], "GLIBC", 5))
 		{
 			new_node = create_new_node(ft_strdup(env[i]), 0);
-			// printf("value: %s\n", new_node->val);
 			if (!ft_strncmp(env[i], "OLDPWD=", 7))
 			{
 				free(new_node->var_n_val);
