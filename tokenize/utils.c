@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:11 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 04:43:40 by malsheri         ###   ########.fr       */
+/*   Updated: 2024/09/29 12:40:05 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	add_token(t_token **tokens, char *str, token_type type)
+void	add_token(t_token **tokens, char *str, t_token_type type)
 {
 	t_token	*new_token;
 	t_token	*last;
@@ -75,7 +75,7 @@ char	*get_substr(char **input, char *blocker)
 	return (ft_substr(start, 0, len));
 }
 
-void	print_syntax_error(t_token *tokens, token_type type)
+void	print_syntax_error(t_token *tokens, t_token_type type)
 {
 	t_token	*tmp_token;
 

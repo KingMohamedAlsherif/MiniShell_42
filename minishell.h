@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 04:53:54 by malsheri         ###   ########.fr       */
+/*   Updated: 2024/09/29 12:39:38 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ typedef struct s_ms_var
 	t_lst				*exp;
 }						t_ms_var;
 
-typedef enum
+typedef enum e_token
 {
 	WORD,
 	REDIRECT_IN,
@@ -58,7 +58,7 @@ typedef enum
 	OR,
 	CD,
 	END
-}				token_type;
+}				t_token_type;
 
 typedef struct s_var
 {
@@ -90,7 +90,7 @@ typedef struct s_args
 
 typedef struct s_token
 {
-	token_type			type;
+	t_token_type		type;
 	char				*value;
 	struct s_token		*next;
 }						t_token;
@@ -115,7 +115,7 @@ typedef struct s_exec
 
 typedef struct s_tree_node
 {
-	token_type			type;
+	t_token_type			type;
 	char				*value;
 	t_args				*cmd_args;
 	char				**cmd_args_arr;
@@ -142,7 +142,7 @@ int						init_signals(void);
 void					tokenize(char *input, t_token **tokens, t_lst *env);
 void					print_tokens(t_token *tokens);
 void					free_tokens(t_token *tokens);
-void					add_token(t_token **tokens, char *str, token_type type);
+void					add_token(t_token **tokens, char *str, t_token_type type);
 char					*get_env(char *input, t_lst *env);
 bool					valid_quote_pairs(char *input);
 char					*get_substr(char **input, char *blocker);
@@ -155,7 +155,7 @@ void					pipes_n_exec_path(t_tree_node *head, t_ms_var *ms,
 							int *pipe_ct);
 t_tree_node				*init_tree_node(t_token *token, t_ms_var *ms);
 void					update_node(t_redir *new_redir, char *value,
-							token_type type);
+							t_token_type type);
 
 void					ft_error(int error, char *str, t_tree_node *p,
 							bool exit_flag);

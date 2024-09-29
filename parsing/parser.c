@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 04:25:38 by malsheri          #+#    #+#             */
-/*   Updated: 2024/09/29 04:25:39 by malsheri         ###   ########.fr       */
+/*   Updated: 2024/09/29 13:31:14 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	update_node(t_redir *new_redir, char *value, token_type type)
+void	update_node(t_redir *new_redir, char *value, t_token_type type)
 {
 	new_redir->filename = ft_strdup(value);
 	if (type == HEREDOC)
@@ -28,7 +28,7 @@ void	update_node(t_redir *new_redir, char *value, token_type type)
 void	parse_redir(t_token *token, t_redir **redir)
 {
 	t_redir	*new_redir;
-
+	
 	new_redir = malloc(sizeof(t_redir));
 	if (!new_redir)
 		return ;
@@ -48,6 +48,7 @@ void	parse_redir(t_token *token, t_redir **redir)
 		(*redir)->fwd = new_redir;
 		new_redir->bwd = *redir;
 	}
+	
 	update_node(new_redir, token->next->value, token->type);
 }
 
@@ -80,8 +81,11 @@ void	parse(t_token *token, t_tree_node **n, t_ms_var *ms, t_token *head)
 	}
 	else if (token->type >= REDIRECT_IN && token->type <= APPEND)
 	{
-		parse_redir(token, &(*n)->redir);
-		token = token->next;
+		if (n)
+		{
+			parse_redir(token, &(*n)->redir);
+			token = token->next;
+		}
 	}
 	else if (token)
 		parse_word(token, n, ms);
