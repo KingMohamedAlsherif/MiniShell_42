@@ -6,15 +6,15 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 16:09:22 by chon              #+#    #+#             */
-/*   Updated: 2024/09/28 23:42:39 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 20:56:03 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*guarantee_file(char *original)
+char *guarantee_file(char *original)
 {
-	char	*filename;
+	char *filename;
 
 	filename = ft_strdup(original);
 	free(original);
@@ -23,10 +23,10 @@ char	*guarantee_file(char *original)
 	return (filename);
 }
 
-void	create_err_file(t_tree_node *n)
+void create_err_file(t_tree_node *n)
 {
-	char	*err_filename;
-	int		err_fd;
+	char *err_filename;
+	int err_fd;
 
 	err_filename = guarantee_file(ft_strdup("error"));
 	err_fd = open(err_filename, O_WRONLY | O_CREAT);
@@ -34,7 +34,7 @@ void	create_err_file(t_tree_node *n)
 	{
 		unlink(err_filename);
 		free(err_filename);
-		ft_error(errno, ft_strdup("err file"), n, 1);
+		ft_exit(errno, ft_strdup("err file"), n, 1);
 	}
 	dup2(err_fd, STDERR_FILENO);
 	close(err_fd);
@@ -42,9 +42,9 @@ void	create_err_file(t_tree_node *n)
 	free(err_filename);
 }
 
-void	close_pipe(int **pipe, int pipe_ct)
+void close_pipe(int **pipe, int pipe_ct)
 {
-	int	i;
+	int i;
 
 	i = -1;
 	while (++i < pipe_ct)
@@ -56,9 +56,9 @@ void	close_pipe(int **pipe, int pipe_ct)
 	}
 }
 
-void	close_fds(t_tree_node *n, int pipe_ct)
+void close_fds(t_tree_node *n, int pipe_ct)
 {
-	t_redir	*redir_ptr;
+	t_redir *redir_ptr;
 
 	close_pipe(start_node(n)->pipefd, pipe_ct);
 	while (n->type != END)

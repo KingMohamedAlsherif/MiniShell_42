@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 04:25:43 by malsheri          #+#    #+#             */
-/*   Updated: 2024/09/29 20:28:44 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 20:36:32 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ t_tree_node	*init_tree_node(t_token *token, t_ms_var *ms)
 {
 	t_tree_node	*new_node;
 
-	printf("token parsed: %d\n", token->type);
 	new_node = malloc(sizeof(t_tree_node));
     if (!new_node)
         return (NULL);

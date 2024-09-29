@@ -6,18 +6,18 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 09:17:25 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 20:25:14 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 20:57:10 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	unset(t_tree_node *n)
+void unset(t_tree_node *n)
 {
-	char	*new_str;
-	int		i;
-	t_lst	*env_node;
-	int		ascii_order;
+	char *new_str;
+	int i;
+	t_lst *env_node;
+	int ascii_order;
 
 	i = -1;
 	while (n->cmd_args_arr[++i])
@@ -31,7 +31,7 @@ void	unset(t_tree_node *n)
 			{
 				del_node(n->ms->env, ascii_order);
 				del_node(n->ms->exp, ascii_order);
-				break ;
+				break;
 			}
 			env_node = env_node->fwd;
 		}
@@ -39,7 +39,7 @@ void	unset(t_tree_node *n)
 	}
 }
 
-void	env(char *exec_cmd_path, char *arg, t_lst *env)
+void env(char *exec_cmd_path, char *arg, t_lst *env)
 {
 	if (ft_strncmp(exec_cmd_path, "PATH", 5) && !arg)
 	{
@@ -56,7 +56,7 @@ void	env(char *exec_cmd_path, char *arg, t_lst *env)
 		printf("Minishell: env: No such file or directory\n");
 }
 
-void	execute_builtin(t_tree_node *n, char *cmd, bool exit_flag)
+void execute_builtin(t_tree_node *n, char *cmd, bool exit_flag)
 {
 	if (ft_strlen(cmd) == 2 && !ft_strncmp(cmd, "cd", 3) && n->cmd_args_arr[1])
 		cd(n);
@@ -68,21 +68,24 @@ void	execute_builtin(t_tree_node *n, char *cmd, bool exit_flag)
 		unset(n);
 	if (ft_strlen(cmd) == 6 && !ft_strncmp(cmd, "export", 7))
 		export(n);
-	ft_error(0, ft_strdup(n->cmd_args_arr[0]), n, exit_flag);
+	printf("hits\n");
+	ft_exit(0, ft_strdup(n->cmd_args_arr[0]), start_node(n), exit_flag);
 }
 
-bool	is_builtin(char *cmd)
+bool is_builtin(char *cmd)
 {
 	if ((ft_strlen(cmd) == 2 && (!ft_strncmp(cmd, "cd", 3) || !ft_strncmp(cmd,
-					"$?", 3))) || (ft_strlen(cmd) == 3 && !ft_strncmp(cmd,
-				"pwd", 4)) || (ft_strlen(cmd) == 3 && !ft_strncmp(cmd, "env",
-				4)) || (ft_strlen(cmd) == 5 && !ft_strncmp(cmd, "unset", 6))
-		|| (ft_strlen(cmd) == 6 && !ft_strncmp(cmd, "export", 7)))
+																		  "$?", 3))) ||
+		(ft_strlen(cmd) == 3 && !ft_strncmp(cmd,
+											"pwd", 4)) ||
+		(ft_strlen(cmd) == 3 && !ft_strncmp(cmd, "env",
+											4)) ||
+		(ft_strlen(cmd) == 5 && !ft_strncmp(cmd, "unset", 6)) || (ft_strlen(cmd) == 6 && !ft_strncmp(cmd, "export", 7)))
 		return (1);
 	return (0);
 }
 
-void	update_tlst(t_lst *env_node, t_lst *exp_node, char *str, char **s_str)
+void update_tlst(t_lst *env_node, t_lst *exp_node, char *str, char **s_str)
 {
 	while (exp_node->ascii_order != env_node->ascii_order)
 		exp_node = exp_node->fwd;

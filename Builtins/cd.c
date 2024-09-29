@@ -12,9 +12,9 @@
 
 #include "../minishell.h"
 
-void	update_pwd(t_lst *pwd_ptr, t_lst *old_pwd_ptr, bool env_flag)
+void update_pwd(t_lst *pwd_ptr, t_lst *old_pwd_ptr, bool env_flag)
 {
-	char	cwd[PATH_MAX];
+	char cwd[PATH_MAX];
 
 	while (ft_strncmp(pwd_ptr->var, "PWD", 4))
 		pwd_ptr = pwd_ptr->fwd;
@@ -32,28 +32,27 @@ void	update_pwd(t_lst *pwd_ptr, t_lst *old_pwd_ptr, bool env_flag)
 	else
 	{
 		pwd_ptr->var_n_val = ft_strjoin("PWD=\"", (getcwd(cwd, sizeof(cwd))), 0,
-				0);
+										0);
 		pwd_ptr->var_n_val = ft_strjoin(pwd_ptr->var_n_val, "\"\n", 1, 0);
 	}
 	free(pwd_ptr->val);
 	pwd_ptr->val = ft_strdup(getcwd(cwd, sizeof(cwd)));
 }
 
-void	cd(t_tree_node *n)
+void cd(t_tree_node *n)
 {
 	if (chdir(n->cmd_args_arr[1]) < 0)
-		ft_error(errno, ft_strjoin("cd: ", n->cmd_args_arr[0], 0, 0), n, 0);
+		ft_exit(errno, ft_strjoin("cd: ", n->cmd_args_arr[0], 0, 0), n, 0);
 	update_pwd(n->ms->env, n->ms->env, 1);
 	update_pwd(n->ms->exp, n->ms->exp, 0);
 }
 
-void	pwd(t_tree_node *n)
+void pwd(t_tree_node *n)
 {
-	char	cwd[PATH_MAX];
+	char cwd[PATH_MAX];
 
 	if (getcwd(cwd, sizeof(cwd)))
 		printf("%s\n", cwd);
 	else
-		ft_error(errno, ft_strdup("cwd"), n, 1);
+		ft_exit(errno, ft_strdup("cwd"), n, 1);
 }
-

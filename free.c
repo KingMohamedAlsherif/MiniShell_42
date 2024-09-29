@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:18:37 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 20:29:22 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 20:50:49 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ void	free_tree(t_tree_node *n)
 		traverse_tree_to_free(&n, is_read_flag);
 		if (n)
 			free_tree_node(n, is_read_flag);
+		// printf("token: %d\n", n->type);
 	}
-	printf("last node freed: %d\n", n->type);
 	free(n);
 }

@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser2.c                                          :+:      :+:    :+:   */
+/*   pipes_path.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 18:16:55 by chon              #+#    #+#             */
-/*   Updated: 2024/09/13 19:38:07 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 20:56:03 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	finalize_exec_cmd_path(char **exec_cmd_path, char *value, t_lst *env)
+void finalize_exec_cmd_path(char **exec_cmd_path, char *value, t_lst *env)
 {
 	if (is_number(value))
 		*exec_cmd_path = ft_strdup("?");
@@ -24,7 +24,7 @@ void	finalize_exec_cmd_path(char **exec_cmd_path, char *value, t_lst *env)
 			{
 				if (!*exec_cmd_path)
 					*exec_cmd_path = ft_strdup("invalid");
-				return ;
+				return;
 			}
 			env = env->fwd;
 		}
@@ -34,11 +34,11 @@ void	finalize_exec_cmd_path(char **exec_cmd_path, char *value, t_lst *env)
 	}
 }
 
-void	finalize_cmd_path_n_args(t_tree_node *n)
+void finalize_cmd_path_n_args(t_tree_node *n)
 {
-	int		str_ct;
-	t_args	*args_ptr;
-	int		i;
+	int str_ct;
+	t_args *args_ptr;
+	int i;
 
 	finalize_exec_cmd_path(&n->exec_cmd_path, n->value, n->ms->env);
 	str_ct = 0;
@@ -50,7 +50,7 @@ void	finalize_cmd_path_n_args(t_tree_node *n)
 	}
 	n->cmd_args_arr = malloc(sizeof(char *) * (str_ct + 1));
 	if (!n->cmd_args_arr)
-		return ;
+		return;
 	i = -1;
 	while (++i < str_ct)
 	{
@@ -63,9 +63,9 @@ void	finalize_cmd_path_n_args(t_tree_node *n)
 	n->cmd_args_arr[i] = NULL;
 }
 
-void	exec_path_args_arr(t_tree_node *n, t_paths p, int **pipefd)
+void exec_path_args_arr(t_tree_node *n, t_paths p, int **pipefd)
 {
-	int	i;
+	int i;
 
 	while (n->type != END)
 	{
@@ -80,7 +80,7 @@ void	exec_path_args_arr(t_tree_node *n, t_paths p, int **pipefd)
 				{
 					n->exec_cmd_path = ft_strdup(p.filepath);
 					free(p.filepath);
-					break ;
+					break;
 				}
 				free(p.filepath);
 			}
@@ -92,7 +92,7 @@ void	exec_path_args_arr(t_tree_node *n, t_paths p, int **pipefd)
 	free_char_arr(p.split_filepaths, NULL);
 }
 
-void	init_filepaths(t_paths *p, t_lst *ms_env)
+void init_filepaths(t_paths *p, t_lst *ms_env)
 {
 	p->split_filepaths = NULL;
 	p->filepath_0 = NULL;
@@ -100,23 +100,23 @@ void	init_filepaths(t_paths *p, t_lst *ms_env)
 	while (ms_env)
 	{
 		if (!ft_strncmp(ms_env->var, "PATH", 5))
-			break ;
+			break;
 		ms_env = ms_env->fwd;
 	}
 	if (ms_env)
 	{
 		p->split_filepaths = ft_split(ms_env->val, ':');
 		if (!p->split_filepaths)
-			return ;
+			return;
 	}
 }
 
-void	pipes_n_exec_path(t_tree_node *head, t_ms_var *ms, int *pipe_ct)
+void pipes_n_exec_path(t_tree_node *head, t_ms_var *ms, int *pipe_ct)
 {
-	t_paths	p;
-	int		**pipefd;
-	int		i;
-	int		j;
+	t_paths p;
+	int **pipefd;
+	int i;
+	int j;
 
 	*pipe_ct = 0;
 	while (head->parent)
@@ -127,14 +127,14 @@ void	pipes_n_exec_path(t_tree_node *head, t_ms_var *ms, int *pipe_ct)
 	}
 	pipefd = malloc(sizeof(int *) * *pipe_ct);
 	if (!pipefd)
-		ft_error(errno, ft_strdup("pipe malloc"), start_node(head), 1);
+		ft_exit(errno, ft_strdup("pipe malloc"), start_node(head), 1);
 	i = 0;
 	j = *pipe_ct;
 	while (--j > -1)
 	{
 		pipefd[i] = malloc(sizeof(int) * 2);
 		if (pipe(pipefd[i++]) < 0)
-			ft_error(errno, ft_strdup("pipe"), head, 1);
+			ft_exit(errno, ft_strdup("pipe"), head, 1);
 	}
 	init_filepaths(&p, ms->env);
 	exec_path_args_arr(start_node(head), p, pipefd);

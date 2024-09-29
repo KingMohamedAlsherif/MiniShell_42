@@ -6,17 +6,17 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:19:14 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 19:39:42 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 20:57:05 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	update_order(t_lst *head, t_lst *node)
+void update_order(t_lst *head, t_lst *node)
 {
-	int	rank;
-	int	node_str_len;
-	int	i;
+	int rank;
+	int node_str_len;
+	int i;
 
 	i = -1;
 	rank = 0;
@@ -33,10 +33,10 @@ void	update_order(t_lst *head, t_lst *node)
 	node->ascii_order = rank;
 }
 
-t_lst	*create_new_node(char *str, int ascii_order)
+t_lst *create_new_node(char *str, int ascii_order)
 {
-	t_lst	*node;
-	char	**split_str;
+	t_lst *node;
+	char **split_str;
 
 	node = malloc(sizeof(t_lst));
 	if (!node)
@@ -56,7 +56,7 @@ t_lst	*create_new_node(char *str, int ascii_order)
 	return (node);
 }
 
-int	is_number(char *str)
+int is_number(char *str)
 {
 	while (*str)
 	{
@@ -67,9 +67,9 @@ int	is_number(char *str)
 	return (1);
 }
 
-int	count_lst_nodes(t_lst *head)
+int count_lst_nodes(t_lst *head)
 {
-	int	node_ct;
+	int node_ct;
 
 	node_ct = 0;
 	while (head)
@@ -80,8 +80,9 @@ int	count_lst_nodes(t_lst *head)
 	return (node_ct);
 }
 
-void	ft_error(int error, char *str, t_tree_node *n, bool exit_flag)
+void ft_exit(int error, char *str, t_tree_node *n, bool exit_flag)
 {
+	// printf("fterror: %s\n", n->value);
 	if (error == 666)
 		printf("Minishell: %s: No such file or directory\n", str);
 	free(str);

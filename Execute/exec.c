@@ -24,21 +24,20 @@ void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 	if (n->use_out_fd < 2 && pipe_ct && !n->right)
 		n->use_out_fd = n->pipefd[pipe_index][1];
 	if (dup2(n->use_in_fd, STDIN_FILENO) < 0)
-		ft_error(errno, ft_strdup("dup infile"), n, 1);
+		ft_exit(errno, ft_strdup("dup infile"), n, 1);
 	if (dup2(n->use_out_fd, STDOUT_FILENO) < 0)
-		ft_error(errno, ft_strdup("dup outfile"), n, 1);
+		ft_exit(errno, ft_strdup("dup outfile"), n, 1);
 	create_err_file(n);
 	close_fds(n, pipe_ct);
-	if (ft_strlen(n->value) == 3 && !ft_strncmp(n->value, "env", 4)
-		&& n->cmd_args_arr && n->cmd_args_arr[1])
+	if (ft_strlen(n->value) == 3 && !ft_strncmp(n->value, "env", 4) && n->cmd_args_arr && n->cmd_args_arr[1])
 		printf("env: ‘%s’: No such file or directory\n", n->cmd_args_arr[1]);
 	if (is_builtin(n->value))
 		execute_builtin(n, n->value, 1);
 	else if (execve(n->exec_cmd_path, n->cmd_args_arr, n->ms->env_arr) < 0)
-		ft_error(errno, ft_strdup(n->cmd_args_arr[0]), n, 1);
+		ft_exit(errno, ft_strdup(n->cmd_args_arr[0]), n, 1);
 }
 
-void	prepare_exec(t_tree_node *n, int pipe_ct, t_exec *e)
+void prepare_exec(t_tree_node *n, int pipe_ct, t_exec *e)
 {
 	while (n->type == PIPE)
 		traverse_tree(&n);
@@ -46,7 +45,7 @@ void	prepare_exec(t_tree_node *n, int pipe_ct, t_exec *e)
 	{
 		e->pid = fork();
 		if (e->pid < 0)
-			ft_error(errno, ft_strdup("fork"), n, 1);
+			ft_exit(errno, ft_strdup("fork"), n, 1);
 		if (!e->pid)
 		{
 			signal(SIGINT, SIG_DFL);
@@ -59,9 +58,9 @@ void	prepare_exec(t_tree_node *n, int pipe_ct, t_exec *e)
 	}
 }
 
-void	setup_exec(t_exec *e, t_tree_node *n, int pipe_ct)
+void setup_exec(t_exec *e, t_tree_node *n, int pipe_ct)
 {
-	t_redir	*redir_ptr;
+	t_redir *redir_ptr;
 
 	e->pipe_index = 0;
 	e->status = 0;
@@ -78,10 +77,10 @@ void	setup_exec(t_exec *e, t_tree_node *n, int pipe_ct)
 	}
 }
 
-void	init_exec(t_tree_node *n, int pipe_ct)
+void init_exec(t_tree_node *n, int pipe_ct)
 {
-	t_exec	e;
-	
+	t_exec e;
+
 	setup_exec(&e, n, pipe_ct);
 	while (n->type != END)
 	{
