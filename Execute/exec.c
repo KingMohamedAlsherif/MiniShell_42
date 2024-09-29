@@ -34,21 +34,20 @@ void	last_redir_fd(t_redir *redir, char type, int *fd)
 	}
 }
 
-void execute(t_tree_node *n, int pipe_index, int pipe_ct)
+void execute(t_tree_node *n, int pipe_index, int pipe_ct, int operator)
 {
 	// printf("%s\n", n->value);
 	// printf("exec path: %s\n", n->exec_cmd_path);
 	// printf("arg: %s\n", n->cmd_args_arr[0]);
 	// printf("pipe idx: %d pipe ct: %d\n", pipe_index, pipe_ct);
-	
 	if (n->redir)
 	{
 		last_redir_fd(n->redir, 'i', &n->use_in_fd);
 		last_redir_fd(n->redir, 'o', &n->use_out_fd);
 	}
-	if (n->use_in_fd < 2 && pipe_index)
+	if (n->use_in_fd < 2 && pipe_index && operator == PIPE)
 		n->use_in_fd = n->pipefd[pipe_index - 1][0];
-	if (n->use_out_fd < 2 && pipe_ct && !n->right)
+	if (n->use_out_fd < 2 && pipe_ct && !n->right && operator == PIPE)
 		n->use_out_fd = n->pipefd[pipe_index][1];
 	// printf("in:%d out:%d\n", n->use_in_fd, n->use_out_fd);
 	if (dup2(n->use_in_fd, STDIN_FILENO) < 0)
@@ -106,20 +105,24 @@ void prepare_exec(t_tree_node *n, int pipe_ct, t_exec *e)
 				{
 					signal(SIGINT, SIG_DFL);
 					signal(SIGQUIT, SIG_DFL);
-					execute(n, e->pipe_index, pipe_ct);
+					if (!n->parent)
+						execute(n, e->pipe_index, pipe_ct, 0);
+					else
+						execute(n, e->pipe_index, pipe_ct, n->parent->type);
 				}
 				else // Parent process ignores Ctrl+C
+				{
 					signal(SIGINT, SIG_IGN);
+
+					printf("status: %d\n", e->status);
+				}
+				if (e->status != 0)
+					break ;
 				e->pipe_index++;
 			}
 		}
 		traverse_tree(&n);
 	}
-	close_fds(n, pipe_ct);
-}
-
-void finalize_exec(t_tree_node *n, t_exec *e)
-{
 	while (e->pipe_index-- > 0)
 	{
 		waitpid(-1, &e->status, 0);
@@ -130,12 +133,27 @@ void finalize_exec(t_tree_node *n, t_exec *e)
 	if (e->status == 256)
 		e->status = 127;
 	update_exit_status(n->ms->env, e->status);
+	close_fds(n, pipe_ct);
 }
+
+// void finalize_exec(t_tree_node *n, t_exec *e)
+// {
+// 	while (e->pipe_index-- > 0)
+// 	{
+// 		waitpid(-1, &e->status, 0);
+// 		if (WIFSIGNALED(e->status) && WTERMSIG(e->status) == SIGINT)
+// 			printf("\n");
+// 	}
+// 	signal(SIGINT, SIG_IGN); // Ignore SIGINT after child processes finish
+// 	if (e->status == 256)
+// 		e->status = 127;
+// 	update_exit_status(n->ms->env, e->status);
+// }
 
 void init_exec(t_tree_node *n, int pipe_ct)
 {
 	t_exec e;
 
 	prepare_exec(n, pipe_ct, &e);  // Handles setup, fork, and execute
-	finalize_exec(n, &e); // Handles waiting and signal handling
+	// finalize_exec(n, &e); // Handles waiting and signal handling
 }

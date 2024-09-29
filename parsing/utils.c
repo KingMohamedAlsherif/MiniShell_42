@@ -48,7 +48,7 @@ t_tree_node	*init_tree_node(t_token *token, t_ms_var *ms)
 	new_node = malloc(sizeof(t_tree_node));
     if (!new_node)
         return (NULL);
-    if (token->type == PIPE || token->type == END)
+    if (token->type != WORD)
         new_node->type = token->type;
     else
         new_node->type = WORD;

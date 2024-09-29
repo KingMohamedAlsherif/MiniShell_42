@@ -88,7 +88,6 @@ void env(char *exec_cmd_path, char *arg, t_lst *env)
 {
 	if (ft_strncmp(exec_cmd_path, "PATH", 5) && !arg)
 	{
-		printf("env cmd path: %s\n", exec_cmd_path);
 		while (env)
 		{
 			if (ft_strchr(env->var_n_val, '=') && !ft_strchr(env->var, '?'))

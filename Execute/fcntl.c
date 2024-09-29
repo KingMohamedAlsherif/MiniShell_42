@@ -62,6 +62,8 @@ void	init_heredoc(t_redir *redir)
 		line_tracker = ft_strjoin(line_tracker, line, 1, 1);
 		line_tracker = ft_strjoin(line_tracker, "\n", 1, 0);
 		line = readline("> ");
+		if (!line)
+			break ;
 	}
 	free(line);
 	redir->filename = guarantee_file(redir->filename);
