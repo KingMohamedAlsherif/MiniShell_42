@@ -6,7 +6,7 @@
 /*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 04:25:38 by malsheri          #+#    #+#             */
-/*   Updated: 2024/09/29 13:31:14 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/29 18:24:41 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	update_node(t_redir *new_redir, char *value, t_token_type type)
 void	parse_redir(t_token *token, t_redir **redir)
 {
 	t_redir	*new_redir;
-	
+
 	new_redir = malloc(sizeof(t_redir));
 	if (!new_redir)
 		return ;
@@ -48,7 +48,6 @@ void	parse_redir(t_token *token, t_redir **redir)
 		(*redir)->fwd = new_redir;
 		new_redir->bwd = *redir;
 	}
-	
 	update_node(new_redir, token->next->value, token->type);
 }
 
@@ -65,19 +64,24 @@ void	parse_word(t_token *token, t_tree_node **n, t_ms_var *ms)
 		add_cmd_arg(&((*n)->cmd_args), token->value);
 }
 
+void	init_loop(t_token *token, t_tree_node **n, t_ms_var *ms)
+{
+	while ((*n)->parent)
+		*n = (*n)->parent;
+	(*n)->parent = init_tree_node(token, ms);
+	(*n)->parent->left = *n;
+	(*n)->parent->right = init_tree_node(token->next, ms);
+	(*n)->parent->right->parent = (*n)->parent;
+	*n = (*n)->parent->right;
+}
+
 void	parse(t_token *token, t_tree_node **n, t_ms_var *ms, t_token *head)
 {
 	if (!*n)
 		*n = init_tree_node(token, ms);
 	if (token->type == PIPE || token->type == AND || token->type == OR)
 	{
-		while ((*n)->parent)
-			*n = (*n)->parent;
-		(*n)->parent = init_tree_node(token, ms);
-		(*n)->parent->left = *n;
-		(*n)->parent->right = init_tree_node(token->next, ms);
-		(*n)->parent->right->parent = (*n)->parent;
-		*n = (*n)->parent->right;
+		init_loop(token, n, ms);
 	}
 	else if (token->type >= REDIRECT_IN && token->type <= APPEND)
 	{

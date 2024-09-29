@@ -6,7 +6,7 @@
 /*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:11 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 12:40:05 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/29 18:25:07 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,6 @@ bool	syntax_errors(t_token *tokens)
 			return (print_syntax_error(tokens_ptr, tokens->type), 1);
 		if ((tokens->type == PIPE || tokens->type == OR || tokens->type == AND)
 			&& (!tokens->next))
-			// && (!tokens->next || tokens->next->type == END))
 			return (print_syntax_error(tokens_ptr, tokens->type), 1);
 		tokens = tokens->next;
 	}

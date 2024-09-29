@@ -6,7 +6,7 @@
 /*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 16:16:52 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/29 18:17:46 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ typedef enum e_token
 	OR,
 	CD,
 	END
-}				t_token_type;
+}						t_token_type;
 
 typedef struct s_var
 {
@@ -144,12 +144,20 @@ void					print_tokens(t_token *tokens);
 void					free_tokens(t_token *tokens);
 void					add_token(t_token **tokens, char *str,
 							t_token_type type);
+void					execute2(t_tree_node *n, int pipe_ct);
+void					execute1(t_tree_node *n, int pipe_index, int pipe_ct);
 char					*get_env(char *input, t_lst *env);
 bool					valid_quote_pairs(char *input);
 char					*get_substr(char **input, char *blocker);
 void					add_cmd_arg(t_args **args_lst, char *value);
 bool					syntax_errors(t_token *tokens_list);
-
+void					cd(t_tree_node *n);
+void					pwd(t_tree_node *n);
+void					unset(t_tree_node *n);
+void					update_tlst(t_lst *env_node, t_lst *exp_node, char *str,
+							char **s_str);
+void					update_pwd(t_lst *pwd_ptr, t_lst *old_pwd_ptr,
+							bool env_flag);
 void					parse(t_token *token, t_tree_node **ast, t_ms_var *ms,
 							t_token *head);
 void					pipes_n_exec_path(t_tree_node *head, t_ms_var *ms,
@@ -157,7 +165,6 @@ void					pipes_n_exec_path(t_tree_node *head, t_ms_var *ms,
 t_tree_node				*init_tree_node(t_token *token, t_ms_var *ms);
 void					update_node(t_redir *new_redir, char *value,
 							t_token_type type);
-
 void					ft_error(int error, char *str, t_tree_node *p,
 							bool exit_flag);
 void					check_filepaths(t_tree_node *head);
@@ -166,6 +173,7 @@ void					traverse_tree(t_tree_node **n);
 void					init_exec(t_tree_node *n, int pipe_ct);
 bool					init_infiles_outfiles(t_redir *redir, t_tree_node *n,
 							int *status);
+void					setup_exec(t_exec *e, t_tree_node *n, int pipe_ct);
 
 void					cd(t_tree_node *n);
 void					close_fds(t_tree_node *n, int pipe_ct);
@@ -181,7 +189,7 @@ void					last_redir_fd(t_redir *redir, char type, int *fd);
 char					*guarantee_file(char *original);
 void					create_err_file(t_tree_node *n);
 void					last_redir_fd(t_redir *redir, char type, int *fd);
-
+void					execute1(t_tree_node *n, int pipe_index, int pipe_ct);
 void					execute_builtin(t_tree_node *n, char *cmd,
 							bool exit_flag);
 bool					is_builtin(char *cmd);

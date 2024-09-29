@@ -6,15 +6,15 @@
 /*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 12:53:22 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 14:53:45 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/29 18:18:11 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void insert_env_node(t_ms_var *ms, char *str)
+void	insert_env_node(t_ms_var *ms, char *str)
 {
-	t_lst *env_node;
+	t_lst	*env_node;
 
 	env_node = ms->env;
 	while (env_node->fwd)
@@ -24,14 +24,14 @@ void insert_env_node(t_ms_var *ms, char *str)
 	update_order(ms->env, env_node->fwd);
 }
 
-void insert_exp_node(t_ms_var *ms, char *str)
+void	insert_exp_node(t_ms_var *ms, char *str)
 {
-	t_lst *exp_node;
-	t_lst *tmp_node;
-	int rank;
+	t_lst	*exp_node;
+	t_lst	*tmp_node;
+	int		rank;
 
 	exp_node = ms->exp;
-	rank = ms->env->fwd->ascii_order; // Use the rank from the recently inserted env node
+	rank = ms->env->fwd->ascii_order;
 	while (exp_node->ascii_order < rank - 1)
 		exp_node = exp_node->fwd;
 	tmp_node = exp_node->fwd;
@@ -49,66 +49,10 @@ void insert_exp_node(t_ms_var *ms, char *str)
 	free(str);
 }
 
-void insert_node(t_ms_var *ms, char *str)
+void	insert_node(t_ms_var *ms, char *str)
 {
 	insert_env_node(ms, str);
 	insert_exp_node(ms, str);
-}
-
-// void	insert_node(t_ms_var *ms, char *str)
-// {
-// 	t_lst	*env_node;
-// 	t_lst	*exp_node;
-// 	t_lst	*tmp_node;
-// 	int		rank;
-
-// 	env_node = ms->env;
-// 	while (env_node->fwd)
-// 		env_node = env_node->fwd;
-// 	env_node->fwd = create_new_node(ft_strdup(str), 0);
-// 	env_node->fwd->bwd = env_node;
-// 	update_order(ms->env, env_node->fwd);
-// 	rank = env_node->fwd->ascii_order;
-// 	exp_node = ms->exp;
-// 	while (exp_node->ascii_order < rank - 1)
-// 		exp_node = exp_node->fwd;
-// 	tmp_node = exp_node->fwd;
-// 	exp_node->fwd = create_new_node(export_str(str), rank);
-// 	exp_node->fwd->bwd = exp_node;
-// 	exp_node->fwd->fwd = tmp_node;
-// 	if (tmp_node)
-// 		tmp_node->bwd = exp_node->fwd;
-// 	exp_node = tmp_node;
-// 	while (exp_node)
-// 	{
-// 		exp_node->ascii_order++;
-// 		exp_node = exp_node->fwd;
-// 	}
-// 	free(str);
-// }
-
-void	update_tlst(t_lst *env_node, t_lst *exp_node, char *str, char **s_str)
-{
-	while (exp_node->ascii_order != env_node->ascii_order)
-		exp_node = exp_node->fwd;
-	free(env_node->var_n_val);
-	if (env_node->val)
-		free(env_node->val);
-	free(exp_node->var_n_val);
-	if (s_str[1])
-	{
-		env_node->var_n_val = ft_strjoin(ft_strdup(str), "\n", 1, 0);
-		env_node->val = ft_strdup(s_str[1]);
-		exp_node->var_n_val = ft_strjoin(export_str(str), "\n", 1, 0);
-	}
-	else
-	{
-		env_node->var_n_val = ft_strjoin(ft_strdup(str), "\"\"\n", 1, 0);
-		env_node->val = NULL;
-		exp_node->var_n_val = ft_strjoin(ft_strdup(str), "\"\"\n", 1, 0);
-	}
-	free_char_arr(s_str, NULL);
-	free(str);
 }
 
 void	env_export_update(t_tree_node *n, char *str)

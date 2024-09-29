@@ -6,7 +6,7 @@
 #    By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/10 11:20:21 by chon              #+#    #+#              #
-#    Updated: 2024/09/29 16:31:59 by kingmohamedalshe ###   ########.fr        #
+#    Updated: 2024/09/29 18:12:49 by kingmohamedalshe ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ LIBS = ./libft/libft.a -L/usr/local/opt/readline/lib \
 # LIBS = ./libft/libft.a -lreadlineb
 OBJS = $(SRCS:.c=.o)
 SRCS = main.c signals.c env_export.c utils.c mv_tree.c free.c \
-tokenize/tokenize.c tokenize/utils.c \
+tokenize/tokenize.c tokenize/utils.c ./Execute/exec2.c\
 ./execute/pipes_path.c ./execute/exec.c ./execute/utils.c ./execute/fcntl.c\
 ./builtins/builtins.c ./builtins/export.c ./builtins/utils.c \
 ./parsing/parser.c ./parsing/utils.c ./builtins/builtins2.c\

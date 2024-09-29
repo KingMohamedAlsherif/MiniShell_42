@@ -6,7 +6,7 @@
 /*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 04:35:09 by malsheri          #+#    #+#             */
-/*   Updated: 2024/09/29 11:13:02 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/29 18:20:36 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,28 +28,20 @@ void	init_heredoc(t_redir *redir, t_tree_node *n)
 	redir->in_fd = open(redir->filename, O_RDWR | O_TRUNC | O_CREAT, 0777);
 	if (redir->in_fd < 0)
 		ft_error(errno, ft_strdup(redir->filename), n, 1);
-	// line = readline("> "); // get_next_line(0);
-	while (true)		   // ft_strncmp(redir->heredoc_delim, line, ft_strlen(line) - 1)
+	while (true)
 	{
-		line = readline("> ");										
-		// didn't exist
+		line = readline("> ");
 		if (!line)
-		{
-			// close(redir->in_fd);
 			break ;
-		}
-		//
-		if (!ft_strncmp(redir->heredoc_delim, line, ft_strlen(line) - 1)) // used to be inside the loop condition;
+		if (!ft_strncmp(redir->heredoc_delim, line, ft_strlen(line) - 1))
 		{
 			free(line);
-			break; 														// Meaning: strcmp would dereference NULL and then
-				   														// OOPS! :T
+			break ;
 		}
-		write(redir->in_fd, line, ft_strlen(line));						  // This has a NULL-check in it, so that's fine.
+		write(redir->in_fd, line, ft_strlen(line));
 		write(redir->in_fd, "\n", 1);
 		free(line);
 	}
-	// free(line);
 	close(redir->in_fd);
 	redir->in_fd = open(redir->filename, O_RDONLY);
 }
@@ -71,11 +63,11 @@ bool	init_infiles_outfiles(t_redir *redir, t_tree_node *n, int *status)
 			}
 		}
 		else if (redir->is_append)
-			redir->out_fd = open(redir->filename,
-					O_WRONLY | O_APPEND | O_CREAT, 0777);
+			redir->out_fd = open(redir->filename, O_WRONLY | O_APPEND | O_CREAT,
+					0777);
 		else
-			redir->out_fd = open(redir->filename,
-					O_WRONLY | O_TRUNC | O_CREAT, 0777);
+			redir->out_fd = open(redir->filename, O_WRONLY | O_TRUNC | O_CREAT,
+					0777);
 		if (redir->out_fd < 0)
 			return (ft_error(errno, ft_strdup(redir->filename), n, 0), 0);
 		redir = redir->fwd;
