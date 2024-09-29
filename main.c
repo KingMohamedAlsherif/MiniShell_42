@@ -3,28 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:08:29 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 04:50:56 by malsheri         ###   ########.fr       */
+/*   Updated: 2024/09/29 09:27:45 by kingmohamedalshe ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	print_tokens(t_token *token)
-{
-	while (token)
-	{
-		printf("Token: ");
-		if (token->value)
-			printf("%s", token->value);
-		else
-			printf("(null)");
-		printf(", Type: %d\n", token->type);
-		token = token->next;
-	}
-}
 
 void	init_ms(char *input, t_ms_var *ms)
 {
