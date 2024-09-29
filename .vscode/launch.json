@@ -8,9 +8,9 @@
             "type": "lldb",
             "request": "launch",
             "name": "Debug",
-            "program": "/Users/kingmohamedalsherif/Desktop/Mini_Shell_Parser_Edit/minishell",
-            "args": ["echo > hello"],
-            "cwd": "/Users/kingmohamedalsherif/Desktop/Mini_Shell_Parser_Edit/"
+            "program": "/Users/kingmohamedalsherif/Desktop/Merge_branch/minishell",
+            "args": [""],
+            "cwd": "/Users/kingmohamedalsherif/Desktop/Merge_branch/"
         }
     ]
 }
