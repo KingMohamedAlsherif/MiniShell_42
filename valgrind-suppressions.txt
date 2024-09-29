@@ -1,0 +1,9 @@
+{
+  readline-leak
+  Memcheck:Leak
+  obj:/local/include/readline
+  fun:malloc
+  fun:free
+  ...
+}
+

@@ -18,33 +18,31 @@ void	last_redir_fd(t_redir *redir, char type, int *fd)
 		redir = redir->fwd;
 	if (type == 'i')
 	{
-		while (redir->bwd
-		&& !redir->in_fd && !redir->heredoc_delim)
+		while (redir->bwd && !redir->in_fd && !redir->heredoc_delim)
 			redir = redir->bwd;
 		if (redir->in_fd)
 			*fd = redir->in_fd;
 	}
 	else
 	{
-		while (redir->bwd
-		&& !redir->out_fd && !redir->is_append)
+		while (redir->bwd && !redir->out_fd && !redir->is_append)
 			redir = redir->bwd;
 		if (redir->out_fd)
 			*fd = redir->out_fd;
 	}
 }
 
-void execute(t_tree_node *n, int pipe_index, int pipe_ct)
+void	execute(t_tree_node *n, int pipe_index, int pipe_ct)
 {
 	int	use_in_fd;
 	int	use_out_fd;
+
 	// printf("%s\n", n->value);
 	// printf("%s\n", n->exec_cmd_path);
 	// printf("arg: %s\n", n->cmd_args_arr[0]);
 	// printf("%s\n", n->ms->env_arr[0]);
 	// printf("pipe idx: %d pipe ct: %d\n", pipe_index, pipe_ct);
 	// printf("pipe index: %d\n", pipe_index);
-	
 	use_in_fd = 0;
 	use_out_fd = 1;
 	if (n->redir)
@@ -88,8 +86,7 @@ void	setup_exec(t_exec *e, t_tree_node *n, int pipe_ct)
 	// n = start_node(n);
 }
 
-
-void prepare_exec(t_tree_node *n, int pipe_ct, t_exec *e)
+void	prepare_exec(t_tree_node *n, int pipe_ct, t_exec *e)
 {
 	setup_exec(e, n, pipe_ct);
 	while (n->type != END)
@@ -98,7 +95,8 @@ void prepare_exec(t_tree_node *n, int pipe_ct, t_exec *e)
 			execute_builtin(n, n->value, 0);
 		else if (n->type != PIPE)
 		{
-			while (n->type == PIPE || !init_infiles_outfiles(n->redir, n, &e->status))
+			while (n->type == PIPE || !init_infiles_outfiles(n->redir, n,
+					&e->status))
 				traverse_tree(&n);
 			if (n->type != END)
 			{
@@ -121,7 +119,7 @@ void prepare_exec(t_tree_node *n, int pipe_ct, t_exec *e)
 	close_fds(n, pipe_ct);
 }
 
-void finalize_exec(t_tree_node *n, t_exec *e, int pipe_ct)
+void	finalize_exec(t_tree_node *n, t_exec *e, int pipe_ct)
 {
 	while (e->pipe_index-- > 0)
 	{
@@ -129,15 +127,15 @@ void finalize_exec(t_tree_node *n, t_exec *e, int pipe_ct)
 		if (WIFSIGNALED(e->status) && WTERMSIG(e->status) == SIGINT)
 			printf("\n");
 	}
-	signal(SIGINT, SIG_IGN); // Ignore SIGINT after child processes finish
+	// signal(SIGINT, SIG_IGN); // Ignore SIGINT after child processes finish
 	if (e->status == 256)
 		e->status = 127;
 	update_exit_status(n->ms->env, e->status);
 }
 
-void init_exec(t_tree_node *n, int pipe_ct)
+void	init_exec(t_tree_node *n, int pipe_ct)
 {
-	t_exec e;
+	t_exec	e;
 
 	prepare_exec(n, pipe_ct, &e);  // Handles setup, fork, and execute
 	finalize_exec(n, &e, pipe_ct); // Handles waiting and signal handling
