@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 20:56:03 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 23:08:37 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,8 +166,7 @@ void check_filepaths(t_tree_node *head);
 t_tree_node *start_node(t_tree_node *n);
 void traverse_tree(t_tree_node **n);
 void init_exec(t_tree_node *n, int pipe_ct);
-bool init_infiles_outfiles(t_redir *redir, t_tree_node *n,
-						   int *status);
+bool init_infiles_outfiles(t_redir *redir, t_tree_node *n);
 void setup_exec(t_exec *e, t_tree_node *n, int pipe_ct);
 
 void cd(t_tree_node *n);
@@ -190,6 +189,7 @@ void execute_builtin(t_tree_node *n, char *cmd,
 bool is_builtin(char *cmd);
 void export(t_tree_node *n);
 void update_exit_status(t_lst *env, int status);
+void traverse_and_check_errors(t_tree_node *n);
 
 void free_char_arr(char **two_d, char ***three_d);
 void free_lst(t_lst *lst);

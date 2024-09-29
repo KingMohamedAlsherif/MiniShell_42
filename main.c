@@ -6,13 +6,13 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:08:29 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 22:56:47 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 23:09:25 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-volatile sig_atomic_t signal = 0;
+volatile sig_atomic_t sig = 0;
 
 void print_args(t_args *cmd_args)
 {
@@ -114,22 +114,6 @@ void print_tokens(t_token *token)
 	}
 }
 
-void	traverse_and_check_errors(t_tree_node *n)
-{
-	while (n->type != END)
-	{
-		if ((n->exec_cmd_path && !ft_strncmp(n->exec_cmd_path, "?", 2)
-				&& !is_builtin(n->value)) || (!is_builtin(n->value)
-				&& n->exec_cmd_path
-				&& !strncmp(n->exec_cmd_path, "invalid", 8)))
-			printf("%s: command not found\n", n->value);
-		else if (n->value && !is_builtin(n->value)
-			&& !strncmp(n->exec_cmd_path, "PATH", 5))
-			printf("Minishell: %s: No such file or directory\n", n->value);
-		traverse_tree(&n);
-	}
-}
-
 void	init_ms(char *input, t_ms_var *ms)
 {
 	t_token		*tokens;
@@ -180,6 +164,17 @@ bool	exit_ms(char *input, t_ms_var *ms)
 	return (0);
 }
 
+bool	is_empty(char *input)
+{
+	while (*input)
+	{
+		if (!ft_strchr(" \n\t\f\v\r\n", *input))
+			return (0);
+		input++;
+	}
+	return (1);
+}
+
 int	main(int ac, char **av, char **env)
 {
 	char		*input;
@@ -201,7 +196,7 @@ int	main(int ac, char **av, char **env)
 			if ((ft_strlen(input) > 5 && !ft_strncmp(input, "clear ", 6))
 				|| (ft_strlen(input) < 6 && !ft_strncmp(input, "clear", 5)))
 				printf("\033[2J\033[H");
-			else if (ms->env && *input)
+			else if (ms->env && !is_empty(input))
 				init_ms(input, ms);
 		}
 	}

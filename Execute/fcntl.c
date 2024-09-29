@@ -12,10 +12,15 @@
 
 #include "../minishell.h"
 
-volatile sig_atomic_t signal;
+volatile sig_atomic_t sig;
 
 void update_exit_status(t_lst *env, int status)
 {
+	if (sig == 1)
+	{
+		status = 1;
+		sig = 0;
+	}
 	while (env && ft_strncmp(env->var, "?", 2))
 		env = env->fwd;
 	free(env->val);
@@ -49,7 +54,7 @@ void init_heredoc(t_redir *redir)
 	}
 }
 
-bool init_infiles_outfiles(t_redir *redir, t_tree_node *n, int *status)
+bool init_infiles_outfiles(t_redir *redir, t_tree_node *n)
 {
 	while (redir)
 	{
@@ -60,7 +65,7 @@ bool init_infiles_outfiles(t_redir *redir, t_tree_node *n, int *status)
 			redir->in_fd = open(redir->filename, O_RDONLY);
 			if (redir->in_fd < 0)
 			{
-				signal = 1;
+				sig = 1;
 				traverse_tree(&n);
 				return (ft_exit(666, ft_strdup(redir->filename), n, 0), 0);
 			}
