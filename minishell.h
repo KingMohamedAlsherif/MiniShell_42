@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/23 14:43:04 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 11:32:22 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,8 @@ typedef struct s_tree_node
 	t_redir 			*redir;
 	int					pipe_ct;
 	int					**pipefd;
+	int					use_in_fd;
+	int					use_out_fd;
 	struct s_tree_node	*parent;
 	struct s_tree_node	*left;
 	struct s_tree_node	*right;
@@ -138,16 +140,19 @@ char		*export_str(char *str);
 
 int			init_signals(void);
 
-// PARSING FUNCS
 void 		tokenize(char *input, t_token **tokens, t_lst *env);
 void 		print_tokens(t_token *tokens);
 void		free_tokens(t_token *tokens);
 void    	add_token(t_token **tokens, char *str, token_type type);
 char    	*get_env(char *input, t_lst *env);
 bool		valid_quote_pairs(char *input);
+char	    *get_str(char **input, t_lst *env, char quote);
 char		*get_substr(char **input, char *blocker);
 void 		add_cmd_arg(t_args **args_lst, char *value);
 bool 		syntax_errors(t_token *tokens_list);
+void		get_cmd(t_token **tokens, t_lst *env);
+t_token		*last_token(t_token *token);
+bool		is_empty(char *input);
 
 void 		parse(t_token *token, t_tree_node **ast, t_ms_var *ms, t_token *head);
 void		pipes_n_exec_path(t_tree_node *head, t_ms_var *ms, int *pipe_ct);

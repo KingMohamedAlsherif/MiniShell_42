@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:19 by chon              #+#    #+#             */
-/*   Updated: 2024/09/28 23:30:28 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 11:33:51 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void	set_vars(t_var *s, char **input, char *quote)
 char    *get_str(char **input, t_lst *env, char quote)
 {
 	t_var	s;
-	// char	*new_str;
 
 	set_vars(&s, input, &quote);
 	if (**input == '$' && quote != '\'')
@@ -62,9 +61,6 @@ char    *get_str(char **input, t_lst *env, char quote)
 	}
 	if (!**input || (!quote && ft_strchr(s.std_block_ex_quotes, **input)))
 		return (s.str);
-	// new_str = ft_strjoin(s.str, get_str(input, env, quote));
-	// free(s.str);
-	// return (new_str);
 	return (ft_strjoin(s.str, get_str(input, env, quote), 1, 1));
 }
 
@@ -117,16 +113,17 @@ bool valid_quote_pairs(char *input)
 
 void    tokenize(char *input, t_token **tokens, t_lst *env) 
 {
-	*tokens = NULL;
 	char *str;
-	
+
 	str = NULL;
+	*tokens = NULL;
 	if (!valid_quote_pairs(input))
 		printf("Must input closing quote\n");
 	else
 	{
 		while (*input)
 		{
+			// printf("%c: %d\n", *input, (*tokens)->type);
 			while(*input && ft_strchr(" \n\t\f\v\r", *input))
 				input++;
 			if (!*input)
@@ -139,6 +136,8 @@ void    tokenize(char *input, t_token **tokens, t_lst *env)
 				if (str) // Only if str not NULL
 					add_token(tokens, str, WORD);
 			}
+			if (is_empty(input) && last_token((*tokens))->type == PIPE)
+				get_cmd(tokens, env);
 		}
 		add_token(tokens, NULL, END);
 	}

@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:19:14 by chon              #+#    #+#             */
-/*   Updated: 2024/09/28 21:35:33 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 10:19:54 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ void ft_error(int error, char *str, t_tree_node *n, bool exit_flag)
 	// else if (!strncmp(n->exec_cmd_path, "invalid", 8) && error == 2)
 	// 	printf("%s: command not found\n", n->value);
 	free(str);
+	// printf("type: %d\n", n->type);
 	if (exit_flag)
 	{
 		close_fds(n, n->pipe_ct);

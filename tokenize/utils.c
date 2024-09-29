@@ -6,11 +6,46 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:11 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 00:11:08 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 11:33:05 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	get_cmd(t_token **tokens, t_lst *env)
+{
+	char	*line;
+	char	*line_ptr;
+	int		start;
+
+	line = get_next_line(0);
+	line_ptr = line;
+	start = 0;
+	while (line_ptr[start] && ft_strchr(" \n\t\f\v\r", line_ptr[start]))
+		start++;
+	printf("start: %d\n", start);
+	line = ft_substr(line_ptr, start, ft_strlen(line));
+	free(line_ptr);
+	line_ptr = line;
+	add_token(tokens, get_str(&line, env, 0), WORD);
+	free(line_ptr);
+}
+
+bool	is_empty(char *input)
+{
+	while (*input && ft_strchr(" \n\t\f\v\r", *input))
+		input++;
+	if (*input)
+		return (0);
+	return (1);
+}
+
+t_token	*last_token(t_token *token)
+{
+	while (token->next)
+		token = token->next;
+	return (token);
+}
 
 void add_token(t_token **tokens, char *str, token_type type)
 {
@@ -19,7 +54,7 @@ void add_token(t_token **tokens, char *str, token_type type)
 
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
-		exit(1);
+		return ;
 	new_token->value = str;
 	new_token->type = type;
 	new_token->next = NULL;
@@ -92,7 +127,6 @@ void	print_syntax_error(t_token *tokens, token_type type)
 	while (tokens)
 	{
 		tmp_token = tokens;
-		// printf("%d: %s\n", tmp_token->type, tmp_token->value);
 		tokens = tokens->next;
 		free(tmp_token->value);
 		free(tmp_token);

@@ -62,6 +62,8 @@ t_tree_node	*init_tree_node(t_token *token, t_ms_var *ms)
     new_node->redir = NULL;
     new_node->pipe_ct = 0;
     new_node->pipefd = NULL;
+	new_node->use_in_fd = 0;
+	new_node->use_out_fd = 1;
     init_tree_paths(new_node);
     new_node->is_read = 0;
 	new_node->ms = ms;

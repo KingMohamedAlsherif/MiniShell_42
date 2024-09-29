@@ -36,28 +36,24 @@ void	last_redir_fd(t_redir *redir, char type, int *fd)
 
 void execute(t_tree_node *n, int pipe_index, int pipe_ct)
 {
-	int	use_in_fd;
-	int	use_out_fd;
 	// printf("%s\n", n->value);
 	// printf("exec path: %s\n", n->exec_cmd_path);
 	// printf("arg: %s\n", n->cmd_args_arr[0]);
 	// printf("pipe idx: %d pipe ct: %d\n", pipe_index, pipe_ct);
 	
-	use_in_fd = 0;
-	use_out_fd = 1;
 	if (n->redir)
 	{
-		last_redir_fd(n->redir, 'i', &use_in_fd);
-		last_redir_fd(n->redir, 'o', &use_out_fd);
+		last_redir_fd(n->redir, 'i', &n->use_in_fd);
+		last_redir_fd(n->redir, 'o', &n->use_out_fd);
 	}
-	if (use_in_fd < 2 && pipe_index)
-		use_in_fd = n->pipefd[pipe_index - 1][0];
-	if (use_out_fd < 2 && pipe_ct && !n->right)
-		use_out_fd = n->pipefd[pipe_index][1];
-	printf("in:%d out:%d\n", use_in_fd, use_out_fd);
-	if (dup2(use_in_fd, STDIN_FILENO) < 0)
+	if (n->use_in_fd < 2 && pipe_index)
+		n->use_in_fd = n->pipefd[pipe_index - 1][0];
+	if (n->use_out_fd < 2 && pipe_ct && !n->right)
+		n->use_out_fd = n->pipefd[pipe_index][1];
+	// printf("in:%d out:%d\n", n->use_in_fd, n->use_out_fd);
+	if (dup2(n->use_in_fd, STDIN_FILENO) < 0)
 		ft_error(errno, ft_strdup("dup infile"), n, 1);
-	if (dup2(use_out_fd, STDOUT_FILENO) < 0)
+	if (dup2(n->use_out_fd, STDOUT_FILENO) < 0)
 		ft_error(errno, ft_strdup("dup outfile"), n, 1);
 	create_err_file(n);
 	close_fds(n, pipe_ct);
