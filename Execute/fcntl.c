@@ -3,23 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   fcntl.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
+/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 04:35:09 by malsheri          #+#    #+#             */
-/*   Updated: 2024/09/29 18:20:36 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/30 01:46:03 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-volatile sig_atomic_t sig;
+volatile sig_atomic_t	g_sig;
 
-void update_exit_status(t_lst *env, int status)
+void	update_exit_status(t_lst *env, int status)
 {
-	if (sig == 1)
+	if (g_sig == 1)
 	{
 		status = 1;
-		sig = 0;
+		g_sig = 0;
 	}
 	while (env && ft_strncmp(env->var, "?", 2))
 		env = env->fwd;
@@ -27,7 +27,7 @@ void update_exit_status(t_lst *env, int status)
 	env->val = (ft_itoa(status));
 }
 
-void init_heredoc(t_redir *redir)
+void	init_heredoc(t_redir *redir)
 {
 	char	*line_tracker;
 	char	*line;
@@ -54,7 +54,7 @@ void init_heredoc(t_redir *redir)
 	}
 }
 
-bool init_infiles_outfiles(t_redir *redir, t_tree_node *n)
+bool	init_infiles_outfiles(t_redir *redir, t_tree_node *n)
 {
 	while (redir)
 	{
@@ -65,17 +65,17 @@ bool init_infiles_outfiles(t_redir *redir, t_tree_node *n)
 			redir->in_fd = open(redir->filename, O_RDONLY);
 			if (redir->in_fd < 0)
 			{
-				sig = 1;
+				g_sig = 1;
 				traverse_tree(&n);
 				return (ft_exit(666, ft_strdup(redir->filename), n, 0), 0);
 			}
 		}
 		else if (redir->is_append)
 			redir->out_fd = open(redir->filename, O_WRONLY | O_APPEND | O_CREAT,
-								 0777);
+					0777);
 		else
 			redir->out_fd = open(redir->filename, O_WRONLY | O_TRUNC | O_CREAT,
-								 0777);
+					0777);
 		if (redir->out_fd < 0)
 			return (ft_exit(errno, ft_strdup(redir->filename), n, 0), 0);
 		redir = redir->fwd;
@@ -83,7 +83,7 @@ bool init_infiles_outfiles(t_redir *redir, t_tree_node *n)
 	return (1);
 }
 
-void last_redir_fd(t_redir *redir, char type, int *fd)
+void	last_redir_fd(t_redir *redir, char type, int *fd)
 {
 	while (redir->fwd)
 		redir = redir->fwd;

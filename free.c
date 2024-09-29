@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:18:37 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 23:53:16 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/30 01:55:41 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,13 +77,8 @@ void	free_tree_node(t_tree_node *n)
 
 void	free_tree(t_tree_node *n)
 {
-	int		i;
 	t_tree_node	*tmp;
 
-	i = 0;
-	while (i < n->pipe_ct)
-		free(n->pipefd[i++]);
-	free(n->pipefd);
 	if (n->right && n->right->type == END)
 	{
 		free_tree_node(n->right);

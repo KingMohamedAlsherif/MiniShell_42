@@ -81,7 +81,7 @@ void	create_ms_env_arr(char ***ms_env, char **env)
 void	env_arr_exp_lst(t_ms_var **ms, char **env, t_lst *head_ptr)
 {
 	t_lst	*new_node;
-	
+
 	new_node = create_new_node(ft_strdup("?=0"), 0);
 	new_node->bwd = (*ms)->env;
 	(*ms)->env->fwd = new_node;

@@ -58,15 +58,15 @@ t_tree_node	*init_tree_node(t_token *token, t_ms_var *ms)
 	t_tree_node	*new_node;
 
 	new_node = malloc(sizeof(t_tree_node));
-    if (!new_node)
-        return (NULL);
-    if (token->type != WORD)
-        new_node->type = token->type;
-    else
-        new_node->type = WORD;
-    new_node->value = NULL;
-    if (token->type == WORD)
-	    new_node->value = ft_strdup(token->value);
+	if (!new_node)
+		return (NULL);
+	if (token->type != WORD)
+		new_node->type = token->type;
+	else
+		new_node->type = WORD;
+	new_node->value = NULL;
+	if (token->type == WORD)
+		new_node->value = ft_strdup(token->value);
 	new_node->cmd_args = NULL;
 	new_node->cmd_args_arr = NULL;
 	new_node->exec_cmd_path = NULL;

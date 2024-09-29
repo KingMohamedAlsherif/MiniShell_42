@@ -3,35 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kingmohamedalsherif <kingmohamedalsherif@s +#+  +:+       +#+        */
+/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 12:53:22 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 18:18:11 by kingmohamedalshe ###   ########.fr       */
+/*   Updated: 2024/09/30 00:48:15 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	insert_env_node(t_ms_var *ms, char *str)
+void	insert_node(t_ms_var *ms, char *str, t_lst *env_node, t_lst *exp_node)
 {
-	t_lst	*env_node;
+	t_lst	*tmp_node;
+	int		rank;
 
-	env_node = ms->env;
 	while (env_node->fwd)
 		env_node = env_node->fwd;
 	env_node->fwd = create_new_node(ft_strdup(str), 0);
 	env_node->fwd->bwd = env_node;
 	update_order(ms->env, env_node->fwd);
-}
-
-void	insert_exp_node(t_ms_var *ms, char *str)
-{
-	t_lst	*exp_node;
-	t_lst	*tmp_node;
-	int		rank;
-
-	exp_node = ms->exp;
-	rank = ms->env->fwd->ascii_order;
+	rank = env_node->fwd->ascii_order;
 	while (exp_node->ascii_order < rank - 1)
 		exp_node = exp_node->fwd;
 	tmp_node = exp_node->fwd;
@@ -47,12 +38,6 @@ void	insert_exp_node(t_ms_var *ms, char *str)
 		exp_node = exp_node->fwd;
 	}
 	free(str);
-}
-
-void	insert_node(t_ms_var *ms, char *str)
-{
-	insert_env_node(ms, str);
-	insert_exp_node(ms, str);
 }
 
 void	env_export_update(t_tree_node *n, char *str)
@@ -74,7 +59,7 @@ void	env_export_update(t_tree_node *n, char *str)
 		env_node = env_node->fwd;
 	}
 	free_char_arr(s_new_str, NULL);
-	insert_node(n->ms, new_str);
+	insert_node(n->ms, new_str, n->ms->env, n->ms->exp);
 }
 
 void	export(t_tree_node *n)

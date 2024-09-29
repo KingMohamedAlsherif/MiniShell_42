@@ -6,11 +6,32 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:11 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 19:44:30 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/30 02:05:09 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	get_cmd(t_token **tokens, t_lst *env)
+{
+	char	*line;
+	char	*line_ptr;
+	int		start;
+
+	line = readline("> ");
+	line_ptr = line;
+	start = 0;
+	while (line_ptr[start] && ft_strchr(" \n\t\f\v\r", line_ptr[start]))
+		start++;
+	line = ft_substr(line_ptr, start, ft_strlen(line));
+	free(line_ptr);
+	line_ptr = line;
+	if (!valid_quote_pairs(line_ptr))
+		printf("Must input closing quote\n");
+	else
+		add_token(tokens, get_str(&line, env, 0), WORD);
+	free(line_ptr);
+}
 
 void	add_token(t_token **tokens, char *str, t_token_type type)
 {
@@ -75,46 +96,9 @@ char	*get_substr(char **input, char *blocker)
 	return (ft_substr(start, 0, len));
 }
 
-void	print_syntax_error(t_token *tokens, t_token_type type)
+t_token	*last_token(t_token *token)
 {
-	t_token	*tmp_token;
-
-	if (type == PIPE)
-		write(2, "syntax error near unexpected token `|'\n", 40);
-	else if (type == REDIRECT_IN)
-		write(2, "syntax error near unexpected token `<'\n", 40);
-	else if (type == REDIRECT_OUT)
-		write(2, "syntax error near unexpected token `>'\n", 40);
-	else if (type == HEREDOC)
-		write(2, "syntax error near unexpected token `<<'\n", 41);
-	else if (type == APPEND)
-		write(2, "syntax error near unexpected token `>>'\n", 41);
-	while (tokens)
-	{
-		tmp_token = tokens;
-		tokens = tokens->next;
-		free(tmp_token->value);
-		free(tmp_token);
-	}
-}
-
-bool	syntax_errors(t_token *tokens)
-{
-	t_token	*tokens_ptr;
-
-	tokens_ptr = tokens;
-	if (tokens->type == PIPE)
-		return (print_syntax_error(tokens_ptr, tokens->type), 1);
-	while (tokens)
-	{
-		if ((tokens->type == REDIRECT_IN || tokens->type == REDIRECT_OUT
-				|| tokens->type == APPEND || tokens->type == HEREDOC)
-			&& (!tokens->next || tokens->next->type != WORD))
-			return (print_syntax_error(tokens_ptr, tokens->type), 1);
-		if ((tokens->type == PIPE)
-			&& (!tokens->next))
-			return (print_syntax_error(tokens_ptr, tokens->type), 1);
-		tokens = tokens->next;
-	}
-	return (0);
+	while (token->next)
+		token = token->next;
+	return (token);
 }

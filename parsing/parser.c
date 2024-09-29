@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 04:25:38 by malsheri          #+#    #+#             */
-/*   Updated: 2024/09/29 22:23:50 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/30 01:36:52 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	parse_word(t_token *token, t_tree_node **n, t_ms_var *ms)
 		add_cmd_arg(&((*n)->cmd_args), token->value);
 }
 
-void	init_loop(t_token *token, t_tree_node **n, t_ms_var *ms)
+void	parse_pipe(t_token *token, t_tree_node **n, t_ms_var *ms)
 {
 	while ((*n)->parent)
 		*n = (*n)->parent;
@@ -85,14 +85,11 @@ void	parse(t_token *token, t_tree_node **n, t_ms_var *ms, t_token *head)
 	if (!*n)
 		*n = init_tree_node(token, ms);
 	if (token->type == PIPE)
-		init_loop(token, n, ms);
+		parse_pipe(token, n, ms);
 	else if (token->type >= REDIRECT_IN && token->type <= APPEND)
 	{
-		if (n)
-		{
-			parse_redir(token, &(*n)->redir);
-			token = token->next;
-		}
+		parse_redir(token, &(*n)->redir);
+		token = token->next;
 	}
 	else if (token)
 		parse_word(token, n, ms);

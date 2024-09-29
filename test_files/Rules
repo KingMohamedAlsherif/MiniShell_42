@@ -1,8 +1,0 @@
-Grammar
-	1) All non-punctuation is tested as a cmd and the following strings are either args or files (grep?)
-	2) (): requires either && or ||
-	3) &&: Ignore everything after && if error occurs prior
-	4) ||: Runs following cmd if first cmd produces an error
-	5) <, >, >>: requires a string after
-		last < file is used; if last < file is invalid, only error is printed
-		multiple > and >> creates multiple files, but only last one is used

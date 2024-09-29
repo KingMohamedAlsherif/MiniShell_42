@@ -6,137 +6,34 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:08:29 by chon              #+#    #+#             */
-/*   Updated: 2024/09/30 00:12:52 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/30 02:08:43 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-volatile sig_atomic_t sig = 0;
-
-void print_args(t_args *cmd_args)
-{
-	printf("args: ");
-	while (cmd_args)
-	{
-		printf("%s ", cmd_args->arg);
-		cmd_args = cmd_args->next;
-	}
-	printf("\n");
-}
-
-void print_redir(t_redir *redir, char type)
-{
-	while (redir)
-	{
-		if (type == 'i' && (redir->in_fd || redir->heredoc_delim))
-			printf("%s ", redir->filename);
-		else if (type == 'o' && (redir->out_fd || redir->is_append))
-			printf("%s ", redir->filename);
-		redir = redir->fwd;
-	}
-	printf("\n");
-}
-
-void print_tree(t_tree_node *n)
-{
-	while (n->type != END)
-	{
-		printf("node type: %d value: %s\n", n->type, n->value);
-		if (n->type != PIPE)
-		{
-			print_args(n->cmd_args);
-			if (n->redir)
-			{
-				while (n->redir->bwd)
-					n->redir = n->redir->bwd;
-			}
-			printf("redir in: ");
-			print_redir(n->redir, 'i');
-			printf("redir out: ");
-			print_redir(n->redir, 'o');
-		}
-		if (n->parent)
-			printf("parent: %s\n", n->parent->value);
-		else
-			printf("parent: none\n");
-		if (n->left)
-			printf("left: %s\n", n->left->value);
-		else
-			printf("left: none\n");
-		if (n->right)
-			printf("right: %s\n", n->right->value);
-		else
-			printf("right: none\n");
-		printf("\n");
-		traverse_tree(&n);
-	}
-	printf("node type: %d value: %s\n", n->type, n->value);
-	if (n->type != PIPE)
-	{
-		print_args(n->cmd_args);
-		if (n->redir)
-		{
-			while (n->redir->bwd)
-				n->redir = n->redir->bwd;
-		}
-		printf("redir in: ");
-		print_redir(n->redir, 'i');
-		printf("redir out: ");
-		print_redir(n->redir, 'o');
-	}
-	if (n->parent)
-		printf("parent: %s\n", n->parent->value);
-	else
-		printf("parent: none\n");
-	if (n->left)
-		printf("left: %s\n", n->left->value);
-	else
-		printf("left: none\n");
-	if (n->right)
-		printf("right: %s\n", n->right->value);
-	else
-		printf("right: none\n");
-	printf("\n");
-}
-
-void print_tokens(t_token *token)
-{
-	while (token)
-	{
-		printf("Token: ");
-		if (token->value)
-			printf("%s", token->value);
-		else
-			printf("(null)");
-		printf(", Type: %d\n", token->type);
-		token = token->next;
-	}
-}
+volatile sig_atomic_t	g_sig = 0;
 
 void	init_ms(char *input, t_ms_var *ms)
 {
 	t_token		*tokens;
 	t_tree_node	*n;
 	int			pipe_ct;
+	char		*str;
 
+	str = NULL;
+	tokens = NULL;
 	add_history(input);
-	tokenize(input, &tokens, ms->env);
-	// print_tokens(tokens);
+	tokenize(input, &tokens, ms->env, str);
 	free(input);
 	if (tokens && !syntax_errors(tokens))
 	{
 		n = NULL;
 		parse(tokens, &n, ms, tokens);
-		// print_tree(start_node(n));
 		pipes_n_exec_path(start_node(n), ms, &pipe_ct);
 		init_exec(start_node(n), pipe_ct);
 		traverse_and_check_errors(start_node(n));
 		n->is_read = start_node(n)->is_read;
-		// printf("node: %s %d\n",	n->value, n->type);
-		// printf("node read? %d\n", n->is_read);
-		// printf("right node read? %d\n", n->right->is_read);
-		// printf("parent node read? %d\n", n->parent->is_read);
 		free_tree(start_node(n));
 	}
 }

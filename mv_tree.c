@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 04:56:22 by malsheri          #+#    #+#             */
-/*   Updated: 2024/09/29 23:42:10 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/30 01:58:48 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,11 @@ void	traverse_and_check_errors(t_tree_node *n)
 	while (n->type != END)
 	{
 		if ((n->exec_cmd_path && !ft_strncmp(n->exec_cmd_path, "?", 2)
-				&& !is_builtin(n->value)) || (!is_builtin(n->value)
-				&& n->exec_cmd_path
-				&& !strncmp(n->exec_cmd_path, "invalid", 8)))
+				&& !is_builtin(n->value, n->redir)) || (!is_builtin(n->value,
+					n->redir) && n->exec_cmd_path && !strncmp(n->exec_cmd_path,
+					"invalid", 8)))
 			printf("%s: command not found\n", n->value);
-		else if (n->value && !is_builtin(n->value)
+		else if (n->value && !is_builtin(n->value, n->redir)
 			&& !strncmp(n->exec_cmd_path, "PATH", 5))
 			printf("Minishell: %s: No such file or directory\n", n->value);
 		traverse_tree(&n);

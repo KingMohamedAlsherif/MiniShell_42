@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:19 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 19:39:23 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/30 02:02:01 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,12 +107,8 @@ bool	valid_quote_pairs(char *input)
 	return (1);
 }
 
-void	tokenize(char *input, t_token **tokens, t_lst *env)
+void	tokenize(char *input, t_token **tokens, t_lst *env, char *str)
 {
-	char	*str;
-
-	*tokens = NULL;
-	str = NULL;
 	if (!valid_quote_pairs(input))
 		printf("Must input closing quote\n");
 	else
@@ -131,6 +127,8 @@ void	tokenize(char *input, t_token **tokens, t_lst *env)
 				if (str)
 					add_token(tokens, str, WORD);
 			}
+			if (is_empty(input) && last_token((*tokens))->type == PIPE)
+				get_cmd(tokens, env);
 		}
 		add_token(tokens, NULL, END);
 	}
