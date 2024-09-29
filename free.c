@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:18:37 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 10:16:41 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 14:53:46 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,5 +119,6 @@ void free_tree(t_tree_node *n)
 	}
 	// printf("node value: %p type: %d\n", NULL, n->type);
 	// printf("node type: %d\n", n->type);
+	// printf("right node type: %d\n", n->right->type);
 	free(n);
 }

@@ -130,7 +130,7 @@ void init_ms(char *input, t_ms_var *ms)
 		parse(tokens, &n, ms, tokens);
 		// printf("token: %d\n", n->type);
 		// printf("right token: %d\n", n->right->type);
-		print_tree(start_node(n));
+		// print_tree(start_node(n));
 		// printf("%s\n", start_node(n)->redir->filename);
 		pipes_n_exec_path(start_node(n), ms, &pipe_ct);
 		init_exec(start_node(n), pipe_ct);

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fcntl.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/29 15:45:37 by chon              #+#    #+#             */
+/*   Updated: 2024/09/29 15:45:37 by chon             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 void	update_exit_status(t_lst *env, int status)
@@ -8,24 +20,65 @@ void	update_exit_status(t_lst *env, int status)
 	env->val = (ft_itoa(status));
 }
 
-void	init_heredoc(t_redir *redir, t_tree_node *n)
+char	*guarantee_file(char *original)
 {
+	char	*filename;
+
+	filename = ft_strdup(original);
+	free(original);
+	while (!access(filename, F_OK))
+		filename = ft_strjoin(filename, "_new", 1, 0);
+	return (filename);
+}
+
+void	create_err_file(t_tree_node *n)
+{
+	char	*err_filename;
+	int		err_fd;
+
+	err_filename = guarantee_file(ft_strdup("error"));
+	err_fd = open(err_filename, O_WRONLY | O_CREAT);
+	if (err_fd < 0)
+	{
+		unlink(err_filename);
+		free(err_filename);
+		ft_error(errno, ft_strdup("err file"), n, 1);
+	}
+	dup2(err_fd, STDERR_FILENO);
+	close(err_fd);
+	unlink(err_filename);
+	free(err_filename);
+}
+
+void	init_heredoc(t_redir *redir)
+{
+	char	*line_tracker;
 	char	*line;
 
-	redir->filename = guarantee_file(redir->filename);
-	redir->in_fd = open(redir->filename, O_RDWR | O_TRUNC | O_CREAT, 0777);
-	if (redir->in_fd < 0)
-		ft_error(errno, ft_strdup(redir->filename), n, 1);
-	line = get_next_line(0);
+	line_tracker = NULL;
+	line = readline("> ");
+	printf("line: %s len: %lu\n", line, ft_strlen(line) - 1);
+	printf("delim: %s\n", redir->heredoc_delim);
 	while (ft_strncmp(redir->heredoc_delim, line, ft_strlen(line) - 1))
 	{
-		write(redir->in_fd, line, ft_strlen(line));
-		free(line);
-		line = get_next_line(0);
+		line_tracker = ft_strjoin(line_tracker, line, 1, 1);
+		line = readline("> ");
 	}
-	free(line);
-	close(redir->in_fd);
-	redir->in_fd = open(redir->filename, O_RDONLY);
+	printf("line: %s\n", line_tracker);
+	// redir->filename = guarantee_file(redir->filename);
+	// redir->in_fd = open(redir->filename, O_RDWR | O_TRUNC | O_CREAT, 0777);
+	// if (redir->in_fd < 0)
+	// 	ft_error(errno, ft_strdup(redir->filename), n, 1);
+	// line = get_next_line(0);
+	// while (ft_strncmp(redir->heredoc_delim, line, ft_strlen(line) - 1))
+	// {
+	// 	write(redir->in_fd, line, ft_strlen(line));
+	// 	free(line);
+	// 	line = get_next_line(0);
+	// }
+	// free(line);
+	// close(redir->in_fd);
+	// redir->in_fd = open(redir->filename, O_RDONLY);
 }
 
 bool	init_infiles_outfiles(t_redir *redir, t_tree_node *n, int *status)
@@ -33,7 +86,7 @@ bool	init_infiles_outfiles(t_redir *redir, t_tree_node *n, int *status)
 	while (redir)
 	{
 		if (redir->heredoc_delim)
-			init_heredoc(redir, n);
+			init_heredoc(redir);
 		else if (redir->in_fd)
 		{
 			redir->in_fd = open(redir->filename, O_RDONLY);

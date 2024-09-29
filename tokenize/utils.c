@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:11 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 11:33:05 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 14:56:28 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,18 @@ void	get_cmd(t_token **tokens, t_lst *env)
 	char	*line_ptr;
 	int		start;
 
-	line = get_next_line(0);
+	line = readline("> ");
 	line_ptr = line;
 	start = 0;
 	while (line_ptr[start] && ft_strchr(" \n\t\f\v\r", line_ptr[start]))
 		start++;
-	printf("start: %d\n", start);
 	line = ft_substr(line_ptr, start, ft_strlen(line));
 	free(line_ptr);
 	line_ptr = line;
-	add_token(tokens, get_str(&line, env, 0), WORD);
+	if (!valid_quote_pairs(line_ptr))
+		printf("Must input closing quote\n");
+	else
+		add_token(tokens, get_str(&line, env, 0), WORD);
 	free(line_ptr);
 }
 

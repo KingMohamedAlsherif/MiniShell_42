@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:27:19 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 11:33:51 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 15:02:21 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,6 @@ void    tokenize(char *input, t_token **tokens, t_lst *env)
 	{
 		while (*input)
 		{
-			// printf("%c: %d\n", *input, (*tokens)->type);
 			while(*input && ft_strchr(" \n\t\f\v\r", *input))
 				input++;
 			if (!*input)

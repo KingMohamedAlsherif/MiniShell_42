@@ -6,16 +6,12 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 11:32:22 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 15:45:57 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # 	define MINISHELL_H
-
-#define MALLOC_ERROR 1
-#define SYNTAX_ERROR 2
-#define UNCLOUSED_Q 3
 
 # include "./libft/libft.h"
 # include <stdio.h>

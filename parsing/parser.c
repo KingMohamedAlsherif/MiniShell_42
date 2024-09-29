@@ -58,14 +58,18 @@ void	parse(t_token *token, t_tree_node **n, t_ms_var *ms, t_token *head)
 		*n = init_tree_node(token, ms);
 	if (token->type == PIPE || token->type == AND || token->type == OR)
 	{
-		// printf("token to parse: %d\n", token->type);
 		while ((*n)->parent)
 			*n = (*n)->parent;
 		(*n)->parent = init_tree_node(token, ms);
 		(*n)->parent->left = *n;
-		(*n)->parent->right = init_tree_node(token->next, ms);
-		(*n)->parent->right->parent = (*n)->parent;
-		*n = (*n)->parent->right;
+		if (token->next->type != END)
+		{
+			(*n)->parent->right = init_tree_node(token->next, ms);
+			(*n)->parent->right->parent = (*n)->parent;
+			*n = (*n)->parent->right;
+		}
+		else
+			*n = (*n)->parent;
 	}
     else if (token->type >= REDIRECT_IN && token->type <= APPEND)
 	{
