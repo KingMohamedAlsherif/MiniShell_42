@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:19:14 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 21:58:51 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 23:46:43 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,6 @@ void	ft_exit(int error, char *str, t_tree_node *n, bool exit_flag)
 		free_lst(n->ms->exp);
 		free_char_arr(n->ms->env_arr, NULL);
 		free(n->ms);
-		while (n->type != END)
-			traverse_tree(&n);
-		n->is_read = start_node(n)->is_read;
 		free_tree(start_node(n));
 		exit(1);
 	}

@@ -70,7 +70,7 @@ void setup_exec(t_exec *e, t_tree_node *n, int pipe_ct)
 				redir_ptr = redir_ptr->bwd;
 		n->redir = redir_ptr;
 		n->pipe_ct = pipe_ct;
-		init_infiles_outfiles(n->redir, n, &e->status);
+		init_infiles_outfiles(n->redir, n);
 		traverse_tree(&n);
 	}
 }
@@ -96,7 +96,6 @@ void init_exec(t_tree_node *n, int pipe_ct)
 		if (WIFSIGNALED(e.status) && WTERMSIG(e.status) == SIGINT)
 			printf("\n");
 	}
-	signal(SIGINT, SIG_IGN);
 	if (e.status == 256)
 		e.status = 127;
 	update_exit_status(n->ms->env, e.status);

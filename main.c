@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:08:29 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 23:09:25 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/30 00:12:52 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,7 @@ void	init_ms(char *input, t_ms_var *ms)
 		n->is_read = start_node(n)->is_read;
 		// printf("node: %s %d\n",	n->value, n->type);
 		// printf("node read? %d\n", n->is_read);
+		// printf("right node read? %d\n", n->right->is_read);
 		// printf("parent node read? %d\n", n->parent->is_read);
 		free_tree(start_node(n));
 	}
@@ -186,10 +187,10 @@ int	main(int ac, char **av, char **env)
 	dup_env_exp(&ms, env);
 	if (ms)
 	{
-		if (init_signals())
-			return (1);
 		while (1)
 		{
+			if (init_signals())
+				return (1);
 			input = readline("Minishell $ ");
 			if (exit_ms(input, ms))
 				break ;

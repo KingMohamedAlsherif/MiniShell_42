@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 13:19:16 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 23:08:37 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 23:49:46 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,7 @@ void rl_replace_line(const char *text, int clear_undo);
 void rl_clear_history(void);
 void dup_env_exp(t_ms_var **ms, char **env);
 char *export_str(char *str);
+bool is_empty(char *input);
 
 int init_signals(void);
 
@@ -194,7 +195,5 @@ void traverse_and_check_errors(t_tree_node *n);
 void free_char_arr(char **two_d, char ***three_d);
 void free_lst(t_lst *lst);
 void free_tree(t_tree_node *n);
-void traverse_tree_to_free(t_tree_node **n,
-						   int is_read_flag);
 
 #endif

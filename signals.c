@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: malsheri <malsheri@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 04:56:28 by malsheri          #+#    #+#             */
-/*   Updated: 2024/09/29 04:56:29 by malsheri         ###   ########.fr       */
+/*   Updated: 2024/09/30 00:13:58 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,5 @@ int	init_signals(void)
 		perror("sigaction");
 		return (1);
 	}
-	signal(SIGPIPE, SIG_IGN);
 	return (0);
 }

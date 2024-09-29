@@ -6,7 +6,7 @@
 /*   By: chon <chon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:18:37 by chon              #+#    #+#             */
-/*   Updated: 2024/09/29 22:52:44 by chon             ###   ########.fr       */
+/*   Updated: 2024/09/29 23:53:16 by chon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,52 +65,41 @@ void	free_redir(t_redir *redir)
 	}
 }
 
-void	free_tree_node(t_tree_node *n, bool is_read_flag)
+void	free_tree_node(t_tree_node *n)
 {
-	// printf("node: %d\n", n->type);
-	if (n->left && n->left->is_read == is_read_flag)
-	{
-		// printf("left freed: %d\n", n->left->type);
-		free(n->left);
-		n->left = NULL;
-	}
-	if (n->right && n->right->is_read == is_read_flag)
-	{
-		// printf("right freed: %d\n", n->right->type);
-		free(n->right);
-		n->right = NULL;
-	}
-	if (n->parent && !n->parent->parent && n->parent->is_read == is_read_flag)
-	{
-		// printf("parent freed: %d\n", n->parent->type);
-		free(n->parent);
-		n->parent = NULL;
-	}
+	free(n->value);
+	if (n->redir)
+		free_redir(n->redir);
+	free_char_arr(n->cmd_args_arr, NULL);
+	free(n->exec_cmd_path);
+	free(n);
 }
 
 void	free_tree(t_tree_node *n)
 {
-	bool	is_read_flag;
 	int		i;
+	t_tree_node	*tmp;
 
-	is_read_flag = (n->is_read + 1) % 2;
 	i = 0;
 	while (i < n->pipe_ct)
 		free(n->pipefd[i++]);
 	free(n->pipefd);
-	while (n && n->type != END)
+	if (n->right && n->right->type == END)
 	{
-		if (n->is_read != is_read_flag)
-		{
-			free(n->value);
-			if (n->redir)
-				free_redir(n->redir);
-			free_char_arr(n->cmd_args_arr, NULL);
-			free(n->exec_cmd_path);
-		}
-		traverse_tree_to_free(&n, is_read_flag);
-		if (n)
-			free_tree_node(n, is_read_flag);
+		free_tree_node(n->right);
+		free_tree_node(n);
 	}
-	free(n);
+	else
+	{
+		while (n->parent)
+		{
+			tmp = n;
+			n = n->parent;
+			free_tree_node(tmp);
+			if (n->right->right)
+				free_tree_node(n->right->right);
+			free_tree_node(n->right);
+		}
+		free_tree_node(n);
+	}
 }
